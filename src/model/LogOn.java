@@ -50,7 +50,7 @@ public class LogOn {
     public static void userLogOff() {
         userLoggedOn = null;
         usersLocale = null;
-        usersTimeZone = null;
+        usersTimeZone= null;
     }
 
 }
