@@ -26,13 +26,13 @@ public class Appointment {
                        Integer customerIDInput, Integer userIDInput, Integer contactIDInput, String apptContactNameInput) {
 
         apptID = apptIDInput;
-        customerID = customerIDInput;
-        userID = userIDInput;
-        contactID = contactIDInput;
         apptTitle = apptTitleInput;
         apptDescription = apptDescriptionInput;
         apptLocation = apptLocationInput;
         apptType = apptTypeInput;
+        beginDateTime = beginDateTimeInput;
+        endDateTime = endDateTimeInput;
+        dateCreated = dateCreatedInput;
         apptCreatedBy = apptCreatedByInput;
         lastDateTimeUpdate = lastDateTimeUpdateInput;
         apptLastUpdateBy = apptLastUpdateByInput;
@@ -43,7 +43,7 @@ public class Appointment {
     }
 
     public Integer getApptID() {
-        return apptID
+        return apptID;
     }
 
     public String getApptTitle() {

@@ -16,6 +16,7 @@ public class Customer {
         address = addressInput;
         postCode = postCodeInput;
         phoneNumber = phoneNumberInput;
+        division = divisionInput;
         divisionID = divisionIDInput;
         countryName = countryNameInput;
     }
