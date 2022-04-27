@@ -3,6 +3,7 @@ package DatabaseAccess;
 import database.DatabaseConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import model.LogOn;
 
 import java.io.IOException;
 import java.sql.PreparedStatement;
@@ -42,8 +43,17 @@ public class AccessCustomer {
         SQLCommand.setString(2, postCode);
         SQLCommand.setString(4, phoneNumber);
         SQLCommand.setString(5, ZonedDateTime.now(ZoneOffset.UTC).format(dateTimeFormatter).toString());
-        SQLCommand.setString();
-        SQLCommand;
-        SQLCommand;
-        SQLCommand;
+        SQLCommand.setString(6, LogOn.getUserLoggedOn().getUserName());
+        SQLCommand.setString(7, ZonedDateTime.now(ZoneOffset.UTC).format(dateTimeFormatter).toString());
+        SQLCommand.setString(8, LogOn.getUserLoggedOn().getUserName());
+        SQLCommand.setInt(9, divisionID);
+
+        try {
+            SQLCommand.executeUpdate();
+            SQLCommand.close();
+            return true;
+        }
+        catch (SQLException exception) {
+            exception.printStackTrace();
+        }
     }
