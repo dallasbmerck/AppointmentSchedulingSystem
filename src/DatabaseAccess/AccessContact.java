@@ -54,7 +54,13 @@ public class AccessContact {
             String endTime = resultSet.getString("End");
             String customerID = resultSet.getString("Customer_ID");
 
-            //FINISH
+            String newString = "Appointment_ID; " + appointmentID + "\n" +
+                               "Title: " + title + "\n" +
+                               "Appointment Type: " + type + "\n" +
+                               "Start (date/time): " + startTime + "\n" +
+                               "End (date/time): " + endTime + "\n" +
+                               "Customer_ID; " + customerID + "\n";
+            appointments.add(newString);
         }
         SQLCommand.close();
         return appointments;
