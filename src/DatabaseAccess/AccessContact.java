@@ -7,8 +7,11 @@ import javafx.collections.ObservableList;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 public class AccessContact {
+
     public static Integer getContactID(String contactName) throws SQLException {
         Integer id = -1;
         PreparedStatement SQLCommand = DatabaseConnection.initiateConnection().prepareStatement("SELECT Contact_ID, " +
@@ -51,15 +54,25 @@ public class AccessContact {
             String endTime = resultSet.getString("End");
             String customerID = resultSet.getString("Customer_ID");
 
-
-
-
-
-
-            //FINISH THIS SECTION
+            //FINISH
         }
         SQLCommand.close();
         return appointments;
     }
 
+    public static Integer calculateAppointmentTime(String id) throws SQLException {
+        Integer timeSum = 0;
+        PreparedStatement SQLCommand = DatabaseConnection.initiateConnection().prepareStatement("SELECT * FROM " +
+                "appointments WHERE Contact_ID = ?");
+        SQLCommand.setString(1, id);
+        ResultSet resultSet = SQLCommand.executeQuery();
+
+        while (resultSet.next()) {
+            LocalDateTime start = resultSet.getTimestamp("Start").toLocalDateTime();
+            LocalDateTime end = resultSet.getTimestamp("End").toLocalDateTime();
+            timeSum += (int)Duration.between(start, end).toMinutes();
+        }
+        SQLCommand.close();
+        return timeSum;
+    }
 }

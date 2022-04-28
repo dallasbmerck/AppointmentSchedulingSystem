@@ -13,7 +13,7 @@ public class DatabaseConnection {
     private static final String DBUsername = "sqlUser";
     private static final String DBPassword = "Passw0rd!";
     private static final String jdbcURL = protocol + vendorName + IPAddress + DBName;
-    private static final String JDBCMYSQLDriver = "com.mysql.jdbc.Driver";
+    private static final String JDBCMYSQLDriver = "com.mysql.cj.jdbc.Driver";
     public static Connection connection;
 
     public static Connection initiateConnection() {
