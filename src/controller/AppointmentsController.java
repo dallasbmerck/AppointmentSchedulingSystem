@@ -5,6 +5,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 public class AppointmentsController implements Initializable {
@@ -33,8 +34,12 @@ public class AppointmentsController implements Initializable {
     public Button editApptButton;
     public Button newApptButton;
 
+    public void toggleGroup() {
+        setToggle = new ToggleGroup();
 
-    public void clickFilterMonth(ActionEvent actionEvent) {
+    }
+    public void clickFilterMonth(ActionEvent actionEvent) throws SQLException {
+        w
     }
 
     public void clickFilterWeek(ActionEvent actionEvent) {
