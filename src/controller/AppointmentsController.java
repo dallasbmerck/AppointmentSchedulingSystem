@@ -1,12 +1,10 @@
 package controller;
 
 import javafx.event.ActionEvent;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TableColumn;
+import javafx.scene.control.*;
 
 public class AppointmentsController {
+    public TableView appointmentsTableView;
     public TableColumn apptIDCol;
     public TableColumn titleCol;
     public TableColumn descriptionCol;
@@ -30,6 +28,7 @@ public class AppointmentsController {
     public Button deleteApptButton;
     public Button editApptButton;
     public Button newApptButton;
+
 
     public void clickFilterMonth(ActionEvent actionEvent) {
     }
