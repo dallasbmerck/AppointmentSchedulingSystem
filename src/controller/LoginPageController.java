@@ -9,6 +9,8 @@ import javafx.scene.control.TextField;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.ZoneId;
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class LoginPageController implements Initializable {
@@ -24,7 +26,10 @@ public class LoginPageController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        System.out.println("Initialized!");
+        Locale userLocale = Locale.getDefault();
+        ZoneIDLabel.setText(ZoneId.systemDefault().toString());
+        resourceBundle = ResourceBundle.getBundle("laguage/LoginPage");
+        ApplicationTitleLabel.setText(resourceBundle.getString(ApplicationTitleLabel));
     }
 
     public void PressResetButton(ActionEvent actionEvent) throws IOException {
