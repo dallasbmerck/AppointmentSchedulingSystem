@@ -1,25 +1,43 @@
 package controller;
 
+import DatabaseAccess.AccessAppointment;
+import database.DatabaseConnection;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
+import model.Appointment;
+import model.LogOn;
 
+import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class AppointmentsController implements Initializable {
-    public TableView appointmentsTableView;
-    public TableColumn apptIDCol;
-    public TableColumn titleCol;
-    public TableColumn descriptionCol;
-    public TableColumn locationCol;
-    public TableColumn contactCol;
-    public TableColumn typeCol;
-    public TableColumn startCol;
-    public TableColumn endCol;
-    public TableColumn customerIDCol;
-    public TableColumn userIDCol;
+    public TableView<Appointment> appointmentsTableView;
+    public TableColumn<Appointment, Integer> apptIDCol;
+    public TableColumn<Appointment, String> titleCol;
+    public TableColumn<Appointment, String> descriptionCol;
+    public TableColumn<Appointment, String> locationCol;
+    public TableColumn<Appointment, String> contactCol;
+    public TableColumn<Appointment, String> typeCol;
+    public TableColumn<Appointment, ZonedDateTime> startCol;
+    public TableColumn<Appointment, ZonedDateTime> endCol;
+    public TableColumn<Appointment, Integer> customerIDCol;
+    public TableColumn<Appointment, Integer> userIDCol;
     public RadioButton filterMonthButton;
     public RadioButton filterWeekButton;
     public RadioButton showAllButton;
@@ -33,43 +51,223 @@ public class AppointmentsController implements Initializable {
     public Button deleteApptButton;
     public Button editApptButton;
     public Button newApptButton;
+    public ToggleGroup setToggle;
+
+    ZonedDateTime start;
+    ZonedDateTime end;
+
+    public void addDataToTable(ObservableList<Appointment> list) {
+        apptIDCol.setCellValueFactory(new PropertyValueFactory<>("apptID"));
+        titleCol.setCellValueFactory(new PropertyValueFactory<>("apptTitle"));
+        descriptionCol.setCellValueFactory(new PropertyValueFactory<>("apptDescription"));
+        locationCol.setCellValueFactory(new PropertyValueFactory<>("apptLocation"));
+        typeCol.setCellValueFactory(new PropertyValueFactory<>("apptType"));
+        contactCol.setCellValueFactory(new PropertyValueFactory<>("apptContactName"));
+        startCol.setCellValueFactory(new PropertyValueFactory<>("beginDateTime"));
+        endCol.setCellValueFactory(new PropertyValueFactory<>("endDateTime"));
+        customerIDCol.setCellValueFactory(new PropertyValueFactory<>("customerID"));
+        appointmentsTableView.setItems(list);
+    }
+    public void screenChange(ActionEvent actionEvent, String path) throws IOException {
+        Parent p = FXMLLoader.load(getClass().getResource(path));
+        Scene scene = new Scene(p);
+        Stage newWindow = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+        newWindow.setScene(scene);
+        newWindow.show();
+    }
 
     public void toggleGroup() {
         setToggle = new ToggleGroup();
-
+        showAllButton.setToggleGroup(setToggle);
+        filterWeekButton.setToggleGroup(setToggle);
+        filterMonthButton.setToggleGroup(setToggle);
     }
+
     public void clickFilterMonth(ActionEvent actionEvent) throws SQLException {
-        w
+        filterWeekButton.setSelected(false);
+        showAllButton.setSelected(false);
+
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+        ObservableList<Appointment> filterByMonth = FXCollections.observableArrayList();
+        start = ZonedDateTime.now(LogOn.getUsersTimeZone());
+        end = start.plusMonths(1);
+
+        ZonedDateTime startUTC = start.withZoneSameInstant(ZoneOffset.UTC);
+        ZonedDateTime endUTC = end.withZoneSameInstant(ZoneOffset.UTC);
+
+        filterByMonth = AccessAppointment.filterAppointmentsByDate(startUTC, endUTC);
+
+        addDataToTable(filterByMonth);
+
+        showSelectedTimeLabel.setText(start.format(dateTimeFormatter) + " - " + end.format(dateTimeFormatter) + " " + LogOn.getUsersTimeZone());
+
     }
 
-    public void clickFilterWeek(ActionEvent actionEvent) {
+    public void clickFilterWeek(ActionEvent actionEvent) throws SQLException {
+        filterMonthButton.setSelected(false);
+        showAllButton.setSelected(false);
+
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+        ObservableList<Appointment> filterByWeek = FXCollections.observableArrayList();
+        start = ZonedDateTime.now(LogOn.getUsersTimeZone());
+        end = start.plusWeeks(1);
+
+        ZonedDateTime startUTC = start.withZoneSameInstant(ZoneOffset.UTC);
+        ZonedDateTime endUTC = end.withZoneSameInstant(ZoneOffset.UTC);
+
+        filterByWeek = AccessAppointment.filterAppointmentsByDate(startUTC, endUTC);
+
+        addDataToTable(filterByWeek);
+
+        showSelectedTimeLabel.setText(start.format(dateTimeFormatter) + " - " + end.format(dateTimeFormatter) + " " + LogOn.getUsersTimeZone());
+
     }
 
     public void clickShowAll(ActionEvent actionEvent) {
+        filterWeekButton.setSelected(false);
+        filterMonthButton.setSelected(false);
+
+        ObservableList<Appointment> allAppointments;
+        try {
+            allAppointments = AccessAppointment.showAllAppointments();
+        }
+        catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+            DatabaseConnection.initiateConnection();
+            try {
+                allAppointments = AccessAppointment.showAllAppointments();
+            }
+            catch (SQLException sqlException2) {
+                sqlException2.printStackTrace();
+                ButtonType ok = new ButtonType("Okay", ButtonBar.ButtonData.OK_DONE);
+                Alert invalid = new Alert(Alert.AlertType.WARNING, "Database connection failed, please restart the application", ok);
+                invalid.showAndWait();
+                return;
+            }
+        }
+        addDataToTable(allAppointments);
+        showSelectedTimeLabel.setText("Showing all Appointments.");
+        start = null;
     }
 
-    public void clickPreviousButton(ActionEvent actionEvent) {
+    public void clickPreviousButton(ActionEvent actionEvent) throws SQLException {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        ObservableList<Appointment> filterGoForward = FXCollections.observableArrayList();
+
+        if(setToggle.getSelectedToggle() == filterMonthButton) {
+            ZonedDateTime s = start.plusMonths(1);
+            ZonedDateTime e = end.plusMonths(1);
+
+            start = s;
+            end = e;
+
+            s = s.withZoneSameInstant(ZoneOffset.UTC);
+            e = e.withZoneSameInstant(ZoneOffset.UTC);
+
+            filterGoForward = AccessAppointment.filterAppointmentsByDate(s, e);
+
+            addDataToTable(filterGoForward);
+            showSelectedTimeLabel.setText(start.format(dateTimeFormatter) +" - " + end.format(dateTimeFormatter) + " " + LogOn.getUsersTimeZone());
+        }
+        if (setToggle.getSelectedToggle() == filterWeekButton) {
+            ZonedDateTime s = start.plusWeeks(1);
+            ZonedDateTime e = end.plusWeeks(1);
+
+            start = s;
+            end = e;
+
+            s = s.withZoneSameInstant(ZoneOffset.UTC);
+            e = e.withZoneSameInstant(ZoneOffset.UTC);
+
+            filterGoForward = AccessAppointment.filterAppointmentsByDate(s, e);
+
+            addDataToTable(filterGoForward);
+            showSelectedTimeLabel.setText(start.format(dateTimeFormatter) + " - " + end.format(dateTimeFormatter) + " " + LogOn.getUsersTimeZone());
+        }
     }
 
-    public void clickNextButton(ActionEvent actionEvent) {
+    public void clickNextButton(ActionEvent actionEvent) throws SQLException {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        ObservableList<Appointment> filterGoback = FXCollections.observableArrayList();
+
+        if(setToggle.getSelectedToggle() == filterMonthButton) {
+            ZonedDateTime s = start.minusMonths(1);
+            ZonedDateTime e = end.minusMonths(1);
+
+            start = s;
+            end = e;
+
+            s = s.withZoneSameInstant(ZoneOffset.UTC);
+            e = e.withZoneSameInstant(ZoneOffset.UTC);
+
+            filterGoback = AccessAppointment.filterAppointmentsByDate(s, e);
+
+            addDataToTable(filterGoback);
+            showSelectedTimeLabel.setText(start.format(dateTimeFormatter) +" - " + end.format(dateTimeFormatter) + " " + LogOn.getUsersTimeZone());
+        }
+        if (setToggle.getSelectedToggle() == filterWeekButton) {
+            ZonedDateTime s = start.minusWeeks(1);
+            ZonedDateTime e = end.minusWeeks(1);
+
+            start = s;
+            end = e;
+
+            s = s.withZoneSameInstant(ZoneOffset.UTC);
+            e = e.withZoneSameInstant(ZoneOffset.UTC);
+
+            filterGoback = AccessAppointment.filterAppointmentsByDate(s, e);
+
+            addDataToTable(filterGoback);
+            showSelectedTimeLabel.setText(start.format(dateTimeFormatter) + " - " + end.format(dateTimeFormatter) + " " + LogOn.getUsersTimeZone());
+        }
     }
 
-    public void clickLogoutButton(ActionEvent actionEvent) {
+    public void clickLogoutButton(ActionEvent actionEvent) throws IOException {
+        ButtonType yes = ButtonType.YES;
+        ButtonType no = ButtonType.NO;
+        Alert logOut = new Alert(Alert.AlertType.WARNING, "Are you sure you want to log out of the customer scheduling application?", yes, no);
+        Optional<ButtonType> optional = logOut.showAndWait();
+
+        if (optional.get() == ButtonType.YES) {
+            LogOn.userLogOff();
+            screenChange(actionEvent, "/view/LoginPage.fxml");
+        }
     }
 
-    public void clickCustomersButton(ActionEvent actionEvent) {
+    public void clickCustomersButton(ActionEvent actionEvent) throws IOException {
+        screenChange(actionEvent, "/view/CustomerPage.fxml");
     }
 
-    public void clickReportsButton(ActionEvent actionEvent) {
+    public void clickReportsButton(ActionEvent actionEvent) throws IOException {
+        screenChange(actionEvent, "/view/ReportingPage.fxml");
     }
 
     public void clickDeleteApptButton(ActionEvent actionEvent) {
     }
 
     public void clickEditApptButton(ActionEvent actionEvent) {
+        Appointment selectedAppointment = appointmentsTableView.getSelectionModel().getSelectedItem();
+
+        if(selectedAppointment == null) {
+            ButtonType ok = new ButtonType("Okay", ButtonBar.ButtonData.OK_DONE);
+            Alert invalid = new Alert(Alert.AlertType.WARNING, "Select an appointment to edit.", ok);
+            invalid.showAndWait();
+            return;
+        }
+
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("/view/UpdateAppointmentPage.fxml"));
+        Parent p = loader.load();
+        Scene s = new Scene(p);
+
+        UpdateAppointmentController controller = loader.getController();
+        controller.
     }
 
-    public void clickNewApptButton(ActionEvent actionEvent) {
+    public void clickNewApptButton(ActionEvent actionEvent) throws IOException {
+        screenChange(actionEvent, "/view/AddAppointmentsPage.fxml");
     }
 
     @Override

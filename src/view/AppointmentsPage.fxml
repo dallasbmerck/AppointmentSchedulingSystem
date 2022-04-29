@@ -25,9 +25,12 @@
             <Font size="18.0" />
          </font>
       </Label>
-      <RadioButton fx:id="filterMonthButton" layoutX="27.0" layoutY="28.0" mnemonicParsing="false" onAction="#clickFilterMonth" text="Filter by Month" />
-      <RadioButton fx:id="filterWeekButton" layoutX="138.0" layoutY="28.0" mnemonicParsing="false" onAction="#clickFilterWeek" text="Filter by Week" />
-      <RadioButton fx:id="showAllButton" layoutX="243.0" layoutY="28.0" mnemonicParsing="false" onAction="#clickShowAll" text="Show All" />
+      <RadioButton fx:id="filterMonthButton" layoutX="27.0" layoutY="28.0" mnemonicParsing="false" onAction="#clickFilterMonth" text="Filter by Month">
+         <toggleGroup>
+            <ToggleGroup fx:id="setToggle" />
+         </toggleGroup></RadioButton>
+      <RadioButton fx:id="filterWeekButton" layoutX="138.0" layoutY="28.0" mnemonicParsing="false" onAction="#clickFilterWeek" text="Filter by Week" toggleGroup="$setToggle" />
+      <RadioButton fx:id="showAllButton" layoutX="243.0" layoutY="28.0" mnemonicParsing="false" onAction="#clickShowAll" selected="true" text="Show All" toggleGroup="$setToggle" />
       <Label fx:id="selectedTimeLabel" layoutX="359.0" layoutY="28.0" text="Selected Month/Week:" />
       <Label fx:id="showSelectedTimeLabel" layoutX="498.0" layoutY="28.0" text="All Appointments" />
       <Button fx:id="previousButton" layoutX="626.0" layoutY="24.0" mnemonicParsing="false" onAction="#clickPreviousButton" text="Previous" />
