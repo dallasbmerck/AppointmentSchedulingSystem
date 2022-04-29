@@ -4,11 +4,17 @@ import DatabaseAccess.AccessAppointment;
 import database.LogOnRecord;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.stage.Stage;
 import model.Appointment;
 import model.LogOn;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
@@ -50,11 +56,11 @@ public class LoginPageController implements Initializable {
         String password = PasswordText.getText();
 
         boolean logon = LogOn.logOnAttempt(username, password);
-        LogOnRecord.generateLogOnFile(username,logon);
+        LogOnRecord.generateLogOnFile(username, logon);
 
         if (logon) {
             ObservableList<Appointment> apptSoon = AccessAppointment.appointmentWithin15MinOfLogOn();
-            if(!apptSoon.isEmpty()) {
+            if (!apptSoon.isEmpty()) {
                 for (Appointment soon : apptSoon) {
                     String alert = "Appointment with Appointment_ID: " + soon.getApptID() + " Starts at: " +
                             soon.getBeginDateTime().toString();
@@ -62,13 +68,28 @@ public class LoginPageController implements Initializable {
                     Alert invalid = new Alert(Alert.AlertType.WARNING, alert, ok);
                     invalid.showAndWait();
                 }
+            } else {
+                ButtonType ok = new ButtonType("Okay", ButtonBar.ButtonData.OK_DONE);
+                Alert invalid = new Alert(Alert.AlertType.CONFIRMATION, "No appointments scheduled within the next 15 minutes.", ok);
+                invalid.showAndWait();
             }
+            screenChange(actionEvent, "/view/AppointmentsPage.fxml");
+        } else {
+            Locale userlocale = Locale.getDefault();
+            ResourceBundle resourceBundle = ResourceBundle.getBundle("laguage/LoginPage");
+            ButtonType ok = new ButtonType(resourceBundle.getString("okButton"), ButtonBar.ButtonData.OK_DONE);
+            Alert logOnFail = new Alert(Alert.AlertType.WARNING, resourceBundle.getString("logOnFailButton"), ok);
+            logOnFail.showAndWait();
         }
-        else {
-            ButtonType ok = new ButtonType("Okay", ButtonBar.ButtonData.OK_DONE);
-            Alert invalid = new Alert(Alert.AlertType.CONFIRMATION, "No appointments scheduled within the next 15 minutes.", ok);
-            invalid.showAndWait()
-        }
+    }
+
+
+    public void screenChange(ActionEvent actionEvent, String path) throws IOException {
+        Parent p = FXMLLoader.load(getClass().getResource(path));
+        Scene scene = new Scene(p);
+        Stage newWindow = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();
+        newWindow.setScene(scene);
+        newWindow.show();
     }
 
     public void PressExitButton(ActionEvent actionEvent) throws IOException {

@@ -1,9 +1,13 @@
 package controller;
 
 import javafx.event.ActionEvent;
+import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 
-public class AppointmentsController {
+import java.net.URL;
+import java.util.ResourceBundle;
+
+public class AppointmentsController implements Initializable {
     public TableView appointmentsTableView;
     public TableColumn apptIDCol;
     public TableColumn titleCol;
@@ -61,5 +65,10 @@ public class AppointmentsController {
     }
 
     public void clickNewApptButton(ActionEvent actionEvent) {
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+
     }
 }
