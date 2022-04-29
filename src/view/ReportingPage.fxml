@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="controller.ReportingController"
-            prefHeight="400.0" prefWidth="600.0">
 
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ReportingController">
+   <children>
+      <Label layoutX="14.0" layoutY="14.0" text="Generate Reports">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <TextArea layoutX="14.0" layoutY="159.0" prefHeight="218.0" prefWidth="573.0" />
+      <RadioButton layoutX="14.0" layoutY="48.0" mnemonicParsing="false" text="Customer Appointments by Month and Type" />
+      <RadioButton layoutX="14.0" layoutY="74.0" mnemonicParsing="false" text="Contact Schedule" />
+      <RadioButton layoutX="14.0" layoutY="100.0" mnemonicParsing="false" text="Total Appointments per Country" />
+   </children>
 </AnchorPane>
