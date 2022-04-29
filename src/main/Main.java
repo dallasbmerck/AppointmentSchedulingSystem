@@ -14,7 +14,7 @@ public class Main extends Application {
     public void start(Stage stage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("/view/LoginPage.fxml"));
         stage.setTitle("C195 Software II - Advanced Java Concepts");
-        stage.setScene(new Scene(root, 1200, 800));
+        stage.setScene(new Scene(root));
         stage.show();
     }
 
