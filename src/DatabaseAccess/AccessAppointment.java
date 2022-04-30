@@ -93,7 +93,7 @@ public class AccessAppointment {
         return filterAppointments;
     }
 
-    public static ObservableList<Appointment> filterAppointmentsByCustomerID(Integer customerIDInput, LocalDateTime appointmentDate) throws SQLException {
+    public static ObservableList<Appointment> filterAppointmentsByCustomerID(Integer customerIDInput, LocalDate appointmentDate) throws SQLException {
         ObservableList<Appointment> filterCustomerAppointment = FXCollections.observableArrayList();
         PreparedStatement SQLCommand = DatabaseConnection.initiateConnection().prepareStatement("SELECT * FROM appointments " +
                 "as a LEFT OUTER JOIN contacts as c ON a.Contact_ID = c.Contact_ID WHERE datediff(a.Start, ?) = 0 AND Customer_ID = ?");

@@ -57,7 +57,7 @@ public class AddAppointmentsController {
         newWindow.show();
     }
 
-    public void clickSaveButton(ActionEvent actionEvent) throws SQLException {
+    public void clickSaveButton(ActionEvent actionEvent) throws SQLException, IOException {
         Boolean validStart = true;
         Boolean validEnd = true;
         Boolean validOverlap = true;
@@ -107,12 +107,73 @@ public class AddAppointmentsController {
             return;
         }
         validOperationHours = validateOperationHours(apptStart, apptEnd, apptDate);
-        validOverlap = valid(apptCustomerID, apptStart, apptEnd, apptDate);
+        validOverlap = overlappingCustomerAppointments(apptCustomerID, apptStart, apptEnd, apptDate);
+
+        if (!validOperationHours) {
+            errorMessage += "Invalid hours of operation. (8:00 AM to 10:00 PM EST)\n";
+        }
+        if (!validOverlap) {
+            errorMessage += "You cannot overlap Customer Appointments.\n";
+        }
+        System.out.println(errorMessage);
+
+        if (!validOverlap || !validOperationHours || !validStart || !validEnd) {
+            ButtonType ok = new ButtonType("Okay", ButtonBar.ButtonData.OK_DONE);
+            Alert invalid = new Alert(Alert.AlertType.WARNING, errorMessage, ok);
+            invalid.showAndWait();
+        }
+        else {
+            zonedStart = ZonedDateTime.of(apptStart, LogOn.getUsersTimeZone());
+            zonedEnd = ZonedDateTime.of(LocalDateTime.from(apptEnd), LogOn.getUsersTimeZone());
+            String username = LogOn.getUserLoggedOn().getUserName();
+
+            zonedStart = zonedStart.withZoneSameInstant(ZoneOffset.UTC);
+            zonedEnd = zonedEnd.withZoneSameInstant(ZoneOffset.UTC);
+
+            Boolean successfulAdd = AccessAppointment.addAppointment(apptTitle, apptDescription, apptLocation, apptType,
+                    zonedStart, zonedEnd, username, username, apptCustomerID, apptUserID, apptContactID);
+
+            if (successfulAdd) {
+                ButtonType ok = new ButtonType("Okay", ButtonBar.ButtonData.OK_DONE);
+                Alert a = new Alert(Alert.AlertType.CONFIRMATION, "The appointment has been scheduled successfully.", ok);
+                a.showAndWait();
+                screenChange(actionEvent, "/view/AppointmentsPage.fxml");
+            }
+            else {
+                ButtonType ok = new ButtonType("Okay", ButtonBar.ButtonData.OK_DONE);
+                Alert a2 = new Alert(Alert.AlertType.WARNING, "Unable to schedule appointment.", ok);
+                a2.showAndWait();
+            }
+
+        }
     }
 
-    public Boolean overlappingCustomerAppointments(Integer customerID, LocalDateTime start, LocalDateTime end, LocalDate date) {
-        ObservableList<Appointment> overlap = AccessAppointment.filterAppointmentsByCustomerID(date, customerID);
+    public Boolean overlappingCustomerAppointments(Integer customerID, LocalDateTime start, LocalDateTime end, LocalDate date) throws SQLException {
+        ObservableList<Appointment> overlap = AccessAppointment.filterAppointmentsByCustomerID(customerID, date);
 
+        if (overlap.isEmpty()) {
+            return true;
+        }
+        else {
+            for (Appointment overlappingAppt : overlap) {
+                LocalDateTime overlapStart = overlappingAppt.getBeginDateTime().toLocalDateTime();
+                LocalDateTime overlapEnd = overlappingAppt.getEndDateTime().toLocalDateTime();
+
+                if (overlapStart.isBefore(start) && overlapEnd.isAfter(end)) {
+                    return false;
+                }
+                if (overlapStart.isBefore(end) && overlapStart.isAfter(start)) {
+                    return false;
+                }
+                if (overlapEnd.isBefore(end) && overlapEnd.isAfter(start)) {
+                    return false;
+                }
+                else {
+                    return true;
+                }
+            }
+        }
+        return true;
     }
 
     public void clickBackButton(ActionEvent actionEvent) throws IOException {
