@@ -11,12 +11,13 @@
             <Font size="18.0" />
          </font>
       </Label>
-      <TextArea fx:id="reportsTextArea" layoutX="14.0" layoutY="159.0" prefHeight="218.0" prefWidth="573.0" />
+      <TextArea fx:id="reportsTextArea" layoutX="14.0" layoutY="130.0" prefHeight="218.0" prefWidth="573.0" />
       <RadioButton fx:id="reportMandTbutton" layoutX="14.0" layoutY="48.0" mnemonicParsing="false" onAction="#clickReportMandTbutton" text="Customer Appointments by Month and Type">
          <toggleGroup>
             <ToggleGroup fx:id="toggleGroup" />
          </toggleGroup></RadioButton>
       <RadioButton fx:id="contactScheduleButton" layoutX="14.0" layoutY="74.0" mnemonicParsing="false" onAction="#clickContactScheduleButton" text="Contact Schedule" toggleGroup="$toggleGroup" />
-      <RadioButton fx:id="totalByCountry" layoutX="14.0" layoutY="100.0" mnemonicParsing="false" onAction="#clickTotalByCountry" text="Total Appointments per Country" toggleGroup="$toggleGroup" />
+      <RadioButton fx:id="timePerContactButton" layoutX="14.0" layoutY="100.0" mnemonicParsing="false" onAction="#clickTimePerContactButton" text="Scheduled Time per Contact" toggleGroup="$toggleGroup" />
+      <Button fx:id="backButton" layoutX="534.0" layoutY="361.0" mnemonicParsing="false" onAction="#clickBackButton" prefHeight="25.0" prefWidth="53.0" text="Back" />
    </children>
 </AnchorPane>

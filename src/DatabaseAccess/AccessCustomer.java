@@ -69,9 +69,9 @@ public class AccessCustomer {
         SQLCommand.setString(2, address);
         SQLCommand.setString(2, postCode);
         SQLCommand.setString(4, phoneNumber);
-        SQLCommand.setString(5, ZonedDateTime.now(ZoneOffset.UTC).format(dateTimeFormatter).toString());
+        SQLCommand.setString(5, ZonedDateTime.now(ZoneOffset.UTC).format(dateTimeFormatter));
         SQLCommand.setString(6, LogOn.getUserLoggedOn().getUserName());
-        SQLCommand.setString(7, ZonedDateTime.now(ZoneOffset.UTC).format(dateTimeFormatter).toString());
+        SQLCommand.setString(7, ZonedDateTime.now(ZoneOffset.UTC).format(dateTimeFormatter));
         SQLCommand.setString(8, LogOn.getUserLoggedOn().getUserName());
         SQLCommand.setInt(9, divisionID);
 
@@ -98,7 +98,7 @@ public class AccessCustomer {
         SQLCommand.setString(2, address);
         SQLCommand.setString(3, postCode);
         SQLCommand.setString(4, phoneNumber);
-        SQLCommand.setString(5, ZonedDateTime.now(ZoneOffset.UTC).format(dateTimeFormatter).toString());
+        SQLCommand.setString(5, ZonedDateTime.now(ZoneOffset.UTC).format(dateTimeFormatter));
         SQLCommand.setString(6, LogOn.getUserLoggedOn().getUserName());
         SQLCommand.setInt(7, getDivisionID(divisionID));
         SQLCommand.setInt(8, customerID);

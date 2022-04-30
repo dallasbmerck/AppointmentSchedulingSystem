@@ -3,6 +3,7 @@ package controller;
 import DatabaseAccess.AccessCustomer;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -11,9 +12,12 @@ import javafx.stage.Stage;
 import model.Customer;
 
 import java.io.IOException;
+import java.net.URL;
 import java.sql.SQLException;
+import java.util.Objects;
+import java.util.ResourceBundle;
 
-public class UpdateCustomerController {
+public class UpdateCustomerController implements Initializable {
     public Label customerIDLabel;
     public Label countryLabel;
     public Label divisionLabel;
@@ -33,7 +37,7 @@ public class UpdateCustomerController {
     public Button backButton;
 
     public void screenChange(ActionEvent actionEvent, String path) throws IOException {
-        Parent p = FXMLLoader.load(getClass().getResource(path));
+        Parent p = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(path)));
         Scene scene = new Scene(p);
         Stage newWindow = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
         newWindow.setScene(scene);
@@ -52,7 +56,7 @@ public class UpdateCustomerController {
     phoneTextBox.setText(customer.getCustomerPhoneNumber());
     }
 
-    public void clickSaveButton(ActionEvent actionEvent) throws SQLException {
+    public void clickSaveButton() throws SQLException {
         String customerCountry = countryComboBox.getValue();
         String customerDivision = divisionComboBox.getValue();
         String customerName = nameTextBox.getText();
@@ -83,7 +87,7 @@ public class UpdateCustomerController {
         }
     }
 
-    public void clickClearButton(ActionEvent actionEvent) {
+    public void clickClearButton() {
         countryComboBox.getSelectionModel().clearSelection();
         divisionComboBox.getSelectionModel().clearSelection();
         nameTextBox.clear();
@@ -96,7 +100,8 @@ public class UpdateCustomerController {
         screenChange(actionEvent, "/view/CustomerPage.fxml");
     }
 
-    public void initializeData(Customer customer) {
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
         countryComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue == null) {
                 divisionComboBox.getItems().clear();

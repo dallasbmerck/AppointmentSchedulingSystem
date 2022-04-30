@@ -137,8 +137,8 @@ public class AccessAppointment {
                 "Customer_ID, User_ID, Contact_ID VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String startInputString = startInput.format(dateTimeFormatter).toString();
-        String endInputString = endInput.format(dateTimeFormatter).toString();
+        String startInputString = startInput.format(dateTimeFormatter);
+        String endInputString = endInput.format(dateTimeFormatter);
 
         SQLCommand.setString(1, titleInput);
         SQLCommand.setString(2, descriptionInput);
@@ -146,9 +146,9 @@ public class AccessAppointment {
         SQLCommand.setString(4, typeInput);
         SQLCommand.setString(5, startInputString);
         SQLCommand.setString(6, endInputString);
-        SQLCommand.setString(7, ZonedDateTime.now(ZoneOffset.UTC).format(dateTimeFormatter).toString());
+        SQLCommand.setString(7, ZonedDateTime.now(ZoneOffset.UTC).format(dateTimeFormatter));
         SQLCommand.setString(8, createdByInput);
-        SQLCommand.setString(9, ZonedDateTime.now(ZoneOffset.UTC).format(dateTimeFormatter).toString());
+        SQLCommand.setString(9, ZonedDateTime.now(ZoneOffset.UTC).format(dateTimeFormatter));
         SQLCommand.setString(10, lastUpdatedByInput);
         SQLCommand.setInt(11, customerIDInput);
         SQLCommand.setInt(12, userIDInput);
@@ -174,8 +174,8 @@ public class AccessAppointment {
                 "Customer_ID=?, User_ID=?, Contact_ID=? WHERE Appointment_ID = ?");
 
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String startInputString = startInput.format(dateTimeFormatter).toString();
-        String endInputString = endInput.format(dateTimeFormatter).toString();
+        String startInputString = startInput.format(dateTimeFormatter);
+        String endInputString = endInput.format(dateTimeFormatter);
 
         SQLCommand.setString(1, titleInput);
         SQLCommand.setString(2, descriptionInput);
@@ -245,8 +245,8 @@ public class AccessAppointment {
         ZonedDateTime utc = timezone.withZoneSameInstant(ZoneOffset.UTC);
         ZonedDateTime timeDelta = utc.plusMinutes(15);
 
-        String start = utc.format(dateTimeFormatter).toString();
-        String end = timeDelta.format(dateTimeFormatter).toString();
+        String start = utc.format(dateTimeFormatter);
+        String end = timeDelta.format(dateTimeFormatter);
         Integer userID = LogOn.getUserLoggedOn().getUserID();
 
         PreparedStatement SQLCommand = DatabaseConnection.initiateConnection().prepareStatement("SELECT * FROM " +

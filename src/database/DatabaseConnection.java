@@ -6,18 +6,19 @@ import java.sql.SQLException;
 
 public class DatabaseConnection {
 
-    private static final String protocol = "jdbc";
-    private static final String IPAddress = "//wgudb.ucertify.com:3306";
-    private static final String DBName = "client_schedule";
-    private static final String vendorName = ":mysql:";
-    private static final String DBUsername = "sqlUser";
-    private static final String DBPassword = "Passw0rd!";
-    private static final String jdbcURL = protocol + vendorName + IPAddress + DBName;
-    private static final String JDBCMYSQLDriver = "com.mysql.cj.jdbc.Driver";
+    private static final String serverURL = "wgudb.ucertify.com";
+    private static final int port = 3306;
+    private static String DBName;
+    private static String DBUsername;
+    private static String DBPassword;
+    private static String jdbcURL;
     public static Connection connection;
+
+    public DatabaseConnection() {}
 
     public static Connection initiateConnection() {
         try {
+            String JDBCMYSQLDriver = "com.mysql.jdbc.Driver";
             Class.forName(JDBCMYSQLDriver);
             connection = DriverManager.getConnection(jdbcURL, DBUsername, DBPassword);
             System.out.println("Connection was succesful.");
@@ -37,5 +38,21 @@ public class DatabaseConnection {
     }
     public static Connection getConnection() {
         return connection;
+    }
+
+    public static void setDataBaseName(String nameInput) {
+        DBName = nameInput;
+    }
+
+    public static void setDataBaseUserName(String usernameInput) {
+        DBUsername = usernameInput;
+    }
+
+    public static void setDataBasePassword(String passwordInput) {
+        DBPassword = passwordInput;
+    }
+
+    public static void setJDBCURL(String urlInput) {
+        jdbcURL = urlInput;
     }
 }

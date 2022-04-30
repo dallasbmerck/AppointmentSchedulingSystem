@@ -22,6 +22,7 @@ import java.sql.SQLException;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class UpdateAppointmentController implements Initializable {
@@ -54,7 +55,7 @@ public class UpdateAppointmentController implements Initializable {
     public Button clearButton;
 
     public void screenChange(ActionEvent actionEvent, String path) throws IOException {
-        Parent p = FXMLLoader.load(getClass().getResource(path));
+        Parent p = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(path)));
         Scene scene = new Scene(p);
         Stage newWindow = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
         newWindow.setScene(scene);
@@ -90,12 +91,7 @@ public class UpdateAppointmentController implements Initializable {
                 if (overlapStart.isBefore(end) && overlapStart.isAfter(start)) {
                     return false;
                 }
-                if (overlapEnd.isBefore(end) && overlapEnd.isAfter(start)) {
-                    return false;
-                }
-                else {
-                    return true;
-                }
+                return !overlapEnd.isBefore(end) || !overlapEnd.isAfter(start);
             }
         }
         return true;
@@ -103,24 +99,22 @@ public class UpdateAppointmentController implements Initializable {
 
 
     public void clickSaveButton(ActionEvent actionEvent) throws SQLException, IOException {
-        Boolean validStart = true;
-        Boolean validEnd = true;
-        Boolean validOverlap = true;
-        Boolean validOperationHours = true;
+        Boolean validOverlap;
+        Boolean validOperationHours;
         String errorMessage = "";
 
         String apptTitle = titleTextBox.getText();
         String apptDescription = descriptionTextBox.getText();
         String apptLocation = locationTextBox.getText();
-        String apptContactName = (String) contactComboBox.getValue();
+        String apptContactName = contactComboBox.getValue();
         String apptType = typeTextBox.getText();
-        Integer apptCustomerID = (Integer) customerIDTextBox.getValue();
-        Integer apptUserID = (Integer) userIDComboBox.getValue();
+        Integer apptCustomerID = customerIDTextBox.getValue();
+        Integer apptUserID = userIDComboBox.getValue();
         LocalDate apptDate = datePicker.getValue();
         LocalDateTime apptStart = null;
         LocalDateTime apptEnd = null;
-        ZonedDateTime zonedStart = null;
-        ZonedDateTime zonedEnd = null;
+        ZonedDateTime zonedStart;
+        ZonedDateTime zonedEnd;
 
         Integer apptContactID = AccessContact.getContactID(apptContactName);
 
@@ -128,18 +122,14 @@ public class UpdateAppointmentController implements Initializable {
 
         try {
             apptStart = LocalDateTime.of(datePicker.getValue(), LocalTime.parse(startTextBox.getText(), dateTimeFormatter));
-            validEnd = true;
         }
         catch (DateTimeParseException exception) {
-            validStart = false;
             errorMessage += "Invalid start time. Please use (HH:MM) format.\n";
         }
         try {
             apptEnd = LocalDateTime.of(datePicker.getValue(), LocalTime.parse(endTextBox.getText(), dateTimeFormatter));
-            validEnd = true;
         }
         catch (DateTimeParseException exception) {
-            validEnd = false;
             errorMessage += "Invalid end time. Please use (HH:MM) format.\n";
         }
         if (apptTitle.isBlank() || apptDescription.isBlank() || apptLocation.isBlank() || apptContactName == null ||
@@ -162,7 +152,7 @@ public class UpdateAppointmentController implements Initializable {
         }
         System.out.println(errorMessage);
 
-        if (!validOverlap || !validOperationHours || !validStart || !validEnd) {
+        if (!validOverlap || !validOperationHours) {
             ButtonType ok = new ButtonType("Okay", ButtonBar.ButtonData.OK_DONE);
             Alert invalid = new Alert(Alert.AlertType.WARNING, errorMessage, ok);
             invalid.showAndWait();
@@ -197,7 +187,7 @@ public class UpdateAppointmentController implements Initializable {
         screenChange(actionEvent, "/view/AppointmentsPage.fxml");
     }
 
-    public void clickClearButton(ActionEvent actionEvent) {
+    public void clickClearButton() {
         datePicker.getEditor().clear();
         startTextBox.clear();
         endTextBox.clear();

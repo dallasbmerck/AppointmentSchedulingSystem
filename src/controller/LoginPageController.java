@@ -14,12 +14,12 @@ import javafx.stage.Stage;
 import model.Appointment;
 import model.LogOn;
 
-import javax.swing.*;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.time.ZoneId;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class LoginPageController implements Initializable {
@@ -46,7 +46,7 @@ public class LoginPageController implements Initializable {
         ExitButton.setText(resourceBundle.getString("ExitButton"));
     }
 
-    public void PressResetButton(ActionEvent actionEvent) throws IOException {
+    public void PressResetButton() {
         UsernameText.clear();
         PasswordText.clear();
     }
@@ -85,14 +85,14 @@ public class LoginPageController implements Initializable {
 
 
     public void screenChange(ActionEvent actionEvent, String path) throws IOException {
-        Parent p = FXMLLoader.load(getClass().getResource(path));
+        Parent p = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(path)));
         Scene scene = new Scene(p);
         Stage newWindow = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();
         newWindow.setScene(scene);
         newWindow.show();
     }
 
-    public void PressExitButton(ActionEvent actionEvent) throws IOException {
+    public void PressExitButton() {
         LogOn.userLogOff();
         System.exit(0);
     }

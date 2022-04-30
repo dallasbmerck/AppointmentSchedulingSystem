@@ -2,7 +2,6 @@ package controller;
 
 import DatabaseAccess.AccessAppointment;
 import database.DatabaseConnection;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -22,7 +21,7 @@ import java.sql.SQLException;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Locale;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -70,7 +69,7 @@ public class AppointmentsController implements Initializable {
     }
 
     public void screenChange(ActionEvent actionEvent, String path) throws IOException {
-        Parent p = FXMLLoader.load(getClass().getResource(path));
+        Parent p = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(path)));
         Scene scene = new Scene(p);
         Stage newWindow = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
         newWindow.setScene(scene);
@@ -84,13 +83,13 @@ public class AppointmentsController implements Initializable {
         filterMonthButton.setToggleGroup(setToggle);
     }
 
-    public void clickFilterMonth(ActionEvent actionEvent) throws SQLException {
+    public void clickFilterMonth() throws SQLException {
         filterWeekButton.setSelected(false);
         showAllButton.setSelected(false);
 
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-        ObservableList<Appointment> filterByMonth = FXCollections.observableArrayList();
+        ObservableList<Appointment> filterByMonth;
         start = ZonedDateTime.now(LogOn.getUsersTimeZone());
         end = start.plusMonths(1);
 
@@ -105,13 +104,13 @@ public class AppointmentsController implements Initializable {
 
     }
 
-    public void clickFilterWeek(ActionEvent actionEvent) throws SQLException {
+    public void clickFilterWeek() throws SQLException {
         filterMonthButton.setSelected(false);
         showAllButton.setSelected(false);
 
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-        ObservableList<Appointment> filterByWeek = FXCollections.observableArrayList();
+        ObservableList<Appointment> filterByWeek;
         start = ZonedDateTime.now(LogOn.getUsersTimeZone());
         end = start.plusWeeks(1);
 
@@ -126,7 +125,7 @@ public class AppointmentsController implements Initializable {
 
     }
 
-    public void clickShowAll(ActionEvent actionEvent) {
+    public void clickShowAll() {
         filterWeekButton.setSelected(false);
         filterMonthButton.setSelected(false);
 
@@ -153,9 +152,9 @@ public class AppointmentsController implements Initializable {
         start = null;
     }
 
-    public void clickPreviousButton(ActionEvent actionEvent) throws SQLException {
+    public void clickPreviousButton() throws SQLException {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        ObservableList<Appointment> filterGoForward = FXCollections.observableArrayList();
+        ObservableList<Appointment> filterGoForward;
 
         if(setToggle.getSelectedToggle() == filterMonthButton) {
             ZonedDateTime s = start.plusMonths(1);
@@ -189,9 +188,9 @@ public class AppointmentsController implements Initializable {
         }
     }
 
-    public void clickNextButton(ActionEvent actionEvent) throws SQLException {
+    public void clickNextButton() throws SQLException {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        ObservableList<Appointment> filterGoback = FXCollections.observableArrayList();
+        ObservableList<Appointment> filterGoback;
 
         if(setToggle.getSelectedToggle() == filterMonthButton) {
             ZonedDateTime s = start.minusMonths(1);
@@ -254,7 +253,7 @@ public class AppointmentsController implements Initializable {
         screenChange(actionEvent, "/view/ReportingPage.fxml");
     }
 
-    public void clickDeleteApptButton(ActionEvent actionEvent) throws SQLException {
+    public void clickDeleteApptButton() throws SQLException {
         Appointment appointment = appointmentsTableView.getSelectionModel().getSelectedItem();
 
         if (appointment == null) {
@@ -287,8 +286,6 @@ public class AppointmentsController implements Initializable {
                 catch (SQLException sqlException) {
                     sqlException.printStackTrace();
                 }
-            }
-            else{
             }
         }
     }
@@ -323,7 +320,7 @@ public class AppointmentsController implements Initializable {
         showAllButton.setSelected(true);
         toggleGroup();
 
-        ObservableList<Appointment> allAppointments = null;
+        ObservableList<Appointment> allAppointments;
         try {
             allAppointments = AccessAppointment.showAllAppointments();
         }

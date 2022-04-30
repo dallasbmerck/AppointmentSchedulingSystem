@@ -17,6 +17,7 @@ import model.Customer;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -35,7 +36,7 @@ public class CustomerController implements Initializable {
     public Button backButton;
 
     public void screenChange(ActionEvent actionEvent, String path) throws IOException {
-        Parent p = FXMLLoader.load(getClass().getResource(path));
+        Parent p = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(path)));
         Scene scene = new Scene(p);
         Stage newWindow = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
         newWindow.setScene(scene);
@@ -72,12 +73,12 @@ public class CustomerController implements Initializable {
         Scene s = new Scene(p);
 
         UpdateCustomerController controller = load.getController();
-        controller.initializeData(customer);
+        controller.initialize();
         Stage newWindow = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();
         newWindow.setScene(s);
     }
 
-    public void clickDeleteButton(ActionEvent actionEvent) throws SQLException {
+    public void clickDeleteButton() throws SQLException {
         Customer customer = customerTableView.getSelectionModel().getSelectedItem();
 
         if (customer == null) {

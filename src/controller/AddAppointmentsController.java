@@ -16,9 +16,9 @@ import model.LogOn;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.*;
-import java.time.chrono.ChronoZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Objects;
 
 public class AddAppointmentsController {
     public DatePicker datePicker;
@@ -27,9 +27,9 @@ public class AddAppointmentsController {
     public TextField apptIDTextBox;
     public TextField titleTextBox;
     public TextField descriptionTextBox;
-    public ComboBox contactComboBox;
-    public ComboBox customerIDTextBox;
-    public ComboBox userIDComboBox;
+    public ComboBox<String> contactComboBox;
+    public ComboBox<Integer> customerIDTextBox;
+    public ComboBox<Integer> userIDComboBox;
     public TextField typeTextBox;
     public TextField locationTextBox;
     public Label dateLabel;
@@ -50,7 +50,7 @@ public class AddAppointmentsController {
     public Button clearButton;
 
     public void screenChange(ActionEvent actionEvent, String path) throws IOException {
-        Parent p = FXMLLoader.load(getClass().getResource(path));
+        Parent p = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(path)));
         Scene scene = new Scene(p);
         Stage newWindow = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
         newWindow.setScene(scene);
@@ -58,24 +58,22 @@ public class AddAppointmentsController {
     }
 
     public void clickSaveButton(ActionEvent actionEvent) throws SQLException, IOException {
-        Boolean validStart = true;
-        Boolean validEnd = true;
-        Boolean validOverlap = true;
-        Boolean validOperationHours = true;
+        Boolean validOverlap;
+        Boolean validOperationHours;
         String errorMessage = "";
 
         String apptTitle = titleTextBox.getText();
         String apptDescription = descriptionTextBox.getText();
         String apptLocation = locationTextBox.getText();
-        String apptContactName = (String) contactComboBox.getValue();
+        String apptContactName = contactComboBox.getValue();
         String apptType = typeTextBox.getText();
-        Integer apptCustomerID = (Integer) customerIDTextBox.getValue();
-        Integer apptUserID = (Integer) userIDComboBox.getValue();
+        Integer apptCustomerID = customerIDTextBox.getValue();
+        Integer apptUserID = userIDComboBox.getValue();
         LocalDate apptDate = datePicker.getValue();
         LocalDateTime apptStart = null;
         LocalDateTime apptEnd = null;
-        ZonedDateTime zonedStart = null;
-        ZonedDateTime zonedEnd = null;
+        ZonedDateTime zonedStart;
+        ZonedDateTime zonedEnd;
 
         Integer apptContactID = AccessContact.getContactID(apptContactName);
 
@@ -83,18 +81,14 @@ public class AddAppointmentsController {
 
         try {
             apptStart = LocalDateTime.of(datePicker.getValue(), LocalTime.parse(startTextBox.getText(), dateTimeFormatter));
-            validEnd = true;
         }
         catch (DateTimeParseException exception) {
-            validStart = false;
             errorMessage += "Invalid start time. Please use (HH:MM) format.\n";
         }
         try {
             apptEnd = LocalDateTime.of(datePicker.getValue(), LocalTime.parse(endTextBox.getText(), dateTimeFormatter));
-            validEnd = true;
         }
         catch (DateTimeParseException exception) {
-            validEnd = false;
             errorMessage += "Invalid end time. Please use (HH:MM) format.\n";
         }
         if (apptTitle.isBlank() || apptDescription.isBlank() || apptLocation.isBlank() || apptContactName == null ||
@@ -117,7 +111,7 @@ public class AddAppointmentsController {
         }
         System.out.println(errorMessage);
 
-        if (!validOverlap || !validOperationHours || !validStart || !validEnd) {
+        if (!validOverlap || !validOperationHours) {
             ButtonType ok = new ButtonType("Okay", ButtonBar.ButtonData.OK_DONE);
             Alert invalid = new Alert(Alert.AlertType.WARNING, errorMessage, ok);
             invalid.showAndWait();
@@ -165,12 +159,7 @@ public class AddAppointmentsController {
                 if (overlapStart.isBefore(end) && overlapStart.isAfter(start)) {
                     return false;
                 }
-                if (overlapEnd.isBefore(end) && overlapEnd.isAfter(start)) {
-                    return false;
-                }
-                else {
-                    return true;
-                }
+                return !overlapEnd.isBefore(end) || !overlapEnd.isAfter(start);
             }
         }
         return true;
@@ -192,7 +181,7 @@ public class AddAppointmentsController {
 
     }
 
-    public void clickClearButton(ActionEvent actionEvent) {
+    public void clickClearButton() {
         datePicker.getEditor().clear();
         startTextBox.clear();
         endTextBox.clear();

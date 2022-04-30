@@ -13,6 +13,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class AddCustomerController implements Initializable {
@@ -35,7 +36,7 @@ public class AddCustomerController implements Initializable {
     public Button backButton;
 
     public void screenChange(ActionEvent actionEvent, String path) throws IOException {
-        Parent p = FXMLLoader.load(getClass().getResource(path));
+        Parent p = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(path)));
         Scene scene = new Scene(p);
         Stage newWindow = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
         newWindow.setScene(scene);
@@ -64,7 +65,7 @@ public class AddCustomerController implements Initializable {
             ButtonType ok = new ButtonType("Okay", ButtonBar.ButtonData.OK_DONE);
             Alert a = new Alert(Alert.AlertType.CONFIRMATION, "The Customer has been added successfully.", ok);
             a.showAndWait();
-            clickClearButton(actionEvent);
+            clickClearButton();
             screenChange(actionEvent, "/view/CustomerPage.fxml");
         }
         else {
@@ -74,7 +75,7 @@ public class AddCustomerController implements Initializable {
         }
     }
 
-    public void clickClearButton(ActionEvent actionEvent) {
+    public void clickClearButton() {
         countryComboBox.getItems().clear();
         divisionComboBox.getItems().clear();
         nameTextBox.clear();
