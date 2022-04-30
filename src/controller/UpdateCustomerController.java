@@ -5,8 +5,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import model.Customer;
 
-public class UpdateCustmerController {
+public class UpdateCustomerController {
     public Label customerIDLabel;
     public Label countryLabel;
     public Label divisionLabel;
@@ -32,5 +33,8 @@ public class UpdateCustmerController {
     }
 
     public void clickBackButton(ActionEvent actionEvent) {
+    }
+
+    public void initializeData(Customer customer) {
     }
 }

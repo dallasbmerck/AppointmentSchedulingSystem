@@ -1,5 +1,7 @@
 package controller;
 
+import DatabaseAccess.AccessAppointment;
+import DatabaseAccess.AccessCustomer;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -7,15 +9,15 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import model.Customer;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class CustomerController implements Initializable {
@@ -55,10 +57,63 @@ public class CustomerController implements Initializable {
         screenChange(actionEvent, "/view/AddCustomerPage.fxml");
     }
 
-    public void clickEditButton(ActionEvent actionEvent) {
+    public void clickEditButton(ActionEvent actionEvent) throws IOException {
+        Customer customer = customerTableView.getSelectionModel().getSelectedItem();
+
+        if (customer == null) {
+            ButtonType ok = new ButtonType("Okay", ButtonBar.ButtonData.OK_DONE);
+            Alert noSelection = new Alert(Alert.AlertType.WARNING, "No customer selected to edit.", ok);
+            noSelection.showAndWait();
+        }
+
+        FXMLLoader load = new FXMLLoader();
+        load.setLocation(getClass().getResource("/view/CustomerUpdatePage.fxml"));
+        Parent p = load.load();
+        Scene s = new Scene(p);
+
+        UpdateCustomerController controller = load.getController();
+        controller.initializeData(customer);
+        Stage newWindow = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();
+        newWindow.setScene(s);
     }
 
-    public void clickDeleteButton(ActionEvent actionEvent) {
+    public void clickDeleteButton(ActionEvent actionEvent) throws SQLException {
+        Customer customer = customerTableView.getSelectionModel().getSelectedItem();
+
+        if (customer == null) {
+            ButtonType ok = new ButtonType("Okay", ButtonBar.ButtonData.OK_DONE);
+            Alert noSelection = new Alert(Alert.AlertType.WARNING, "No customer selected to delete.", ok);
+            noSelection.showAndWait();
+        }
+        else {
+            ButtonType yes = ButtonType.YES;
+            ButtonType no = ButtonType.NO;
+            Alert deleteCustomer = new Alert(Alert.AlertType.WARNING, "Are you sure you want to delete Customer " +
+                    customer.getCustomerID() + "and all of their associated appointments?", yes, no);
+            Optional<ButtonType> selected = deleteCustomer.showAndWait();
+
+            if (selected.get() == ButtonType.YES) {
+                Boolean customerAppointmentDelete = AccessAppointment.deleteAllAppointmentsByCustomerID(customer.getCustomerID());
+                Boolean customerDelete = AccessCustomer.deleteSelectedCustomer(customer.getCustomerID());
+
+                if (customerAppointmentDelete && customerDelete) {
+                    ButtonType ok = new ButtonType("Okay", ButtonBar.ButtonData.OK_DONE);
+                    Alert delete = new Alert(Alert.AlertType.CONFIRMATION, "The Customer and all of their associated appointments have been deleted.", ok);
+                    delete.showAndWait();
+                }
+                else {
+                    ButtonType ok = new ButtonType("Okay", ButtonBar.ButtonData.OK_DONE);
+                    Alert delete = new Alert(Alert.AlertType.WARNING, "Unable to delete customer and their associated appointments.", ok);
+                    delete.showAndWait();
+                }
+                try {
+                    addDataToCustomersTable(AccessCustomer.getAllCustomers());
+                }
+                catch (SQLException sqlException) {
+                    sqlException.printStackTrace();
+                }
+            }
+        }
     }
 
     public void clickBackButton(ActionEvent actionEvent) throws IOException {
@@ -68,7 +123,10 @@ public class CustomerController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
-
+            addDataToCustomersTable(AccessCustomer.getAllCustomers());
+        }
+        catch (SQLException sqlException) {
+            sqlException.printStackTrace();
         }
     }
 }
