@@ -243,7 +243,7 @@ public class AppointmentsController implements Initializable {
                 Alert invalid = new Alert(Alert.AlertType.WARNING, "Appointment " + appointment.getApptID() + " is canceled.", ok);
                 invalid.showAndWait();
             }
-        }
+        });
     }
     public void clickCustomersButton(ActionEvent actionEvent) throws IOException {
         screenChange(actionEvent, "/view/CustomerPage.fxml");
@@ -260,7 +260,6 @@ public class AppointmentsController implements Initializable {
             ButtonType ok = new ButtonType("Okay", ButtonBar.ButtonData.OK_DONE);
             Alert invalid = new Alert(Alert.AlertType.WARNING, "Select an appointment to delete.", ok);
             invalid.showAndWait();
-            return;
         }
         else {
             ButtonType yes = ButtonType.YES;
@@ -274,7 +273,7 @@ public class AppointmentsController implements Initializable {
                 if(b) {
                     ButtonType ok = new ButtonType("Okay", ButtonBar.ButtonData.OK_DONE);
                     Alert showDelete = new Alert(Alert.AlertType.CONFIRMATION, "Appointment: " + appointment.getApptID() + " has been deleted.", ok);
-                    showDelete.showAndWait()
+                    showDelete.showAndWait();
                 }
                 else {
                     ButtonType ok = new ButtonType("Okay", ButtonBar.ButtonData.OK_DONE);
@@ -289,7 +288,6 @@ public class AppointmentsController implements Initializable {
                 }
             }
             else{
-                return;
             }
         }
     }
