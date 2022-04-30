@@ -1,6 +1,8 @@
 package controller;
 
+import DatabaseAccess.AccessAppointment;
 import DatabaseAccess.AccessContact;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -8,10 +10,13 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import model.Appointment;
 import model.LogOn;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.time.*;
+import java.time.chrono.ChronoZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
@@ -52,7 +57,7 @@ public class AddAppointmentsController {
         newWindow.show();
     }
 
-    public void clickSaveButton(ActionEvent actionEvent) {
+    public void clickSaveButton(ActionEvent actionEvent) throws SQLException {
         Boolean validStart = true;
         Boolean validEnd = true;
         Boolean validOverlap = true;
@@ -82,7 +87,7 @@ public class AddAppointmentsController {
         }
         catch (DateTimeParseException exception) {
             validStart = false;
-            errorMessage += "Invalid start time. Please use (HH:MM) format.\n"
+            errorMessage += "Invalid start time. Please use (HH:MM) format.\n";
         }
         try {
             apptEnd = LocalDateTime.of(datePicker.getValue(), LocalTime.parse(endTextBox.getText(), dateTimeFormatter));
@@ -90,7 +95,7 @@ public class AddAppointmentsController {
         }
         catch (DateTimeParseException exception) {
             validEnd = false;
-            errorMessage += "Invalid end time. Please use (HH:MM) format.\n"
+            errorMessage += "Invalid end time. Please use (HH:MM) format.\n";
         }
         if (apptTitle.isBlank() || apptDescription.isBlank() || apptLocation.isBlank() || apptContactName == null ||
         apptType.isBlank() || apptCustomerID == null || apptUserID == null || apptEnd == null || apptStart == null) {
@@ -101,7 +106,13 @@ public class AddAppointmentsController {
             invalid.showAndWait();
             return;
         }
-        validOperationHours = val
+        validOperationHours = validateOperationHours(apptStart, apptEnd, apptDate);
+        validOverlap = valid(apptCustomerID, apptStart, apptEnd, apptDate);
+    }
+
+    public Boolean overlappingCustomerAppointments(Integer customerID, LocalDateTime start, LocalDateTime end, LocalDate date) {
+        ObservableList<Appointment> overlap = AccessAppointment.filterAppointmentsByCustomerID(date, customerID);
+
     }
 
     public void clickBackButton(ActionEvent actionEvent) throws IOException {
@@ -113,6 +124,10 @@ public class AddAppointmentsController {
         ZonedDateTime zonedEnd = ZonedDateTime.of(end, LogOn.getUsersTimeZone());
 
         ZonedDateTime operationStart = ZonedDateTime.of(appointmentDate, LocalTime.of(8,0), ZoneId.of("America/New_York"));
+        ZonedDateTime operationEnd = ZonedDateTime.of(appointmentDate ,LocalTime.of(22,0), ZoneId.of("America/New_York"));
+
+        return !zonedStart.isBefore(operationStart) && !zonedStart.isAfter(operationEnd) && !zonedEnd.isBefore(operationStart) &&
+                !zonedEnd.isAfter(operationEnd) && !zonedStart.isAfter(zonedEnd);
 
     }
 
