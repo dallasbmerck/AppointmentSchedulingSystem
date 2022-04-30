@@ -68,6 +68,7 @@ public class AppointmentsController implements Initializable {
         customerIDCol.setCellValueFactory(new PropertyValueFactory<>("customerID"));
         appointmentsTableView.setItems(list);
     }
+
     public void screenChange(ActionEvent actionEvent, String path) throws IOException {
         Parent p = FXMLLoader.load(getClass().getResource(path));
         Scene scene = new Scene(p);
@@ -292,7 +293,7 @@ public class AppointmentsController implements Initializable {
         }
     }
 
-    public void clickEditApptButton(ActionEvent actionEvent) throws IOException {
+    public void clickEditApptButton(ActionEvent actionEvent) throws IOException, SQLException {
         Appointment selectedAppointment = appointmentsTableView.getSelectionModel().getSelectedItem();
 
         if(selectedAppointment == null) {
@@ -308,7 +309,7 @@ public class AppointmentsController implements Initializable {
         Scene s = new Scene(p);
 
         UpdateAppointmentController controller = loader.getController();
-        controller.initializeData(selectedAppointment);
+        controller.addData(selectedAppointment);
         Stage newWindow = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
         newWindow.setScene(s);
     }
