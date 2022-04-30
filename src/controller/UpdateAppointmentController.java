@@ -2,6 +2,7 @@ package controller;
 
 import javafx.event.ActionEvent;
 import javafx.scene.control.*;
+import model.Appointment;
 
 public class UpdateAppointmentController {
     public DatePicker datePicker;
@@ -39,5 +40,9 @@ public class UpdateAppointmentController {
     }
 
     public void clickClearButton(ActionEvent actionEvent) {
+    }
+
+    public void initializeData(Appointment selectedAppointment) {
+
     }
 }

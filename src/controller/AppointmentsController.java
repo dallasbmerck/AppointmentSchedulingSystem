@@ -236,6 +236,15 @@ public class AppointmentsController implements Initializable {
         }
     }
 
+    public void checkAppointmentCanceled(ObservableList<Appointment> list) {
+        list.forEach((appointment) -> {
+            if (appointment.getApptType().equalsIgnoreCase("canceled")) {
+                ButtonType ok = new ButtonType("Okay", ButtonBar.ButtonData.OK_DONE);
+                Alert invalid = new Alert(Alert.AlertType.WARNING, "Appointment " + appointment.getApptID() + " is canceled.", ok);
+                invalid.showAndWait();
+            }
+        }
+    }
     public void clickCustomersButton(ActionEvent actionEvent) throws IOException {
         screenChange(actionEvent, "/view/CustomerPage.fxml");
     }
@@ -244,10 +253,48 @@ public class AppointmentsController implements Initializable {
         screenChange(actionEvent, "/view/ReportingPage.fxml");
     }
 
-    public void clickDeleteApptButton(ActionEvent actionEvent) {
+    public void clickDeleteApptButton(ActionEvent actionEvent) throws SQLException {
+        Appointment appointment = appointmentsTableView.getSelectionModel().getSelectedItem();
+
+        if (appointment == null) {
+            ButtonType ok = new ButtonType("Okay", ButtonBar.ButtonData.OK_DONE);
+            Alert invalid = new Alert(Alert.AlertType.WARNING, "Select an appointment to delete.", ok);
+            invalid.showAndWait();
+            return;
+        }
+        else {
+            ButtonType yes = ButtonType.YES;
+            ButtonType no = ButtonType.NO;
+            Alert confirmDelete = new Alert(Alert.AlertType.WARNING, "Are you certain you want to delete Appointment: " +
+                     appointment.getApptID() + "?", yes, no);
+            Optional<ButtonType> selection = confirmDelete.showAndWait();
+
+            if (selection.get() == ButtonType.YES) {
+                Boolean b = AccessAppointment.deleteAppointment(appointment.getApptID());
+                if(b) {
+                    ButtonType ok = new ButtonType("Okay", ButtonBar.ButtonData.OK_DONE);
+                    Alert showDelete = new Alert(Alert.AlertType.CONFIRMATION, "Appointment: " + appointment.getApptID() + " has been deleted.", ok);
+                    showDelete.showAndWait()
+                }
+                else {
+                    ButtonType ok = new ButtonType("Okay", ButtonBar.ButtonData.OK_DONE);
+                    Alert notDeleted = new Alert(Alert.AlertType.WARNING, "Unable to delete Appointment: " + appointment.getApptID(), ok);
+                    notDeleted.showAndWait();
+                }
+                try {
+                    addDataToTable(AccessAppointment.showAllAppointments());
+                }
+                catch (SQLException sqlException) {
+                    sqlException.printStackTrace();
+                }
+            }
+            else{
+                return;
+            }
+        }
     }
 
-    public void clickEditApptButton(ActionEvent actionEvent) {
+    public void clickEditApptButton(ActionEvent actionEvent) throws IOException {
         Appointment selectedAppointment = appointmentsTableView.getSelectionModel().getSelectedItem();
 
         if(selectedAppointment == null) {
@@ -263,7 +310,9 @@ public class AppointmentsController implements Initializable {
         Scene s = new Scene(p);
 
         UpdateAppointmentController controller = loader.getController();
-        controller.
+        controller.initializeData(selectedAppointment);
+        Stage newWindow = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+        newWindow.setScene(s);
     }
 
     public void clickNewApptButton(ActionEvent actionEvent) throws IOException {
@@ -272,6 +321,28 @@ public class AppointmentsController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        showAllButton.setSelected(true);
+        toggleGroup();
 
+        ObservableList<Appointment> allAppointments = null;
+        try {
+            allAppointments = AccessAppointment.showAllAppointments();
+        }
+        catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+            DatabaseConnection.initiateConnection();
+            try {
+                allAppointments = AccessAppointment.showAllAppointments();
+            }
+            catch (SQLException sqlException2) {
+                sqlException2.printStackTrace();
+                ButtonType ok = new ButtonType("Okay", ButtonBar.ButtonData.OK_DONE);
+                Alert invalid = new Alert(Alert.AlertType.WARNING, "Unable to connect to database. Please restart.", ok);
+                invalid.showAndWait();
+                return;
+            }
+        }
+        addDataToTable(allAppointments);
+        checkAppointmentCanceled(allAppointments);
     }
 }
