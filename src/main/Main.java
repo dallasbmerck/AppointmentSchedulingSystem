@@ -8,11 +8,12 @@ import javafx.stage.Stage;
 import database.DatabaseConnection;
 
 import java.sql.Connection;
+import java.util.Objects;
 
 public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/view/LoginPage.fxml"));
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/view/LoginPage.fxml")));
         stage.setTitle("C195 Software II - Advanced Java Concepts");
         stage.setScene(new Scene(root));
         stage.show();

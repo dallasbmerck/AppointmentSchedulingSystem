@@ -4,7 +4,6 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ReportingController">
    <children>
       <Label layoutX="14.0" layoutY="14.0" text="Generate Reports">
@@ -12,9 +11,13 @@
             <Font size="18.0" />
          </font>
       </Label>
-      <TextArea layoutX="14.0" layoutY="159.0" prefHeight="218.0" prefWidth="573.0" />
-      <RadioButton layoutX="14.0" layoutY="48.0" mnemonicParsing="false" text="Customer Appointments by Month and Type" />
-      <RadioButton layoutX="14.0" layoutY="74.0" mnemonicParsing="false" text="Contact Schedule" />
-      <RadioButton layoutX="14.0" layoutY="100.0" mnemonicParsing="false" text="Total Appointments per Country" />
+      <TextArea fx:id="reportsTextArea" layoutX="14.0" layoutY="130.0" prefHeight="218.0" prefWidth="573.0" />
+      <RadioButton fx:id="reportMandTbutton" layoutX="14.0" layoutY="48.0" mnemonicParsing="false" onAction="#clickReportMandTbutton" text="Customer Appointments by Month and Type">
+         <toggleGroup>
+            <ToggleGroup fx:id="toggleGroup" />
+         </toggleGroup></RadioButton>
+      <RadioButton fx:id="contactScheduleButton" layoutX="14.0" layoutY="74.0" mnemonicParsing="false" onAction="#clickContactScheduleButton" text="Contact Schedule" toggleGroup="$toggleGroup" />
+      <RadioButton fx:id="timePerContactButton" layoutX="14.0" layoutY="100.0" mnemonicParsing="false" onAction="#clickTimePerContactButton" text="Scheduled Time per Contact" toggleGroup="$toggleGroup" />
+      <Button fx:id="backButton" layoutX="534.0" layoutY="361.0" mnemonicParsing="false" onAction="#clickBackButton" prefHeight="25.0" prefWidth="53.0" text="Back" />
    </children>
 </AnchorPane>

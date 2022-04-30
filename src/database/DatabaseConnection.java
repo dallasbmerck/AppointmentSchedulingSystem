@@ -12,22 +12,22 @@ public class DatabaseConnection {
     private static String DBUsername;
     private static String DBPassword;
     private static String jdbcURL;
+    private static String jdbcDriver = "com.mysql.jdbc.Driver";
     public static Connection connection;
 
     public DatabaseConnection() {}
 
-    public static Connection initiateConnection() {
+    public static void getConnection() {
         try {
-            String JDBCMYSQLDriver = "com.mysql.jdbc.Driver";
-            Class.forName(JDBCMYSQLDriver);
+            Class.forName(jdbcDriver);
             connection = DriverManager.getConnection(jdbcURL, DBUsername, DBPassword);
-            System.out.println("Connection was succesful.");
-        } catch (SQLException exception) {
-            exception.printStackTrace();
-        } catch (ClassNotFoundException exception) {
-            exception.printStackTrace();
         }
-        return connection;
+        catch (SQLException e) {
+            System.out.println(e.toString() + e.getSQLState());
+        }
+        catch (ClassNotFoundException c) {
+            System.out.println(c.getMessage());
+        }
     }
     public static void endConnection() {
         try {
@@ -36,7 +36,7 @@ public class DatabaseConnection {
 
         }
     }
-    public static Connection getConnection() {
+    public static Connection initiateConnection() {
         return connection;
     }
 

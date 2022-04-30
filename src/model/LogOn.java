@@ -27,6 +27,7 @@ public class LogOn {
     public static ZoneId getUsersTimeZone() {
         return usersTimeZone;
     }
+
     public static boolean logOnAttempt(String usernameInput, String userPasswordInput) throws SQLException {
         Connection connection = DatabaseConnection.initiateConnection();
         PreparedStatement SQLCommand = connection.prepareStatement("SELECT * FROM users WHERE User_Name = ? AND Password = ?");

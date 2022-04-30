@@ -58,7 +58,7 @@ public class CustomerController implements Initializable {
         screenChange(actionEvent, "/view/AddCustomerPage.fxml");
     }
 
-    public void clickEditButton(ActionEvent actionEvent) throws IOException {
+    public void clickEditButton(ActionEvent actionEvent) throws IOException, SQLException {
         Customer customer = customerTableView.getSelectionModel().getSelectedItem();
 
         if (customer == null) {
@@ -73,7 +73,7 @@ public class CustomerController implements Initializable {
         Scene s = new Scene(p);
 
         UpdateCustomerController controller = load.getController();
-        controller.initialize();
+        controller.addData(customer);
         Stage newWindow = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();
         newWindow.setScene(s);
     }

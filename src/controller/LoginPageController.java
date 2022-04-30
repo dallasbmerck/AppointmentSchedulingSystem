@@ -36,8 +36,9 @@ public class LoginPageController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         Locale userLocale = Locale.getDefault();
+        Locale.setDefault(userLocale);
         ZoneIDLabel.setText(ZoneId.systemDefault().toString());
-        resourceBundle = ResourceBundle.getBundle("laguage/LoginPage");
+        resourceBundle = ResourceBundle.getBundle("language/login", userLocale);
         ApplicationTitleLabel.setText(resourceBundle.getString("ApplicationTitleLabel"));
         UserNameLabel.setText(resourceBundle.getString("UserNameLabel"));
         PasswordLabel.setText(resourceBundle.getString("PasswordLabel"));
@@ -76,7 +77,8 @@ public class LoginPageController implements Initializable {
             screenChange(actionEvent, "/view/AppointmentsPage.fxml");
         } else {
             Locale userlocale = Locale.getDefault();
-            ResourceBundle resourceBundle = ResourceBundle.getBundle("laguage/LoginPage");
+            Locale.setDefault(userlocale);
+            ResourceBundle resourceBundle = ResourceBundle.getBundle("language/login", Locale.getDefault());
             ButtonType ok = new ButtonType(resourceBundle.getString("okButton"), ButtonBar.ButtonData.OK_DONE);
             Alert logOnFail = new Alert(Alert.AlertType.WARNING, resourceBundle.getString("logOnFailButton"), ok);
             logOnFail.showAndWait();
