@@ -19,12 +19,14 @@ import model.Appointment;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.sql.Timestamp;
 
 public class AppointmentsController implements Initializable {
     public TableView<Appointment> appointmentsTableView;
@@ -85,7 +87,7 @@ public class AppointmentsController implements Initializable {
         filterMonthButton.setToggleGroup(setToggle);
     }
 
-    public void clickFilterMonth() throws SQLException {
+    public void clickFilterMonth(ActionEvent actionEvent) throws SQLException {
         filterWeekButton.setSelected(false);
         showAllButton.setSelected(false);
 
@@ -103,13 +105,9 @@ public class AppointmentsController implements Initializable {
         addDataToTable(filterByMonth);
 
         showSelectedTimeLabel.setText(start.format(dateTimeFormatter) + " - " + end.format(dateTimeFormatter) + " " + AccessUser.getUsersTimeZone());
-
     }
 
     public void clickFilterWeek() throws SQLException {
-        filterMonthButton.setSelected(false);
-        showAllButton.setSelected(false);
-
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
         ObservableList<Appointment> filterByWeek = FXCollections.observableArrayList();
@@ -122,6 +120,8 @@ public class AppointmentsController implements Initializable {
         filterByWeek = AccessAppointment.filterAppointmentsByDate(startUTC, endUTC);
 
         addDataToTable(filterByWeek);
+
+        //appointmentsTableView.setItems(filterByWeek);
 
         showSelectedTimeLabel.setText(start.format(dateTimeFormatter) + " - " + end.format(dateTimeFormatter) + " " + AccessUser.getUsersTimeZone());
 

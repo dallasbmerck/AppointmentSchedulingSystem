@@ -3,6 +3,7 @@ package DatabaseAccess;
 import database.DatabaseConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import model.Contact;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -80,5 +81,20 @@ public class AccessContact {
         }
         SQLCommand.close();
         return timeSum;
+    }
+
+    public static ObservableList<Contact> allContacts() throws SQLException {
+        ObservableList<Contact> cList = FXCollections.observableArrayList();
+        String SQLCommand = "SELECT * from contacts";
+        PreparedStatement preparedStatement = DatabaseConnection.getConnection().prepareStatement(SQLCommand);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        while (resultSet.next()) {
+            int contactID = resultSet.getInt("Contact_ID");
+            String contactName = resultSet.getString("Contact_Name");
+            String email = resultSet.getString("Email");
+            Contact contact = new Contact(contactID, contactName, email);
+            cList.add(contact);
+        }
+        return cList;
     }
 }

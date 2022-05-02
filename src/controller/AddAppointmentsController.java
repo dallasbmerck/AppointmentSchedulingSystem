@@ -2,23 +2,30 @@ package controller;
 
 import DatabaseAccess.AccessAppointment;
 import DatabaseAccess.AccessContact;
+import DatabaseAccess.AccessCustomer;
 import DatabaseAccess.AccessUser;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import model.Appointment;
+import model.Contact;
 
 import java.io.IOException;
+import java.net.URL;
 import java.sql.SQLException;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Objects;
+import java.util.ResourceBundle;
+import java.time.LocalDate;
 
 public class AddAppointmentsController {
     public DatePicker datePicker;
@@ -81,18 +88,16 @@ public class AddAppointmentsController {
 
         try {
             apptStart = LocalDateTime.of(datePicker.getValue(), LocalTime.parse(startTextBox.getText(), dateTimeFormatter));
-        }
-        catch (DateTimeParseException exception) {
+        } catch (DateTimeParseException exception) {
             errorMessage += "Invalid start time. Please use (HH:MM) format.\n";
         }
         try {
             apptEnd = LocalDateTime.of(datePicker.getValue(), LocalTime.parse(endTextBox.getText(), dateTimeFormatter));
-        }
-        catch (DateTimeParseException exception) {
+        } catch (DateTimeParseException exception) {
             errorMessage += "Invalid end time. Please use (HH:MM) format.\n";
         }
         if (apptTitle.isBlank() || apptDescription.isBlank() || apptLocation.isBlank() || apptContactName == null ||
-        apptType.isBlank() || apptCustomerID == null || apptUserID == null || apptEnd == null || apptStart == null) {
+                apptType.isBlank() || apptCustomerID == null || apptUserID == null || apptEnd == null || apptStart == null) {
             errorMessage += "Please enter a valid values into all fields.\n";
 
             ButtonType ok = new ButtonType("Okay", ButtonBar.ButtonData.OK_DONE);
@@ -115,8 +120,7 @@ public class AddAppointmentsController {
             ButtonType ok = new ButtonType("Okay", ButtonBar.ButtonData.OK_DONE);
             Alert invalid = new Alert(Alert.AlertType.WARNING, errorMessage, ok);
             invalid.showAndWait();
-        }
-        else {
+        } else {
             zonedStart = ZonedDateTime.of(apptStart, AccessUser.getUsersTimeZone());
             zonedEnd = ZonedDateTime.of(LocalDateTime.from(apptEnd), AccessUser.getUsersTimeZone());
             String username = AccessUser.getUserLoggedOn().getUserName();
@@ -132,8 +136,7 @@ public class AddAppointmentsController {
                 Alert a = new Alert(Alert.AlertType.CONFIRMATION, "The appointment has been scheduled successfully.", ok);
                 a.showAndWait();
                 screenChange(actionEvent, "/view/AppointmentsPage.fxml");
-            }
-            else {
+            } else {
                 ButtonType ok = new ButtonType("Okay", ButtonBar.ButtonData.OK_DONE);
                 Alert a2 = new Alert(Alert.AlertType.WARNING, "Unable to schedule appointment.", ok);
                 a2.showAndWait();
@@ -147,8 +150,7 @@ public class AddAppointmentsController {
 
         if (overlap.isEmpty()) {
             return true;
-        }
-        else {
+        } else {
             for (Appointment overlappingAppt : overlap) {
                 LocalDateTime overlapStart = overlappingAppt.getBeginDateTime().toLocalDateTime();
                 LocalDateTime overlapEnd = overlappingAppt.getEndDateTime().toLocalDateTime();
@@ -173,8 +175,8 @@ public class AddAppointmentsController {
         ZonedDateTime zonedStart = ZonedDateTime.of(start, AccessUser.getUsersTimeZone());
         ZonedDateTime zonedEnd = ZonedDateTime.of(end, AccessUser.getUsersTimeZone());
 
-        ZonedDateTime operationStart = ZonedDateTime.of(appointmentDate, LocalTime.of(8,0), ZoneId.of("America/New_York"));
-        ZonedDateTime operationEnd = ZonedDateTime.of(appointmentDate ,LocalTime.of(22,0), ZoneId.of("America/New_York"));
+        ZonedDateTime operationStart = ZonedDateTime.of(appointmentDate, LocalTime.of(8, 0), ZoneId.of("America/New_York"));
+        ZonedDateTime operationEnd = ZonedDateTime.of(appointmentDate, LocalTime.of(22, 0), ZoneId.of("America/New_York"));
 
         return !zonedStart.isBefore(operationStart) && !zonedStart.isAfter(operationEnd) && !zonedEnd.isBefore(operationStart) &&
                 !zonedEnd.isAfter(operationEnd) && !zonedStart.isAfter(zonedEnd);
@@ -193,4 +195,17 @@ public class AddAppointmentsController {
         userIDComboBox.getSelectionModel().clearSelection();
         locationTextBox.clear();
     }
+
+
+    public void initialize(URL url, ResourceBundle resourceBundle) throws SQLException {
+       try {
+           customerIDTextBox.setItems(AccessCustomer.getAllCustomersID());
+           userIDComboBox.setItems(AccessUser.getAllUserIDs());
+           contactComboBox.setItems(AccessContact.getContactName());
+       }
+       catch (SQLException sqlException) {
+           sqlException.printStackTrace();
+       }
+    }
 }
+
