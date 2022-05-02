@@ -4,7 +4,6 @@ import database.DatabaseConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import model.Customer;
-import model.LogOn;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,7 +16,7 @@ public class AccessCustomer {
 
     public static ObservableList<Integer> getAllCustomersID() throws SQLException {
         ObservableList<Integer> customerID = FXCollections.observableArrayList();
-        PreparedStatement SQLCommand = DatabaseConnection.initiateConnection().prepareStatement("SELECT DISTINCT Customer_ID FROM customers;");
+        PreparedStatement SQLCommand = DatabaseConnection.getConnection().prepareStatement("SELECT DISTINCT Customer_ID FROM customers;");
         ResultSet resultSet = SQLCommand.executeQuery();
 
         while (resultSet.next()) {
@@ -29,7 +28,7 @@ public class AccessCustomer {
 
     public static ObservableList<Customer> getAllCustomers() throws SQLException {
         ObservableList<Customer> allCustomers = FXCollections.observableArrayList();
-        PreparedStatement SQLCommand = DatabaseConnection.initiateConnection().prepareStatement("SELECT cx.Customer_ID," +
+        PreparedStatement SQLCommand = DatabaseConnection.getConnection().prepareStatement("SELECT cx.Customer_ID," +
                 "c.Customer_Name, c.Address, c.Postal_Code, c.Phone, c.Division_ID, f.Division, f.COUNTRY_ID, co.Country " +
                 "FROM customers as c INNER JOIN first_level_divisions as f on c.Division_ID INNER JOIN countries as co ON " +
                 "f.COUNTRY_ID = co.Country_ID");
@@ -59,7 +58,7 @@ public class AccessCustomer {
 
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-        PreparedStatement SQLCommand = DatabaseConnection.initiateConnection().prepareStatement(
+        PreparedStatement SQLCommand = DatabaseConnection.getConnection().prepareStatement(
                 "INSERT INTO customers (Customer_Name, Address, Postal_Code, Phone, Create_Date," +
                         "Created_By, Last_Update, Last_Updated_By, Division_ID) \n " +
                         "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)"
@@ -70,9 +69,9 @@ public class AccessCustomer {
         SQLCommand.setString(2, postCode);
         SQLCommand.setString(4, phoneNumber);
         SQLCommand.setString(5, ZonedDateTime.now(ZoneOffset.UTC).format(dateTimeFormatter));
-        SQLCommand.setString(6, LogOn.getUserLoggedOn().getUserName());
+        SQLCommand.setString(6, AccessUser.getUserLoggedOn().getUserName());
         SQLCommand.setString(7, ZonedDateTime.now(ZoneOffset.UTC).format(dateTimeFormatter));
-        SQLCommand.setString(8, LogOn.getUserLoggedOn().getUserName());
+        SQLCommand.setString(8, AccessUser.getUserLoggedOn().getUserName());
         SQLCommand.setInt(9, divisionID);
 
         try {
@@ -90,7 +89,7 @@ public class AccessCustomer {
 
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-        PreparedStatement SQLCommand = DatabaseConnection.initiateConnection().prepareStatement("UPDATE customers" +
+        PreparedStatement SQLCommand = DatabaseConnection.getConnection().prepareStatement("UPDATE customers" +
                 "SET Customer_Name=?, Address=?, Postal_Code=?, Phone=? Last_Update=?, Last_Updated_By=?, Division_ID=?" +
                 "WHERE Customer_ID = ?");
 
@@ -99,7 +98,7 @@ public class AccessCustomer {
         SQLCommand.setString(3, postCode);
         SQLCommand.setString(4, phoneNumber);
         SQLCommand.setString(5, ZonedDateTime.now(ZoneOffset.UTC).format(dateTimeFormatter));
-        SQLCommand.setString(6, LogOn.getUserLoggedOn().getUserName());
+        SQLCommand.setString(6, AccessUser.getUserLoggedOn().getUserName());
         SQLCommand.setInt(7, getDivisionID(divisionID));
         SQLCommand.setInt(8, customerID);
 
@@ -116,7 +115,7 @@ public class AccessCustomer {
 
     public static Integer getDivisionID(String divisionID) throws SQLException {
         Integer id = 0;
-        PreparedStatement SQlCommand = DatabaseConnection.initiateConnection().prepareStatement("SELECT Division," +
+        PreparedStatement SQlCommand = DatabaseConnection.getConnection().prepareStatement("SELECT Division," +
                 " Division_ID FROM first_level_divisions WHERE Division = ?");
         SQlCommand.setString(1, divisionID);
         ResultSet resultSet = SQlCommand.executeQuery();
@@ -130,7 +129,7 @@ public class AccessCustomer {
 
     public static ObservableList<String> getFirstLevelDivisions(String country) throws SQLException {
         ObservableList<String> divisions = FXCollections.observableArrayList();
-        PreparedStatement SQLCommand = DatabaseConnection.initiateConnection().prepareStatement("SELECT co.Country, " +
+        PreparedStatement SQLCommand = DatabaseConnection.getConnection().prepareStatement("SELECT co.Country, " +
                 "co.Country_ID, d.Division FROM countries as co on RIGHT OUTER JOIN first_level_divisions AS d ON " +
                 "co.Country_ID = d.Country_ID WHERE co.Country = ?");
 
@@ -145,7 +144,7 @@ public class AccessCustomer {
     }
 
     public static Boolean deleteSelectedCustomer(Integer customerID) throws SQLException {
-        PreparedStatement SQLCommand = DatabaseConnection.initiateConnection().prepareStatement("DELETE FROM customers" +
+        PreparedStatement SQLCommand = DatabaseConnection.getConnection().prepareStatement("DELETE FROM customers" +
                 "WHERE Customer_ID = ?");
 
         SQLCommand.setInt(1, customerID);
@@ -162,7 +161,7 @@ public class AccessCustomer {
 
     public static ObservableList<String> getAllCountries() throws SQLException {
         ObservableList<String> countries = FXCollections.observableArrayList();
-        PreparedStatement SQLCommand = DatabaseConnection.initiateConnection().prepareStatement("SELECT DISTINCT " +
+        PreparedStatement SQLCommand = DatabaseConnection.getConnection().prepareStatement("SELECT DISTINCT " +
                 "Country FROM countries");
         ResultSet resultSet = SQLCommand.executeQuery();
 

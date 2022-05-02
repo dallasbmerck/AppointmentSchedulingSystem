@@ -14,7 +14,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import model.Appointment;
-import model.LogOn;
 
 import java.io.IOException;
 import java.net.URL;
@@ -63,8 +62,8 @@ public class UpdateAppointmentController implements Initializable {
     }
 
     public Boolean validateOperationHours(LocalDateTime start, LocalDateTime end, LocalDate appointmentDate) {
-        ZonedDateTime zonedStart = ZonedDateTime.of(start, LogOn.getUsersTimeZone());
-        ZonedDateTime zonedEnd = ZonedDateTime.of(end, LogOn.getUsersTimeZone());
+        ZonedDateTime zonedStart = ZonedDateTime.of(start, AccessUser.getUsersTimeZone());
+        ZonedDateTime zonedEnd = ZonedDateTime.of(end, AccessUser.getUsersTimeZone());
 
         ZonedDateTime operationStart = ZonedDateTime.of(appointmentDate, LocalTime.of(8,0), ZoneId.of("America/New_York"));
         ZonedDateTime operationEnd = ZonedDateTime.of(appointmentDate ,LocalTime.of(22,0), ZoneId.of("America/New_York"));
@@ -158,9 +157,9 @@ public class UpdateAppointmentController implements Initializable {
             invalid.showAndWait();
         }
         else {
-            zonedStart = ZonedDateTime.of(apptStart, LogOn.getUsersTimeZone());
-            zonedEnd = ZonedDateTime.of(LocalDateTime.from(apptEnd), LogOn.getUsersTimeZone());
-            String username = LogOn.getUserLoggedOn().getUserName();
+            zonedStart = ZonedDateTime.of(apptStart, AccessUser.getUsersTimeZone());
+            zonedEnd = ZonedDateTime.of(LocalDateTime.from(apptEnd), AccessUser.getUsersTimeZone());
+            String username = AccessUser.getUserLoggedOn().getUserName();
 
             zonedStart = zonedStart.withZoneSameInstant(ZoneOffset.UTC);
             zonedEnd = zonedEnd.withZoneSameInstant(ZoneOffset.UTC);
@@ -213,8 +212,8 @@ public class UpdateAppointmentController implements Initializable {
         ZonedDateTime startUTC = selectedAppointment.getBeginDateTime().toInstant().atZone(ZoneOffset.UTC);
         ZonedDateTime endUTC = selectedAppointment.getEndDateTime().toInstant().atZone(ZoneOffset.UTC);
 
-        ZonedDateTime localStart = startUTC.withZoneSameInstant(LogOn.getUsersTimeZone());
-        ZonedDateTime localEnd = endUTC.withZoneSameInstant(LogOn.getUsersTimeZone());
+        ZonedDateTime localStart = startUTC.withZoneSameInstant(AccessUser.getUsersTimeZone());
+        ZonedDateTime localEnd = endUTC.withZoneSameInstant(AccessUser.getUsersTimeZone());
 
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm");
         String stringLocalStart = localStart.format(dateTimeFormatter);
@@ -239,6 +238,6 @@ public class UpdateAppointmentController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        timezoneLabel.setText(LogOn.getUsersTimeZone().toString());
+        timezoneLabel.setText(AccessUser.getUsersTimeZone().toString());
     }
 }

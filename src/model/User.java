@@ -1,21 +1,20 @@
 package model;
 
 public class User {
-    public int userID;
-    public String userName;
+    private String username;
+    private Integer userID;
 
-    public User(String userNameInput, Integer userIDInput) {
+    public User(String usernameInput, Integer userIDInput) {
+        username = usernameInput;
         userID = userIDInput;
-        userName = userNameInput;
-    }
-
-
-    public int getUserID() {
-        return userID;
     }
 
     public String getUserName() {
-        return userName;
+        return username;
+    }
+
+    public Integer getUserID() {
+        return userID;
     }
 
 }

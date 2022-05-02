@@ -1,7 +1,9 @@
 package controller;
 
 import DatabaseAccess.AccessAppointment;
+import DatabaseAccess.AccessUser;
 import database.DatabaseConnection;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -13,7 +15,6 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import model.Appointment;
-import model.LogOn;
 
 import java.io.IOException;
 import java.net.URL;
@@ -65,6 +66,7 @@ public class AppointmentsController implements Initializable {
         startCol.setCellValueFactory(new PropertyValueFactory<>("beginDateTime"));
         endCol.setCellValueFactory(new PropertyValueFactory<>("endDateTime"));
         customerIDCol.setCellValueFactory(new PropertyValueFactory<>("customerID"));
+        userIDCol.setCellValueFactory(new PropertyValueFactory<>("userID"));
         appointmentsTableView.setItems(list);
     }
 
@@ -90,7 +92,7 @@ public class AppointmentsController implements Initializable {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
         ObservableList<Appointment> filterByMonth;
-        start = ZonedDateTime.now(LogOn.getUsersTimeZone());
+        start = ZonedDateTime.now(AccessUser.getUsersTimeZone());
         end = start.plusMonths(1);
 
         ZonedDateTime startUTC = start.withZoneSameInstant(ZoneOffset.UTC);
@@ -100,7 +102,7 @@ public class AppointmentsController implements Initializable {
 
         addDataToTable(filterByMonth);
 
-        showSelectedTimeLabel.setText(start.format(dateTimeFormatter) + " - " + end.format(dateTimeFormatter) + " " + LogOn.getUsersTimeZone());
+        showSelectedTimeLabel.setText(start.format(dateTimeFormatter) + " - " + end.format(dateTimeFormatter) + " " + AccessUser.getUsersTimeZone());
 
     }
 
@@ -110,8 +112,8 @@ public class AppointmentsController implements Initializable {
 
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-        ObservableList<Appointment> filterByWeek;
-        start = ZonedDateTime.now(LogOn.getUsersTimeZone());
+        ObservableList<Appointment> filterByWeek = FXCollections.observableArrayList();
+        start = ZonedDateTime.now(AccessUser.getUsersTimeZone());
         end = start.plusWeeks(1);
 
         ZonedDateTime startUTC = start.withZoneSameInstant(ZoneOffset.UTC);
@@ -121,7 +123,7 @@ public class AppointmentsController implements Initializable {
 
         addDataToTable(filterByWeek);
 
-        showSelectedTimeLabel.setText(start.format(dateTimeFormatter) + " - " + end.format(dateTimeFormatter) + " " + LogOn.getUsersTimeZone());
+        showSelectedTimeLabel.setText(start.format(dateTimeFormatter) + " - " + end.format(dateTimeFormatter) + " " + AccessUser.getUsersTimeZone());
 
     }
 
@@ -135,7 +137,7 @@ public class AppointmentsController implements Initializable {
         }
         catch (SQLException sqlException) {
             sqlException.printStackTrace();
-            DatabaseConnection.initiateConnection();
+            DatabaseConnection.openConnection();
             try {
                 allAppointments = AccessAppointment.showAllAppointments();
             }
@@ -152,7 +154,7 @@ public class AppointmentsController implements Initializable {
         start = null;
     }
 
-    public void clickPreviousButton() throws SQLException {
+    public void clickNextButton() throws SQLException {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         ObservableList<Appointment> filterGoForward;
 
@@ -169,7 +171,7 @@ public class AppointmentsController implements Initializable {
             filterGoForward = AccessAppointment.filterAppointmentsByDate(s, e);
 
             addDataToTable(filterGoForward);
-            showSelectedTimeLabel.setText(start.format(dateTimeFormatter) +" - " + end.format(dateTimeFormatter) + " " + LogOn.getUsersTimeZone());
+            showSelectedTimeLabel.setText(start.format(dateTimeFormatter) +" - " + end.format(dateTimeFormatter) + " " + AccessUser.getUsersTimeZone());
         }
         if (setToggle.getSelectedToggle() == filterWeekButton) {
             ZonedDateTime s = start.plusWeeks(1);
@@ -184,11 +186,11 @@ public class AppointmentsController implements Initializable {
             filterGoForward = AccessAppointment.filterAppointmentsByDate(s, e);
 
             addDataToTable(filterGoForward);
-            showSelectedTimeLabel.setText(start.format(dateTimeFormatter) + " - " + end.format(dateTimeFormatter) + " " + LogOn.getUsersTimeZone());
+            showSelectedTimeLabel.setText(start.format(dateTimeFormatter) + " - " + end.format(dateTimeFormatter) + " " + AccessUser.getUsersTimeZone());
         }
     }
 
-    public void clickNextButton() throws SQLException {
+    public void clickPreviousButton() throws SQLException {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         ObservableList<Appointment> filterGoback;
 
@@ -205,7 +207,7 @@ public class AppointmentsController implements Initializable {
             filterGoback = AccessAppointment.filterAppointmentsByDate(s, e);
 
             addDataToTable(filterGoback);
-            showSelectedTimeLabel.setText(start.format(dateTimeFormatter) +" - " + end.format(dateTimeFormatter) + " " + LogOn.getUsersTimeZone());
+            showSelectedTimeLabel.setText(start.format(dateTimeFormatter) +" - " + end.format(dateTimeFormatter) + " " + AccessUser.getUsersTimeZone());
         }
         if (setToggle.getSelectedToggle() == filterWeekButton) {
             ZonedDateTime s = start.minusWeeks(1);
@@ -220,7 +222,7 @@ public class AppointmentsController implements Initializable {
             filterGoback = AccessAppointment.filterAppointmentsByDate(s, e);
 
             addDataToTable(filterGoback);
-            showSelectedTimeLabel.setText(start.format(dateTimeFormatter) + " - " + end.format(dateTimeFormatter) + " " + LogOn.getUsersTimeZone());
+            showSelectedTimeLabel.setText(start.format(dateTimeFormatter) + " - " + end.format(dateTimeFormatter) + " " + AccessUser.getUsersTimeZone());
         }
     }
 
@@ -231,7 +233,7 @@ public class AppointmentsController implements Initializable {
         Optional<ButtonType> optional = logOut.showAndWait();
 
         if (optional.get() == ButtonType.YES) {
-            LogOn.userLogOff();
+            AccessUser.userLogOff();
             screenChange(actionEvent, "/view/LoginPage.fxml");
         }
     }
@@ -320,13 +322,13 @@ public class AppointmentsController implements Initializable {
         showAllButton.setSelected(true);
         toggleGroup();
 
-        ObservableList<Appointment> allAppointments;
+        ObservableList<Appointment> allAppointments = null;
         try {
             allAppointments = AccessAppointment.showAllAppointments();
         }
         catch (SQLException sqlException) {
             sqlException.printStackTrace();
-            DatabaseConnection.initiateConnection();
+            DatabaseConnection.openConnection();
             try {
                 allAppointments = AccessAppointment.showAllAppointments();
             }

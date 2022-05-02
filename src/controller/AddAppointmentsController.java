@@ -2,6 +2,7 @@ package controller;
 
 import DatabaseAccess.AccessAppointment;
 import DatabaseAccess.AccessContact;
+import DatabaseAccess.AccessUser;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -11,7 +12,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import model.Appointment;
-import model.LogOn;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -117,9 +117,9 @@ public class AddAppointmentsController {
             invalid.showAndWait();
         }
         else {
-            zonedStart = ZonedDateTime.of(apptStart, LogOn.getUsersTimeZone());
-            zonedEnd = ZonedDateTime.of(LocalDateTime.from(apptEnd), LogOn.getUsersTimeZone());
-            String username = LogOn.getUserLoggedOn().getUserName();
+            zonedStart = ZonedDateTime.of(apptStart, AccessUser.getUsersTimeZone());
+            zonedEnd = ZonedDateTime.of(LocalDateTime.from(apptEnd), AccessUser.getUsersTimeZone());
+            String username = AccessUser.getUserLoggedOn().getUserName();
 
             zonedStart = zonedStart.withZoneSameInstant(ZoneOffset.UTC);
             zonedEnd = zonedEnd.withZoneSameInstant(ZoneOffset.UTC);
@@ -170,8 +170,8 @@ public class AddAppointmentsController {
     }
 
     public Boolean validateOperationHours(LocalDateTime start, LocalDateTime end, LocalDate appointmentDate) {
-        ZonedDateTime zonedStart = ZonedDateTime.of(start, LogOn.getUsersTimeZone());
-        ZonedDateTime zonedEnd = ZonedDateTime.of(end, LogOn.getUsersTimeZone());
+        ZonedDateTime zonedStart = ZonedDateTime.of(start, AccessUser.getUsersTimeZone());
+        ZonedDateTime zonedEnd = ZonedDateTime.of(end, AccessUser.getUsersTimeZone());
 
         ZonedDateTime operationStart = ZonedDateTime.of(appointmentDate, LocalTime.of(8,0), ZoneId.of("America/New_York"));
         ZonedDateTime operationEnd = ZonedDateTime.of(appointmentDate ,LocalTime.of(22,0), ZoneId.of("America/New_York"));

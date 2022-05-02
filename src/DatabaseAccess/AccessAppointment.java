@@ -4,7 +4,6 @@ import database.DatabaseConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import model.Appointment;
-import model.LogOn;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,7 +19,7 @@ public class AccessAppointment {
 
     public static ObservableList<Appointment> showAllAppointments() throws SQLException {
         ObservableList<Appointment> appointments = FXCollections.observableArrayList();
-        PreparedStatement SQLCommand = DatabaseConnection.initiateConnection().prepareStatement("SELECT * FROM " +
+        PreparedStatement SQLCommand = DatabaseConnection.getConnection().prepareStatement("SELECT * FROM " +
             "appointments as a LEFT OUTER JOIN contacts as c ON a.Contact_ID = c.Contact_ID;");
 
         ResultSet resultSet = SQLCommand.executeQuery();
@@ -33,7 +32,7 @@ public class AccessAppointment {
             String type = resultSet.getString("Type");
             Timestamp start = resultSet.getTimestamp("Start");
             Timestamp end = resultSet.getTimestamp("End");
-            Timestamp dateCreated = resultSet.getTimestamp("Created_Date");
+            Timestamp dateCreated = resultSet.getTimestamp("Create_Date");
             String createdBy = resultSet.getString("Created_By");
             Timestamp lastUpdate = resultSet.getTimestamp("Last_Update");
             String lastUpdateBy = resultSet.getString("Last_Updated_By");
@@ -56,7 +55,7 @@ public class AccessAppointment {
         ObservableList<Appointment> filterAppointments = FXCollections.observableArrayList();
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-        PreparedStatement SQLCommand = DatabaseConnection.initiateConnection().prepareStatement("SELECT * FROM " +
+        PreparedStatement SQLCommand = DatabaseConnection.getConnection().prepareStatement("SELECT * FROM " +
                 "appointments as a LEFT OUTER JOIN contacts as c ON a.Contact_ID = c.Contact_ID WHERE Start BETWEEN ? AND ?");
 
         String startString = start.format(dateTimeFormatter);
@@ -95,7 +94,7 @@ public class AccessAppointment {
 
     public static ObservableList<Appointment> filterAppointmentsByCustomerID(Integer customerIDInput, LocalDate appointmentDate) throws SQLException {
         ObservableList<Appointment> filterCustomerAppointment = FXCollections.observableArrayList();
-        PreparedStatement SQLCommand = DatabaseConnection.initiateConnection().prepareStatement("SELECT * FROM appointments " +
+        PreparedStatement SQLCommand = DatabaseConnection.getConnection().prepareStatement("SELECT * FROM appointments " +
                 "as a LEFT OUTER JOIN contacts as c ON a.Contact_ID = c.Contact_ID WHERE datediff(a.Start, ?) = 0 AND Customer_ID = ?");
 
         SQLCommand.setInt(1, customerIDInput);
@@ -132,7 +131,7 @@ public class AccessAppointment {
     public static Boolean addAppointment(String titleInput, String descriptionInput, String locationInput, String typeInput,
                                          ZonedDateTime startInput, ZonedDateTime endInput, String createdByInput, String lastUpdatedByInput,
                                          Integer customerIDInput, Integer userIDInput, Integer contactIDInput) throws SQLException {
-        PreparedStatement SQLCommand = DatabaseConnection.initiateConnection().prepareStatement("INSERT INTO appointments " +
+        PreparedStatement SQLCommand = DatabaseConnection.getConnection().prepareStatement("INSERT INTO appointments " +
                 "Title, Description, Location, Type, Start, End, Create_Date, Created_By, Last_Update, Last_Updated_By, " +
                 "Customer_ID, User_ID, Contact_ID VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
@@ -169,7 +168,7 @@ public class AccessAppointment {
     public static Boolean updateAppointment(Integer apptIDInput, String titleInput, String descriptionInput, String locationInput,
                                             String typeInput, ZonedDateTime startInput, ZonedDateTime endInput, String
                                             lastUpdateByInput, Integer customerIDInput, Integer userIDInput, Integer contactIDInput) throws SQLException {
-        PreparedStatement SQLCommand = DatabaseConnection.initiateConnection().prepareStatement("UPDATE appointments " +
+        PreparedStatement SQLCommand = DatabaseConnection.getConnection().prepareStatement("UPDATE appointments " +
                 "SET Title=?, Description=?, Location=?, Type=?, Start=?, End=?, Last_Update=?, Last_Update_By=?, " +
                 "Customer_ID=?, User_ID=?, Contact_ID=? WHERE Appointment_ID = ?");
 
@@ -204,7 +203,7 @@ public class AccessAppointment {
 
 
     public static Boolean deleteAppointment(Integer appointmentID) throws SQLException {
-        PreparedStatement SQLCommand = DatabaseConnection.initiateConnection().prepareStatement("DELETE FROM appointments " +
+        PreparedStatement SQLCommand = DatabaseConnection.getConnection().prepareStatement("DELETE FROM appointments " +
                 "WHERE Appointment_ID = ?");
         SQLCommand.setInt(1, appointmentID);
 
@@ -221,7 +220,7 @@ public class AccessAppointment {
 
 
     public static Boolean deleteAllAppointmentsByCustomerID(Integer customerID) throws SQLException {
-        PreparedStatement SQLCommand = DatabaseConnection.initiateConnection().prepareStatement("DELETE FROM appointments " +
+        PreparedStatement SQLCommand = DatabaseConnection.getConnection().prepareStatement("DELETE FROM appointments " +
                 "WHERE Customer_ID = ?");
         SQLCommand.setInt(1, customerID);
 
@@ -241,15 +240,15 @@ public class AccessAppointment {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
         LocalDateTime timeOfLogOn = LocalDateTime.now();
-        ZonedDateTime timezone = timeOfLogOn.atZone(LogOn.getUsersTimeZone());
+        ZonedDateTime timezone = timeOfLogOn.atZone(AccessUser.getUsersTimeZone());
         ZonedDateTime utc = timezone.withZoneSameInstant(ZoneOffset.UTC);
         ZonedDateTime timeDelta = utc.plusMinutes(15);
 
         String start = utc.format(dateTimeFormatter);
         String end = timeDelta.format(dateTimeFormatter);
-        Integer userID = LogOn.getUserLoggedOn().getUserID();
+        Integer userID = AccessUser.getUserLoggedOn().getUserID();
 
-        PreparedStatement SQLCommand = DatabaseConnection.initiateConnection().prepareStatement("SELECT * FROM " +
+        PreparedStatement SQLCommand = DatabaseConnection.getConnection().prepareStatement("SELECT * FROM " +
                 "appointments as a LEFT OUTER JOIN contacts as c ON a.Contact_ID = c.Contact_ID WHERE Start BETWEEN ? AND " +
                 "? AND User_ID = ?");
 
@@ -291,9 +290,9 @@ public class AccessAppointment {
 
         report.add("Total Appointments by Type and Month:\n");
 
-        PreparedStatement SQLCommandType = DatabaseConnection.initiateConnection().prepareStatement(" SELECT Type, " +
+        PreparedStatement SQLCommandType = DatabaseConnection.getConnection().prepareStatement(" SELECT Type, " +
                 "COUNT(Type) as \"Total\" FROM appointments GROUP BY Type");
-        PreparedStatement SQLCommandMonth = DatabaseConnection.initiateConnection().prepareStatement("SELECT " +
+        PreparedStatement SQLCommandMonth = DatabaseConnection.getConnection().prepareStatement("SELECT " +
                 "MONTHNAME(Start) as \"Month\", COUNT(MONTH(Start)) as \"Total\" from appointments GROUP BY Month");
 
         ResultSet resultSetType = SQLCommandType.executeQuery();

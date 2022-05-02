@@ -1,6 +1,7 @@
 package controller;
 
 import DatabaseAccess.AccessAppointment;
+import DatabaseAccess.AccessUser;
 import database.LogOnRecord;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -12,7 +13,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import model.Appointment;
-import model.LogOn;
 
 import java.io.IOException;
 import java.net.URL;
@@ -32,6 +32,10 @@ public class LoginPageController implements Initializable {
     public Button SignInButton;
     public Button ExitButton;
     public Label ZoneIDLabel;
+
+    private String errorHead;
+    private String errorTitle;
+    private String errorText;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -55,33 +59,31 @@ public class LoginPageController implements Initializable {
     public void PressSignInButton(ActionEvent actionEvent) throws SQLException, IOException {
         String username = UsernameText.getText();
         String password = PasswordText.getText();
-
-        boolean logon = LogOn.logOnAttempt(username, password);
-        LogOnRecord.generateLogOnFile(username, logon);
-
-        if (logon) {
-            ObservableList<Appointment> apptSoon = AccessAppointment.appointmentWithin15MinOfLogOn();
-            if (!apptSoon.isEmpty()) {
-                for (Appointment soon : apptSoon) {
-                    String alert = "Appointment with Appointment_ID: " + soon.getApptID() + " Starts at: " +
-                            soon.getBeginDateTime().toString();
+        boolean valid = AccessUser.attemptLogin(username, password);
+        LogOnRecord.generateLogOnFile(username, valid);
+        if (valid) {
+            ObservableList<Appointment> upcoming = DatabaseAccess.AccessAppointment.appointmentWithin15MinOfLogOn();
+            if (!upcoming.isEmpty()) {
+                for (Appointment a : upcoming) {
+                    String notify = "Upcoming appointment with ID: " + a.getApptID() + " starts at " + a.getBeginDateTime().toString();
                     ButtonType ok = new ButtonType("Okay", ButtonBar.ButtonData.OK_DONE);
-                    Alert invalid = new Alert(Alert.AlertType.WARNING, alert, ok);
-                    invalid.showAndWait();
+                    Alert alert = new Alert(Alert.AlertType.WARNING, notify, ok);
+                    alert.showAndWait();
                 }
-            } else {
+            }
+            else {
                 ButtonType ok = new ButtonType("Okay", ButtonBar.ButtonData.OK_DONE);
-                Alert invalid = new Alert(Alert.AlertType.CONFIRMATION, "No appointments scheduled within the next 15 minutes.", ok);
-                invalid.showAndWait();
+                Alert a = new Alert(Alert.AlertType.CONFIRMATION, "There are no upcoming appointments within the next 15 minutes.", ok);
+                a.showAndWait();
             }
             screenChange(actionEvent, "/view/AppointmentsPage.fxml");
-        } else {
-            Locale userlocale = Locale.getDefault();
-            Locale.setDefault(userlocale);
-            ResourceBundle resourceBundle = ResourceBundle.getBundle("language/login", Locale.getDefault());
-            ButtonType ok = new ButtonType(resourceBundle.getString("okButton"), ButtonBar.ButtonData.OK_DONE);
-            Alert logOnFail = new Alert(Alert.AlertType.WARNING, resourceBundle.getString("logOnFailButton"), ok);
-            logOnFail.showAndWait();
+        }
+        else {
+            Locale userLocale = Locale.getDefault();
+            ResourceBundle rb = ResourceBundle.getBundle("language.login");
+            ButtonType ok = new ButtonType(rb.getString("okButton"), ButtonBar.ButtonData.OK_DONE);
+            Alert a = new Alert(Alert.AlertType.WARNING, rb.getString("logOnFailButton"), ok);
+            a.showAndWait();
         }
     }
 
@@ -95,7 +97,7 @@ public class LoginPageController implements Initializable {
     }
 
     public void PressExitButton() {
-        LogOn.userLogOff();
+        AccessUser.userLogOff();
         System.exit(0);
     }
 }

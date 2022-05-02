@@ -7,8 +7,10 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import database.DatabaseConnection;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.util.Objects;
+import java.util.Properties;
 
 public class Main extends Application {
     @Override
@@ -21,8 +23,8 @@ public class Main extends Application {
 
     public static void main(String[] args){
 
-        DatabaseConnection.initiateConnection();
+        DatabaseConnection.openConnection();
         launch(args);
-        DatabaseConnection.endConnection();
+        //DatabaseConnection.closeConnection();
     }
 }
