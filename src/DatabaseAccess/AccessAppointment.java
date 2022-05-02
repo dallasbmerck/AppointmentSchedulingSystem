@@ -15,8 +15,18 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * AccessAppointment class used to write methods to move data to an from MySQL Database via Connection.
+ *
+ * @author Dallas Merck
+ */
 public class AccessAppointment {
 
+    /**
+     * Observable list to gather all appointment data and add it to the appointment table view.
+     * @return appointments list.
+     * @throws SQLException
+     */
     public static ObservableList<Appointment> showAllAppointments() throws SQLException {
         ObservableList<Appointment> appointments = FXCollections.observableArrayList();
         PreparedStatement SQLCommand = DatabaseConnection.getConnection().prepareStatement("SELECT * FROM " +
@@ -50,6 +60,13 @@ public class AccessAppointment {
         return appointments;
     }
 
+    /**
+     * Observable list to filter appointments by week and month using their data and converting to UTC.
+     * @param start Start range for the appointments.
+     * @param end End range for the appointments.
+     * @return filterAppointments list.
+     * @throws SQLException
+     */
     public static ObservableList<Appointment> filterAppointmentsByDate(ZonedDateTime start, ZonedDateTime end) throws SQLException {
 
         ObservableList<Appointment> filterAppointments = FXCollections.observableArrayList();
@@ -92,6 +109,13 @@ public class AccessAppointment {
         return filterAppointments;
     }
 
+    /**
+     * Observable list that filters appointments by customer ID.
+     * @param customerIDInput Customer_ID related to an appointment.
+     * @param appointmentDate The date of the appointment.
+     * @return filterCustomerAppointment list.
+     * @throws SQLException
+     */
     public static ObservableList<Appointment> filterAppointmentsByCustomerID(Integer customerIDInput, LocalDate appointmentDate) throws SQLException {
         ObservableList<Appointment> filterCustomerAppointment = FXCollections.observableArrayList();
         PreparedStatement SQLCommand = DatabaseConnection.getConnection().prepareStatement("SELECT * FROM appointments " +
@@ -128,6 +152,22 @@ public class AccessAppointment {
         return filterCustomerAppointment;
     }
 
+    /**
+     *
+     * @param titleInput
+     * @param descriptionInput
+     * @param locationInput
+     * @param typeInput
+     * @param startInput
+     * @param endInput
+     * @param createdByInput
+     * @param lastUpdatedByInput
+     * @param customerIDInput
+     * @param userIDInput
+     * @param contactIDInput
+     * @return
+     * @throws SQLException
+     */
     public static Boolean addAppointment(String titleInput, String descriptionInput, String locationInput, String typeInput,
                                          ZonedDateTime startInput, ZonedDateTime endInput, String createdByInput, String lastUpdatedByInput,
                                          Integer customerIDInput, Integer userIDInput, Integer contactIDInput) throws SQLException {
