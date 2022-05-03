@@ -86,4 +86,16 @@ public class AccessUser {
         usersLocale = null;
         usersTimeZone= null;
     }
+
+    public static ObservableList<Integer> getAllUsersID() throws SQLException {
+        ObservableList<Integer> userID = FXCollections.observableArrayList();
+        PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement("SELECT DISTINCT User_ID FROM users;");
+        ResultSet rs = ps.executeQuery();
+
+        while (rs.next()) {
+            userID.add(rs.getInt("User_ID"));
+        }
+        ps.close();
+        return userID;
+    }
 }

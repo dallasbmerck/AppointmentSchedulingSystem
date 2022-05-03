@@ -20,7 +20,7 @@ public class Appointment {
     private String apptCreatedBy;
     private String apptLastUpdateBy;
     private String apptContactName;
-    private Timestamp beginDateTime;
+    private Timestamp startDateTime;
     private Timestamp endDateTime;
     private Timestamp dateCreated;
     private Timestamp lastDateTimeUpdate;
@@ -33,7 +33,7 @@ public class Appointment {
      * @param apptDescriptionInput Description.
      * @param apptLocationInput Location.
      * @param apptTypeInput Type.
-     * @param beginDateTimeInput Start.
+     * @param startDateTimeInput Start.
      * @param endDateTimeInput End.
      * @param dateCreatedInput  Create_Date.
      * @param apptCreatedByInput Created_By.
@@ -45,7 +45,7 @@ public class Appointment {
      * @param apptContactNameInput Contact_Name - foreign key.
      */
     public Appointment(Integer apptIDInput, String apptTitleInput, String apptDescriptionInput, String apptLocationInput,
-                       String apptTypeInput, Timestamp beginDateTimeInput, Timestamp endDateTimeInput, Timestamp dateCreatedInput,
+                       String apptTypeInput, Timestamp startDateTimeInput, Timestamp endDateTimeInput, Timestamp dateCreatedInput,
                        String apptCreatedByInput,Timestamp lastDateTimeUpdateInput, String apptLastUpdateByInput,
                        Integer customerIDInput, Integer userIDInput, Integer contactIDInput, String apptContactNameInput) {
 
@@ -54,7 +54,7 @@ public class Appointment {
         apptDescription = apptDescriptionInput;
         apptLocation = apptLocationInput;
         apptType = apptTypeInput;
-        beginDateTime = beginDateTimeInput;
+        startDateTime = startDateTimeInput;
         endDateTime = endDateTimeInput;
         dateCreated = dateCreatedInput;
         apptCreatedBy = apptCreatedByInput;
@@ -110,8 +110,8 @@ public class Appointment {
      * Getter for the start of Appointment.
      * @return Start.
      */
-    public Timestamp getBeginDateTime() {
-        return beginDateTime;
+    public Timestamp getStartDateTime() {
+        return startDateTime;
     }
 
     /**

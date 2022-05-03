@@ -43,7 +43,7 @@ public class AccessContact {
     public static ObservableList<String> getContactAppointments(String contactID) throws SQLException {
         ObservableList<String> appointments = FXCollections.observableArrayList();
         PreparedStatement SQLCommand = DatabaseConnection.getConnection().prepareStatement("SELECT * FROM" +
-                "appointments WHERE Contact_ID = ?");
+                " appointments WHERE Contact_ID = ?");
         SQLCommand.setString(1, contactID);
         ResultSet resultSet = SQLCommand.executeQuery();
 
@@ -55,7 +55,7 @@ public class AccessContact {
             String endTime = resultSet.getString("End");
             String customerID = resultSet.getString("Customer_ID");
 
-            String newString = "Appointment_ID; " + appointmentID + "\n" +
+            String newString = "Appointment_ID: " + appointmentID + "\n" +                      // May need to review
                                "Title: " + title + "\n" +
                                "Appointment Type: " + type + "\n" +
                                "Start (date/time): " + startTime + "\n" +

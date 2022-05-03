@@ -23,7 +23,7 @@ public abstract class DatabaseConnection {
      * Connects to the SQL Database.
      * @return the connection
      */
-    public static Connection openConnection() {
+    public static void openConnection() {
         try {
             Class.forName(driver);
             connection = DriverManager.getConnection(jdbcUrl, userName, password);
@@ -31,7 +31,7 @@ public abstract class DatabaseConnection {
         } catch (Exception e) {
             System.out.println("Error:" + e.getMessage());
         }
-        return connection;
+        //return connection;
     }
 
     /**

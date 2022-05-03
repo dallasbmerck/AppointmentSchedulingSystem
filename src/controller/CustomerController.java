@@ -36,14 +36,14 @@ public class CustomerController implements Initializable {
     public Button backButton;
 
     public void screenChange(ActionEvent actionEvent, String path) throws IOException {
-        Parent p = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(path)));
+        Parent p = FXMLLoader.load(getClass().getResource(path));
         Scene scene = new Scene(p);
         Stage newWindow = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
         newWindow.setScene(scene);
         newWindow.show();
     }
 
-    public void addDataToCustomersTable(ObservableList<Customer> list) {
+    public void addDataToCustomersTable(ObservableList<Customer> cList) {
         customerIDCol.setCellValueFactory(new PropertyValueFactory<>("ID"));
         customerNameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         countryCol.setCellValueFactory(new PropertyValueFactory<>("countryName"));
@@ -51,8 +51,8 @@ public class CustomerController implements Initializable {
         addressCol.setCellValueFactory(new PropertyValueFactory<>("address"));
         postCodeCol.setCellValueFactory(new PropertyValueFactory<>("postCode"));
         phoneCol.setCellValueFactory(new PropertyValueFactory<>("phoneNumber"));
-        customerTableView.setItems(list);
-    }
+        customerTableView.setItems(cList);
+            }
 
     public void clickAddButton(ActionEvent actionEvent) throws IOException {
         screenChange(actionEvent, "/view/AddCustomerPage.fxml");

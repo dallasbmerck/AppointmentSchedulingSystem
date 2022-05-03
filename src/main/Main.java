@@ -25,6 +25,6 @@ public class Main extends Application {
 
         DatabaseConnection.openConnection();
         launch(args);
-        //DatabaseConnection.closeConnection();
+        DatabaseConnection.closeConnection();
     }
 }

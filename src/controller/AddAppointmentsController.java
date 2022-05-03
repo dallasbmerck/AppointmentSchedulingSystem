@@ -198,14 +198,26 @@ public class AddAppointmentsController {
 
 
     public void initialize(URL url, ResourceBundle resourceBundle) throws SQLException {
-       try {
-           customerIDTextBox.setItems(AccessCustomer.getAllCustomersID());
-           userIDComboBox.setItems(AccessUser.getAllUserIDs());
-           contactComboBox.setItems(AccessContact.getContactName());
-       }
-       catch (SQLException sqlException) {
-           sqlException.printStackTrace();
-       }
+        timezoneLabel.setText("Your Time Zone:" + AccessUser.getUsersTimeZone());
+
+
+        datePicker.setDayCellFactory(picker -> new DateCell() {
+            @Override
+            public void updateItem(LocalDate apptDatePicker, boolean empty) {
+                super.updateItem(apptDatePicker, empty);
+                setDisable(
+                        empty || apptDatePicker.getDayOfWeek() == DayOfWeek.SATURDAY ||
+                                apptDatePicker.getDayOfWeek() == DayOfWeek.SUNDAY || apptDatePicker.isBefore(LocalDate.now()));
+            }
+        });
+
+        try {
+            customerIDTextBox.setItems(AccessCustomer.getAllCustomersID());
+            userIDComboBox.setItems(AccessUser.getAllUserIDs());
+            contactComboBox.setItems(AccessContact.getContactName());
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 }
 

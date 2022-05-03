@@ -73,7 +73,7 @@ public class AccessAppointment {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
         PreparedStatement SQLCommand = DatabaseConnection.getConnection().prepareStatement("SELECT * FROM " +
-                "appointments as a LEFT OUTER JOIN contacts as c ON a.Contact_ID = c.Contact_ID WHERE Start BETWEEN ? AND ?");
+                "appointments as a LEFT OUTER JOIN contacts as c ON a.Contact_ID = c.Contact_ID WHERE Start BETWEEN ? AND ?;");
 
         String startString = start.format(dateTimeFormatter);
         String endString = end.format(dateTimeFormatter);
@@ -89,9 +89,9 @@ public class AccessAppointment {
             String  description = resultSet.getString("Description");
             String location = resultSet.getString("Location");
             String type = resultSet.getString("Type");
-            Timestamp starTime = resultSet.getTimestamp("Start");
+            Timestamp startTime = resultSet.getTimestamp("Start");
             Timestamp endTime = resultSet.getTimestamp("End");
-            Timestamp dateCreated = resultSet.getTimestamp("Created_Date");
+            Timestamp dateCreated = resultSet.getTimestamp("Create_Date");
             String createdBy = resultSet.getString("Created_By");
             Timestamp lastUpdate = resultSet.getTimestamp("Last_Update");
             String lastUpdateBy = resultSet.getString("Last_Updated_By");
@@ -100,7 +100,7 @@ public class AccessAppointment {
             Integer contactID = resultSet.getInt("Contact_ID");
             String contactName = resultSet.getString("Contact_Name");
 
-            Appointment newAppointment = new Appointment(apptID, title, description, location, type, starTime, endTime, dateCreated,
+            Appointment newAppointment = new Appointment(apptID, title, description, location, type, startTime, endTime, dateCreated,
                     createdBy, lastUpdate, lastUpdateBy, customerID, userID, contactID, contactName);
 
             filterAppointments.add(newAppointment);
@@ -172,12 +172,12 @@ public class AccessAppointment {
                                          ZonedDateTime startInput, ZonedDateTime endInput, String createdByInput, String lastUpdatedByInput,
                                          Integer customerIDInput, Integer userIDInput, Integer contactIDInput) throws SQLException {
         PreparedStatement SQLCommand = DatabaseConnection.getConnection().prepareStatement("INSERT INTO appointments " +
-                "Title, Description, Location, Type, Start, End, Create_Date, Created_By, Last_Update, Last_Updated_By, " +
-                "Customer_ID, User_ID, Contact_ID VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                "(Title, Description, Location, Type, Start, End, Create_Date, Created_By, Last_Update, Last_Updated_By, " +
+                "Customer_ID, User_ID, Contact_ID)\n VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String startInputString = startInput.format(dateTimeFormatter);
-        String endInputString = endInput.format(dateTimeFormatter);
+        String startInputString = startInput.format(dateTimeFormatter).toString();
+        String endInputString = endInput.format(dateTimeFormatter).toString();
 
         SQLCommand.setString(1, titleInput);
         SQLCommand.setString(2, descriptionInput);
@@ -185,9 +185,9 @@ public class AccessAppointment {
         SQLCommand.setString(4, typeInput);
         SQLCommand.setString(5, startInputString);
         SQLCommand.setString(6, endInputString);
-        SQLCommand.setString(7, ZonedDateTime.now(ZoneOffset.UTC).format(dateTimeFormatter));
+        SQLCommand.setString(7, ZonedDateTime.now(ZoneOffset.UTC).format(dateTimeFormatter).toString());
         SQLCommand.setString(8, createdByInput);
-        SQLCommand.setString(9, ZonedDateTime.now(ZoneOffset.UTC).format(dateTimeFormatter));
+        SQLCommand.setString(9, ZonedDateTime.now(ZoneOffset.UTC).format(dateTimeFormatter).toString());
         SQLCommand.setString(10, lastUpdatedByInput);
         SQLCommand.setInt(11, customerIDInput);
         SQLCommand.setInt(12, userIDInput);
@@ -331,15 +331,15 @@ public class AccessAppointment {
         report.add("Total Appointments by Type and Month:\n");
 
         PreparedStatement SQLCommandType = DatabaseConnection.getConnection().prepareStatement(" SELECT Type, " +
-                "COUNT(Type) as \"Total\" FROM appointments GROUP BY Type");
+                "COUNT(Type) as \"Total\" FROM appointments GROUP BY Type;");
         PreparedStatement SQLCommandMonth = DatabaseConnection.getConnection().prepareStatement("SELECT " +
-                "MONTHNAME(Start) as \"Month\", COUNT(MONTH(Start)) as \"Total\" from appointments GROUP BY Month");
+                "MONTHNAME(Start) as \"Month\", COUNT(MONTH(Start)) as \"Total\" from appointments GROUP BY Month;");
 
         ResultSet resultSetType = SQLCommandType.executeQuery();
         ResultSet resultSetMonth = SQLCommandMonth.executeQuery();
 
         while (resultSetType.next()) {
-            String type = "Type: " + resultSetType.getString("Month") + " Count: " + resultSetType.getString("Total") + "\n";
+            String type = "Type: " + resultSetType.getString("Type") + " Count: " + resultSetType.getString("Total") + "\n";
             report.add(type);
         }
         while (resultSetMonth.next()) {
