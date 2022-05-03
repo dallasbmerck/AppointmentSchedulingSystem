@@ -116,13 +116,13 @@ public class AccessAppointment {
      * @return filterCustomerAppointment list.
      * @throws SQLException
      */
-    public static ObservableList<Appointment> filterAppointmentsByCustomerID(Integer customerIDInput, LocalDate appointmentDate) throws SQLException {
+    public static ObservableList<Appointment> filterAppointmentsByCustomerID(LocalDate appointmentDate, Integer customerIDInput) throws SQLException {
         ObservableList<Appointment> filterCustomerAppointment = FXCollections.observableArrayList();
         PreparedStatement SQLCommand = DatabaseConnection.getConnection().prepareStatement("SELECT * FROM appointments " +
                 "as a LEFT OUTER JOIN contacts as c ON a.Contact_ID = c.Contact_ID WHERE datediff(a.Start, ?) = 0 AND Customer_ID = ?");
 
-        SQLCommand.setInt(1, customerIDInput);
-        SQLCommand.setString(2, String.valueOf(appointmentDate));
+        SQLCommand.setString(1, appointmentDate.toString());
+        SQLCommand.setInt(2, customerIDInput);
 
         ResultSet resultSet = SQLCommand.executeQuery();
 
@@ -132,9 +132,9 @@ public class AccessAppointment {
             String  description = resultSet.getString("Description");
             String location = resultSet.getString("Location");
             String type = resultSet.getString("Type");
-            Timestamp starTime = resultSet.getTimestamp("Start");
+            Timestamp startTime = resultSet.getTimestamp("Start");
             Timestamp endTime = resultSet.getTimestamp("End");
-            Timestamp dateCreated = resultSet.getTimestamp("Created_Date");
+            Timestamp dateCreated = resultSet.getTimestamp("Create_Date");
             String createdBy = resultSet.getString("Created_By");
             Timestamp lastUpdate = resultSet.getTimestamp("Last_Update");
             String lastUpdateBy = resultSet.getString("Last_Updated_By");
@@ -143,7 +143,7 @@ public class AccessAppointment {
             Integer contactID = resultSet.getInt("Contact_ID");
             String contactName = resultSet.getString("Contact_Name");
 
-            Appointment newAppointment = new Appointment(apptID, title, description, location, type, starTime, endTime, dateCreated,
+            Appointment newAppointment = new Appointment(apptID, title, description, location, type, startTime, endTime, dateCreated,
                     createdBy, lastUpdate, lastUpdateBy, customerID, userID, contactID, contactName);
 
             filterCustomerAppointment.add(newAppointment);
@@ -173,7 +173,7 @@ public class AccessAppointment {
                                          Integer customerIDInput, Integer userIDInput, Integer contactIDInput) throws SQLException {
         PreparedStatement SQLCommand = DatabaseConnection.getConnection().prepareStatement("INSERT INTO appointments " +
                 "(Title, Description, Location, Type, Start, End, Create_Date, Created_By, Last_Update, Last_Updated_By, " +
-                "Customer_ID, User_ID, Contact_ID)\n VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                "Customer_ID, User_ID, Contact_ID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
 
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String startInputString = startInput.format(dateTimeFormatter).toString();
@@ -199,7 +199,6 @@ public class AccessAppointment {
             return true;
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
-            SQLCommand.close();
             return false;
         }
 
@@ -210,11 +209,11 @@ public class AccessAppointment {
                                             lastUpdateByInput, Integer customerIDInput, Integer userIDInput, Integer contactIDInput) throws SQLException {
         PreparedStatement SQLCommand = DatabaseConnection.getConnection().prepareStatement("UPDATE appointments " +
                 "SET Title=?, Description=?, Location=?, Type=?, Start=?, End=?, Last_Update=?, Last_Update_By=?, " +
-                "Customer_ID=?, User_ID=?, Contact_ID=? WHERE Appointment_ID = ?");
+                "Customer_ID=?, User_ID=?, Contact_ID=? WHERE Appointment_ID = ?;");
 
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String startInputString = startInput.format(dateTimeFormatter);
-        String endInputString = endInput.format(dateTimeFormatter);
+        String startInputString = startInput.format(dateTimeFormatter).toString();
+        String endInputString = endInput.format(dateTimeFormatter).toString();
 
         SQLCommand.setString(1, titleInput);
         SQLCommand.setString(2, descriptionInput);
@@ -244,7 +243,7 @@ public class AccessAppointment {
 
     public static Boolean deleteAppointment(Integer appointmentID) throws SQLException {
         PreparedStatement SQLCommand = DatabaseConnection.getConnection().prepareStatement("DELETE FROM appointments " +
-                "WHERE Appointment_ID = ?");
+                "WHERE Appointment_ID = ?;");
         SQLCommand.setInt(1, appointmentID);
 
         try {
@@ -270,7 +269,6 @@ public class AccessAppointment {
             return true;
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
-            SQLCommand.close();
             return false;
         }
     }
@@ -284,7 +282,7 @@ public class AccessAppointment {
         ZonedDateTime utc = timezone.withZoneSameInstant(ZoneOffset.UTC);
         ZonedDateTime timeDelta = utc.plusMinutes(15);
 
-        String start = utc.format(dateTimeFormatter);
+        String start = utc.format(dateTimeFormatter).toString();
         String end = timeDelta.format(dateTimeFormatter);
         Integer userID = AccessUser.getUserLoggedOn().getUserID();
 
@@ -306,7 +304,7 @@ public class AccessAppointment {
             String type = resultSet.getString("Type");
             Timestamp startTime = resultSet.getTimestamp("Start");
             Timestamp endTime = resultSet.getTimestamp("End");
-            Timestamp dateCreated = resultSet.getTimestamp("Created_Date");
+            Timestamp dateCreated = resultSet.getTimestamp("Create_Date");
             String createdBy = resultSet.getString("Created_By");
             Timestamp lastUpdate = resultSet.getTimestamp("Last_Update");
             String lastUpdateBy = resultSet.getString("Last_Updated_By");
@@ -320,7 +318,6 @@ public class AccessAppointment {
 
             apptsIn15.add(newAppointment);
         }
-        SQLCommand.close();
         return apptsIn15;
 
     }
