@@ -16,7 +16,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
- * AccessAppointment class used to write methods to move data to an from MySQL Database via Connection.
+ * AccessAppointment class used to write methods to move data to an from MySQL Database via Connection for all appointments.
  *
  * @author Dallas Merck
  */
@@ -153,19 +153,20 @@ public class AccessAppointment {
     }
 
     /**
+     * Is used to query the MySql Database to find all appointments and add them into the scheduling program.
      *
-     * @param titleInput
-     * @param descriptionInput
-     * @param locationInput
-     * @param typeInput
-     * @param startInput
-     * @param endInput
-     * @param createdByInput
-     * @param lastUpdatedByInput
-     * @param customerIDInput
-     * @param userIDInput
-     * @param contactIDInput
-     * @return
+     * @param titleInput Title of the appointment.
+     * @param descriptionInput Description of the appointment.
+     * @param locationInput Location of the appointment.
+     * @param typeInput Type of appointment.
+     * @param startInput Start time of the appointment.
+     * @param endInput End time of the appointment.
+     * @param createdByInput User_ID of the user who created the appointment.
+     * @param lastUpdatedByInput User_ID of the user who last updated the appointment.
+     * @param customerIDInput The Customer_ID that the appointment is scheduled for.
+     * @param userIDInput User_ID of user who the appointment is assigned to.
+     * @param contactIDInput Contact_ID for the appointment.
+     * @return Boolean true or false.
      * @throws SQLException
      */
     public static Boolean addAppointment(String titleInput, String descriptionInput, String locationInput, String typeInput,
@@ -204,6 +205,22 @@ public class AccessAppointment {
 
     }
 
+    /**
+     * Used to update appointment details in the database by populating all data and allowing it to be adjusted.
+     * @param apptIDInput The Appointment_ID.
+     * @param titleInput The appointment Title.
+     * @param descriptionInput The appointment Description.
+     * @param locationInput The appointment Location.
+     * @param typeInput The appointment Type.
+     * @param startInput Appointment Start.
+     * @param endInput Appointment End.
+     * @param lastUpdateByInput Appointment Last_Updated_By.
+     * @param customerIDInput Appointment Customer_ID.
+     * @param userIDInput Appointment User_ID.
+     * @param contactIDInput Appointment Contact_ID.
+     * @return Boolean true or false.
+     * @throws SQLException
+     */
     public static Boolean updateAppointment(Integer apptIDInput, String titleInput, String descriptionInput, String locationInput,
                                             String typeInput, ZonedDateTime startInput, ZonedDateTime endInput, String
                                             lastUpdateByInput, Integer customerIDInput, Integer userIDInput, Integer contactIDInput) throws SQLException {
@@ -239,8 +256,12 @@ public class AccessAppointment {
         }
     }
 
-
-
+    /**
+     * Deletes a selected appointment from the database.
+     * @param appointmentID Appointment_ID of the selected appointment.
+     * @return Boolean true or false.
+     * @throws SQLException
+     */
     public static Boolean deleteAppointment(Integer appointmentID) throws SQLException {
         PreparedStatement SQLCommand = DatabaseConnection.getConnection().prepareStatement("DELETE FROM appointments " +
                 "WHERE Appointment_ID = ?;");
@@ -257,7 +278,12 @@ public class AccessAppointment {
         }
     }
 
-
+    /**
+     * Deletes an appointment by reference of a Customer_ID.
+     * @param customerID Customer_ID for the appointment.
+     * @return Boolean true of false.
+     * @throws SQLException
+     */
     public static Boolean deleteAllAppointmentsByCustomerID(Integer customerID) throws SQLException {
         PreparedStatement SQLCommand = DatabaseConnection.getConnection().prepareStatement("DELETE FROM appointments " +
                 "WHERE Customer_ID = ?");
@@ -273,6 +299,11 @@ public class AccessAppointment {
         }
     }
 
+    /**
+     * Observable list to store appointments that are to be attended within 15 minutes of a user logging on.
+     * @return Observable list apptsIn15.
+     * @throws SQLException
+     */
     public static ObservableList<Appointment> appointmentWithin15MinOfLogOn() throws SQLException {
         ObservableList<Appointment> apptsIn15 = FXCollections.observableArrayList();
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -322,6 +353,11 @@ public class AccessAppointment {
 
     }
 
+    /**
+     * Observable list that is user to create reports from the appointment's type or date.
+     * @return report observable list.
+     * @throws SQLException
+     */
     public static ObservableList<String> createReportTypeAndDate() throws SQLException {
         ObservableList<String> report = FXCollections.observableArrayList();
 

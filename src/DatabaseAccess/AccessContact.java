@@ -11,8 +11,19 @@ import java.sql.SQLException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
+/**
+ * AccessContact class used to write methods to move data to and from MySQL Database via Connection for all contacts.
+ *
+ * @author Dallas Merck
+ */
 public class AccessContact {
 
+    /**
+     * Used to collect the Contact_ID from the contacts table using the Contact_Name.
+     * @param contactName Contact_Name of the contact.
+     * @return id for the contact.
+     * @throws SQLException
+     */
     public static Integer getContactID(String contactName) throws SQLException {
         Integer id = -1;
         PreparedStatement SQLCommand = DatabaseConnection.getConnection().prepareStatement("SELECT Contact_ID, " +
@@ -27,6 +38,11 @@ public class AccessContact {
         return id;
     }
 
+    /**
+     * Used to get all Contact_Name from contacts.
+     * @return contactName
+     * @throws SQLException
+     */
     public static ObservableList<String> getContactName() throws SQLException {
         ObservableList<String> contactName = FXCollections.observableArrayList();
         PreparedStatement SQLCommand = DatabaseConnection.getConnection().prepareStatement("SELECT DISTINCT " +
@@ -40,6 +56,12 @@ public class AccessContact {
         return contactName;
     }
 
+    /**
+     * Used to get all appointments for a specific Contact_ID.
+     * @param contactID Contact_ID.
+     * @return appointments.
+     * @throws SQLException
+     */
     public static ObservableList<String> getContactAppointments(String contactID) throws SQLException {
         ObservableList<String> appointments = FXCollections.observableArrayList();
         PreparedStatement SQLCommand = DatabaseConnection.getConnection().prepareStatement("SELECT * FROM" +
@@ -55,7 +77,7 @@ public class AccessContact {
             String endTime = resultSet.getString("End");
             String customerID = resultSet.getString("Customer_ID");
 
-            String newString = "Appointment_ID: " + appointmentID + "\n" +                      // May need to review
+            String newString = "Appointment_ID: " + appointmentID + "\n" +
                                "Title: " + title + "\n" +
                                "Appointment Type: " + type + "\n" +
                                "Start (date/time): " + startTime + "\n" +
@@ -67,6 +89,12 @@ public class AccessContact {
         return appointments;
     }
 
+    /**
+     * Converts the string for the start and end times into minutes and calculates the duration.
+     * @param id Contact_ID.
+     * @return timeSum.
+     * @throws SQLException
+     */
     public static Integer calculateAppointmentTime(String id) throws SQLException {
         Integer timeSum = 0;
         PreparedStatement SQLCommand = DatabaseConnection.getConnection().prepareStatement("SELECT * FROM " +
@@ -83,6 +111,11 @@ public class AccessContact {
         return timeSum;
     }
 
+    /**
+     * Observable list used to retrieve all contact data from the database.
+     * @return cList.
+     * @throws SQLException
+     */
     public static ObservableList<Contact> allContacts() throws SQLException {
         ObservableList<Contact> cList = FXCollections.observableArrayList();
         String SQLCommand = "SELECT * from contacts";

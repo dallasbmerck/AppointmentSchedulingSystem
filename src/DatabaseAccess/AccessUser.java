@@ -10,6 +10,11 @@ import java.sql.*;
 import java.time.ZoneId;
 import java.util.Locale;
 
+/**
+ * AccessUser class used to write methods to move data to and from MySQL Database via Connection for all users.
+ *
+ * @author Dallas Merck
+ */
 public class AccessUser {
     private static User userLoggedOn;
     private static Locale usersLocale;
