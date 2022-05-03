@@ -6,14 +6,14 @@ package model;
  * @author Dallas Merck.
  */
 public class Customer {
-    private Integer ID;
-    private String name;
-    private String address;
-    private String postCode;
-    private String phoneNumber;
-    private Integer divisionID;
-    private String division;
-    private String country;
+    private Integer customerID;
+    private String customerName;
+    private String customerAddress;
+    private String customerPostCode;
+    private String customerPhoneNumber;
+    private Integer customerDivisionID;
+    private String customerDivision;
+    private String customerCountry;
 
     /**
      * Customer contructor that creates a new instance of customer.
@@ -28,14 +28,14 @@ public class Customer {
      */
     public Customer(Integer idInput, String nameInput, String addressInput, String postCodeInput, String phoneNumberInput,
                     String divisionInput, Integer divisionIDInput, String countryInput) {
-        ID = idInput;
-        name = nameInput;
-        address = addressInput;
-        postCode = postCodeInput;
-        phoneNumber = phoneNumberInput;
-        division = divisionInput;
-        divisionID = divisionIDInput;
-        country = countryInput;
+        customerID = idInput;
+        customerName = nameInput;
+        customerAddress = addressInput;
+        customerPostCode = postCodeInput;
+        customerPhoneNumber = phoneNumberInput;
+        customerDivision = divisionInput;
+        customerDivisionID = divisionIDInput;
+        customerCountry = countryInput;
     }
 
     /**
@@ -43,7 +43,7 @@ public class Customer {
      * @return Customer_ID.
      */
     public Integer getCustomerID() {
-        return ID;
+        return customerID;
     }
 
     /**
@@ -51,7 +51,7 @@ public class Customer {
      * @return Customer_Name.
      */
     public String getCustomerName() {
-        return name;
+        return customerName;
     }
 
     /**
@@ -59,7 +59,7 @@ public class Customer {
      * @return Address.
      */
     public String getCustomerAddress() {
-        return address;
+        return customerAddress;
     }
 
     /**
@@ -67,7 +67,7 @@ public class Customer {
      * @return Postal_Code.
      */
     public String getCustomerPostCode() {
-        return postCode;
+        return customerPostCode;
     }
 
     /**
@@ -75,7 +75,7 @@ public class Customer {
      * @return Phone.
      */
     public String getCustomerPhoneNumber() {
-        return phoneNumber;
+        return customerPhoneNumber;
     }
 
     /**
@@ -83,7 +83,7 @@ public class Customer {
      * @return Division.
      */
     public String getCustomerDivision() {
-        return division;
+        return customerDivision;
     }
 
     /**
@@ -91,7 +91,7 @@ public class Customer {
      * @return Division_ID.
      */
     public Integer getCustomerDivisionID() {
-        return divisionID;
+        return customerDivisionID;
     }
 
     /**
@@ -99,6 +99,6 @@ public class Customer {
      * @return Country_ID.
      */
     public String getCustomerCountryName() {
-        return country;
+        return customerCountry;
     }
 }

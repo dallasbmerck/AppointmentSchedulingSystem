@@ -65,7 +65,7 @@ public class LoginPageController implements Initializable {
             ObservableList<Appointment> upcoming = DatabaseAccess.AccessAppointment.appointmentWithin15MinOfLogOn();
             if (!upcoming.isEmpty()) {
                 for (Appointment a : upcoming) {
-                    String notify = "Upcoming appointment with ID: " + a.getApptID() + " starts at " + a.getBeginDateTime().toString();
+                    String notify = "Upcoming appointment with ID: " + a.getApptID() + " starts at " + a.getStartDateTime().toString();
                     ButtonType ok = new ButtonType("Okay", ButtonBar.ButtonData.OK_DONE);
                     Alert alert = new Alert(Alert.AlertType.WARNING, notify, ok);
                     alert.showAndWait();

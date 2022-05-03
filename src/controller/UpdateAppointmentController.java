@@ -74,14 +74,14 @@ public class UpdateAppointmentController implements Initializable {
     }
 
     public Boolean overlappingCustomerAppointments(Integer customerID, LocalDateTime start, LocalDateTime end, LocalDate date) throws SQLException {
-        ObservableList<Appointment> overlap = AccessAppointment.filterAppointmentsByCustomerID(customerID, date);
+        ObservableList<Appointment> overlap = AccessAppointment.filterAppointmentsByCustomerID(date, customerID);
 
         if (overlap.isEmpty()) {
             return true;
         }
         else {
             for (Appointment overlappingAppt : overlap) {
-                LocalDateTime overlapStart = overlappingAppt.getBeginDateTime().toLocalDateTime();
+                LocalDateTime overlapStart = overlappingAppt.getStartDateTime().toLocalDateTime();
                 LocalDateTime overlapEnd = overlappingAppt.getEndDateTime().toLocalDateTime();
 
                 if (overlapStart.isBefore(start) && overlapEnd.isAfter(end)) {
@@ -202,14 +202,14 @@ public class UpdateAppointmentController implements Initializable {
 
     public void addData(Appointment selectedAppointment) throws SQLException {
         try {
-            LocalDate dateOfAppt = selectedAppointment.getBeginDateTime().toLocalDateTime().toLocalDate();
+            LocalDate dateOfAppt = selectedAppointment.getStartDateTime().toLocalDateTime().toLocalDate();
         }
         catch (NullPointerException n) {
             ButtonType ok = new ButtonType("Okay", ButtonBar.ButtonData.OK_DONE);
             Alert a = new Alert(Alert.AlertType.WARNING, "Select a date.", ok);
             a.showAndWait();
         }
-        ZonedDateTime startUTC = selectedAppointment.getBeginDateTime().toInstant().atZone(ZoneOffset.UTC);
+        ZonedDateTime startUTC = selectedAppointment.getStartDateTime().toInstant().atZone(ZoneOffset.UTC);
         ZonedDateTime endUTC = selectedAppointment.getEndDateTime().toInstant().atZone(ZoneOffset.UTC);
 
         ZonedDateTime localStart = startUTC.withZoneSameInstant(AccessUser.getUsersTimeZone());
@@ -230,7 +230,7 @@ public class UpdateAppointmentController implements Initializable {
         customerIDTextBox.getSelectionModel().select(selectedAppointment.getCustomerID());
         userIDComboBox.setItems(AccessUser.getAllUserIDs());
         userIDComboBox.getSelectionModel().select(selectedAppointment.getCustomerID());
-        datePicker.setValue(selectedAppointment.getBeginDateTime().toLocalDateTime().toLocalDate());
+        datePicker.setValue(selectedAppointment.getStartDateTime().toLocalDateTime().toLocalDate());
         startTextBox.setText(stringLocalStart);
         endTextBox.setText(stringLocalEnd);
 

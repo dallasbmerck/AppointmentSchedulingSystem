@@ -43,15 +43,15 @@ public class CustomerController implements Initializable {
         newWindow.show();
     }
 
-    public void addDataToCustomersTable(ObservableList<Customer> cList) {
-        customerIDCol.setCellValueFactory(new PropertyValueFactory<>("ID"));
-        customerNameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
-        countryCol.setCellValueFactory(new PropertyValueFactory<>("countryName"));
-        divisionCol.setCellValueFactory(new PropertyValueFactory<>("division"));
-        addressCol.setCellValueFactory(new PropertyValueFactory<>("address"));
-        postCodeCol.setCellValueFactory(new PropertyValueFactory<>("postCode"));
-        phoneCol.setCellValueFactory(new PropertyValueFactory<>("phoneNumber"));
-        customerTableView.setItems(cList);
+    public void addDataToCustomersTable(ObservableList<Customer> customerList) {
+        customerIDCol.setCellValueFactory(new PropertyValueFactory<>("customerID"));
+        customerNameCol.setCellValueFactory(new PropertyValueFactory<>("customerName"));
+        countryCol.setCellValueFactory(new PropertyValueFactory<>("customerCountry"));
+        divisionCol.setCellValueFactory(new PropertyValueFactory<>("customerDivision"));
+        addressCol.setCellValueFactory(new PropertyValueFactory<>("customerAddress"));
+        postCodeCol.setCellValueFactory(new PropertyValueFactory<>("customerPostCode"));
+        phoneCol.setCellValueFactory(new PropertyValueFactory<>("customerPhoneNumber"));
+        customerTableView.setItems(customerList);
             }
 
     public void clickAddButton(ActionEvent actionEvent) throws IOException {
@@ -66,16 +66,17 @@ public class CustomerController implements Initializable {
             Alert noSelection = new Alert(Alert.AlertType.WARNING, "No customer selected to edit.", ok);
             noSelection.showAndWait();
         }
+        else {
+            FXMLLoader load = new FXMLLoader();
+            load.setLocation(getClass().getResource("/view/CustomerUpdatePage.fxml"));
+            Parent p = load.load();
+            Scene s = new Scene(p);
 
-        FXMLLoader load = new FXMLLoader();
-        load.setLocation(getClass().getResource("/view/CustomerUpdatePage.fxml"));
-        Parent p = load.load();
-        Scene s = new Scene(p);
-
-        UpdateCustomerController controller = load.getController();
-        controller.addData(customer);
-        Stage newWindow = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();
-        newWindow.setScene(s);
+            UpdateCustomerController controller = load.getController();
+            controller.addData(customer);
+            Stage newWindow = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            newWindow.setScene(s);
+        }
     }
 
     public void clickDeleteButton() throws SQLException {

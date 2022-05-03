@@ -57,7 +57,7 @@ public class AddAppointmentsController {
     public Button clearButton;
 
     public void screenChange(ActionEvent actionEvent, String path) throws IOException {
-        Parent p = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(path)));
+        Parent p = FXMLLoader.load(getClass().getResource(path));
         Scene scene = new Scene(p);
         Stage newWindow = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
         newWindow.setScene(scene);
@@ -65,8 +65,10 @@ public class AddAppointmentsController {
     }
 
     public void clickSaveButton(ActionEvent actionEvent) throws SQLException, IOException {
-        Boolean validOverlap;
-        Boolean validOperationHours;
+        Boolean validStart = true;
+        Boolean validEnd = true;
+        Boolean validOverlap = true;
+        Boolean validOperationHours = true;
         String errorMessage = "";
 
         String apptTitle = titleTextBox.getText();
@@ -79,8 +81,8 @@ public class AddAppointmentsController {
         LocalDate apptDate = datePicker.getValue();
         LocalDateTime apptStart = null;
         LocalDateTime apptEnd = null;
-        ZonedDateTime zonedStart;
-        ZonedDateTime zonedEnd;
+        ZonedDateTime zonedStart = null;
+        ZonedDateTime zonedEnd = null;
 
         Integer apptContactID = AccessContact.getContactID(apptContactName);
 
@@ -88,16 +90,20 @@ public class AddAppointmentsController {
 
         try {
             apptStart = LocalDateTime.of(datePicker.getValue(), LocalTime.parse(startTextBox.getText(), dateTimeFormatter));
+            validStart = true;
         } catch (DateTimeParseException exception) {
+            validStart = false;
             errorMessage += "Invalid start time. Please use (HH:MM) format.\n";
         }
         try {
             apptEnd = LocalDateTime.of(datePicker.getValue(), LocalTime.parse(endTextBox.getText(), dateTimeFormatter));
+            validEnd = true;
         } catch (DateTimeParseException exception) {
+            validEnd = false;
             errorMessage += "Invalid end time. Please use (HH:MM) format.\n";
         }
         if (apptTitle.isBlank() || apptDescription.isBlank() || apptLocation.isBlank() || apptContactName == null ||
-                apptType.isBlank() || apptCustomerID == null || apptUserID == null || apptEnd == null || apptStart == null) {
+                apptType.isBlank() || apptCustomerID == null || apptUserID == null || apptStart == null || apptEnd == null) {
             errorMessage += "Please enter a valid values into all fields.\n";
 
             ButtonType ok = new ButtonType("Okay", ButtonBar.ButtonData.OK_DONE);
@@ -116,13 +122,13 @@ public class AddAppointmentsController {
         }
         System.out.println(errorMessage);
 
-        if (!validOverlap || !validOperationHours) {
+        if (!validOverlap || !validOperationHours || !validStart || !validEnd) {
             ButtonType ok = new ButtonType("Okay", ButtonBar.ButtonData.OK_DONE);
             Alert invalid = new Alert(Alert.AlertType.WARNING, errorMessage, ok);
             invalid.showAndWait();
         } else {
             zonedStart = ZonedDateTime.of(apptStart, AccessUser.getUsersTimeZone());
-            zonedEnd = ZonedDateTime.of(LocalDateTime.from(apptEnd), AccessUser.getUsersTimeZone());
+            zonedEnd = ZonedDateTime.of(apptEnd, AccessUser.getUsersTimeZone());
             String username = AccessUser.getUserLoggedOn().getUserName();
 
             zonedStart = zonedStart.withZoneSameInstant(ZoneOffset.UTC);
@@ -146,13 +152,14 @@ public class AddAppointmentsController {
     }
 
     public Boolean overlappingCustomerAppointments(Integer customerID, LocalDateTime start, LocalDateTime end, LocalDate date) throws SQLException {
-        ObservableList<Appointment> overlap = AccessAppointment.filterAppointmentsByCustomerID(customerID, date);
+        ObservableList<Appointment> overlap = AccessAppointment.filterAppointmentsByCustomerID(date, customerID);
 
         if (overlap.isEmpty()) {
             return true;
-        } else {
+        }
+        else {
             for (Appointment overlappingAppt : overlap) {
-                LocalDateTime overlapStart = overlappingAppt.getBeginDateTime().toLocalDateTime();
+                LocalDateTime overlapStart = overlappingAppt.getStartDateTime().toLocalDateTime();
                 LocalDateTime overlapEnd = overlappingAppt.getEndDateTime().toLocalDateTime();
 
                 if (overlapStart.isBefore(start) && overlapEnd.isAfter(end)) {
@@ -161,7 +168,12 @@ public class AddAppointmentsController {
                 if (overlapStart.isBefore(end) && overlapStart.isAfter(start)) {
                     return false;
                 }
-                return !overlapEnd.isBefore(end) || !overlapEnd.isAfter(start);
+                if (overlapEnd.isBefore(end) && overlapEnd.isAfter(start)) {
+                    return false;
+                }
+                else {
+                    return true;
+                }
             }
         }
         return true;
@@ -178,12 +190,18 @@ public class AddAppointmentsController {
         ZonedDateTime operationStart = ZonedDateTime.of(appointmentDate, LocalTime.of(8, 0), ZoneId.of("America/New_York"));
         ZonedDateTime operationEnd = ZonedDateTime.of(appointmentDate, LocalTime.of(22, 0), ZoneId.of("America/New_York"));
 
-        return !zonedStart.isBefore(operationStart) && !zonedStart.isAfter(operationEnd) && !zonedEnd.isBefore(operationStart) &&
-                !zonedEnd.isAfter(operationEnd) && !zonedStart.isAfter(zonedEnd);
+        if (zonedStart.isBefore(operationStart) || zonedStart.isAfter(operationEnd) || zonedEnd.isBefore(operationEnd) ||
+        zonedEnd.isAfter(operationEnd) || zonedStart.isAfter(zonedEnd)) {
+            return false;
+        }
+        else {
+            return true;
+        }
 
     }
 
     public void clickClearButton() {
+        typeTextBox.clear();
         datePicker.getEditor().clear();
         startTextBox.clear();
         endTextBox.clear();
@@ -215,8 +233,8 @@ public class AddAppointmentsController {
             customerIDTextBox.setItems(AccessCustomer.getAllCustomersID());
             userIDComboBox.setItems(AccessUser.getAllUserIDs());
             contactComboBox.setItems(AccessContact.getContactName());
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 }
