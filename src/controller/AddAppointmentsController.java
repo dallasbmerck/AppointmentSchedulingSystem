@@ -27,7 +27,7 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 import java.time.LocalDate;
 
-public class AddAppointmentsController {
+public class AddAppointmentsController implements Initializable {
     public DatePicker datePicker;
     public TextField startTextBox;
     public TextField endTextBox;
@@ -214,8 +214,8 @@ public class AddAppointmentsController {
         locationTextBox.clear();
     }
 
-
-    public void initialize(URL url, ResourceBundle resourceBundle) throws SQLException {
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
         timezoneLabel.setText("Your Time Zone:" + AccessUser.getUsersTimeZone());
 
 

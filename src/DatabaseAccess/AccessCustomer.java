@@ -129,7 +129,7 @@ public class AccessCustomer {
     public static ObservableList<String> getFirstLevelDivisions(String country) throws SQLException {
         ObservableList<String> divisions = FXCollections.observableArrayList();
         PreparedStatement SQLCommand = DatabaseConnection.getConnection().prepareStatement("SELECT c.Country, " +
-                "c.Country_ID, d.Division FROM countries as c on RIGHT OUTER JOIN first_level_divisions AS d ON " +
+                "c.Country_ID, d.Division FROM countries as c RIGHT OUTER JOIN first_level_divisions AS d ON " +
                 "c.Country_ID = d.Country_ID WHERE c.Country = ?");
 
         SQLCommand.setString(1, country);
