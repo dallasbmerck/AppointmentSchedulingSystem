@@ -16,6 +16,9 @@ import java.sql.SQLException;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
+/**
+ * AddCustomerController class used to control input and output to the AddCustomerPage.fxml
+ */
 public class AddCustomerController implements Initializable {
     public Label customerIDLabel;
     public Label countryLabel;
@@ -35,6 +38,12 @@ public class AddCustomerController implements Initializable {
     public Button clearButton;
     public Button backButton;
 
+    /**
+     * Used to show a new screen when an action event is executed by the user.
+     * @param actionEvent Button click.
+     * @param path Path taken by the screen change.
+     * @throws IOException
+     */
     public void screenChange(ActionEvent actionEvent, String path) throws IOException {
         Parent p = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(path)));
         Scene scene = new Scene(p);
@@ -43,6 +52,12 @@ public class AddCustomerController implements Initializable {
         newWindow.show();
     }
 
+    /**
+     * Saves the new customer to the MySQL Database when the save button is pressed.
+     * @param actionEvent Save button is clicked.
+     * @throws SQLException
+     * @throws IOException
+     */
     public void clickSaveButton(ActionEvent actionEvent) throws SQLException, IOException {
         String customerCountry = countryComboBox.getValue();
         String customerDivision = divisionComboBox.getValue();
@@ -75,6 +90,9 @@ public class AddCustomerController implements Initializable {
         }
     }
 
+    /**
+     * Clears all data fields in the AddCustomerPage.fxml when the user presses the cleat button.
+     */
     public void clickClearButton() {
         countryComboBox.getItems().clear();
         divisionComboBox.getItems().clear();
@@ -84,10 +102,22 @@ public class AddCustomerController implements Initializable {
         phoneTextBox.clear();
     }
 
+    /**
+     * Changes the screen back to the CustomerPage.fxml when the user clicks the back button.
+     * @param actionEvent Back button is clicked.
+     * @throws IOException
+     */
     public void clickBackButton(ActionEvent actionEvent) throws IOException {
         screenChange(actionEvent, "/view/CustomerPage.fxml");
     }
 
+    /**
+     * Initializes the AddCustomerPage.fxml when it the screen is changed to it.
+     *
+     * Lambda expression on line 131 that adds a listener to the country combobox without needing to declare another method elsewhere.
+     * @param url Stage path.
+     * @param resourceBundle resourceBundle.
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
@@ -97,6 +127,7 @@ public class AddCustomerController implements Initializable {
             sqlException.printStackTrace();
         }
 
+        //Lambda expression 2.
         countryComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue == null) {
                 divisionComboBox.getItems().clear();

@@ -27,6 +27,9 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 import java.time.LocalDate;
 
+/**
+ * AddAppointmentController class used to control input and output to the AddAppointmentsPage.fxml
+ */
 public class AddAppointmentsController implements Initializable {
     public DatePicker datePicker;
     public TextField startTextBox;
@@ -56,6 +59,12 @@ public class AddAppointmentsController implements Initializable {
     public Button backButton;
     public Button clearButton;
 
+    /**
+     * Used to change to a new fxml screen.
+     * @param actionEvent Action event that a user executes.
+     * @param path The path that the FXMLLoader takes.
+     * @throws IOException
+     */
     public void screenChange(ActionEvent actionEvent, String path) throws IOException {
         Parent p = FXMLLoader.load(getClass().getResource(path));
         Scene scene = new Scene(p);
@@ -64,6 +73,12 @@ public class AddAppointmentsController implements Initializable {
         newWindow.show();
     }
 
+    /**
+     * Used to save a new appointment when the user clicks the save button.
+     * @param actionEvent Save button click.
+     * @throws SQLException
+     * @throws IOException
+     */
     public void clickSaveButton(ActionEvent actionEvent) throws SQLException, IOException {
         Boolean validStart = true;
         Boolean validEnd = true;
@@ -151,6 +166,15 @@ public class AddAppointmentsController implements Initializable {
         }
     }
 
+    /**
+     * Used to check if customer appointments are overlapping to ensure that none are double booked.
+     * @param customerID Customer_ID.
+     * @param start Start time.
+     * @param end End time.
+     * @param date Date of the appointment.
+     * @return overlap.
+     * @throws SQLException
+     */
     public Boolean overlappingCustomerAppointments(Integer customerID, LocalDateTime start, LocalDateTime end, LocalDate date) throws SQLException {
         ObservableList<Appointment> overlap = AccessAppointment.filterAppointmentsByCustomerID(date, customerID);
 
@@ -179,10 +203,22 @@ public class AddAppointmentsController implements Initializable {
         return true;
     }
 
+    /**
+     * Changes the screen back to the AppointmentsPage.fxml when the use clicks the back button.
+     * @param actionEvent Back button clicked.
+     * @throws IOException
+     */
     public void clickBackButton(ActionEvent actionEvent) throws IOException {
         screenChange(actionEvent, "/view/AppointmentsPage.fxml");
     }
 
+    /**
+     * Validates the new appointments time against the company's operational hours.
+     * @param start Start time of the appointment.
+     * @param end End time of the appointment.
+     * @param appointmentDate Date of appointment.
+     * @return Boolean true or false.
+     */
     public Boolean validateOperationHours(LocalDateTime start, LocalDateTime end, LocalDate appointmentDate) {
         ZonedDateTime zonedStart = ZonedDateTime.of(start, AccessUser.getUsersTimeZone());
         ZonedDateTime zonedEnd = ZonedDateTime.of(end, AccessUser.getUsersTimeZone());
@@ -200,6 +236,9 @@ public class AddAppointmentsController implements Initializable {
 
     }
 
+    /**
+     * Clears all text and drop-down boxes when the clear button is pressed.
+     */
     public void clickClearButton() {
         typeTextBox.clear();
         datePicker.getEditor().clear();
@@ -214,11 +253,19 @@ public class AddAppointmentsController implements Initializable {
         locationTextBox.clear();
     }
 
+    /**
+     * Initialize the AddAppointmentsPage.fxml and add the data to it.
+     *
+     * Lambda expression starting on line 269 takes away the ability to pick dates in the past or outside of business hours, without needing a whole method elsewhere.
+     * @param url Path for the stage.
+     * @param resourceBundle resourceBundle.
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         timezoneLabel.setText("Your Time Zone:" + AccessUser.getUsersTimeZone());
 
 
+        //Lambda expression 1.
         datePicker.setDayCellFactory(picker -> new DateCell() {
             @Override
             public void updateItem(LocalDate apptDatePicker, boolean empty) {
