@@ -108,6 +108,9 @@ public class AppointmentsController implements Initializable {
     }
 
     public void clickFilterWeek() throws SQLException {
+        showAllButton.setSelected(false);
+        filterMonthButton.setSelected(false);
+
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
         ObservableList<Appointment> filterByWeek = FXCollections.observableArrayList();
@@ -144,7 +147,7 @@ public class AppointmentsController implements Initializable {
             catch (SQLException sqlException2) {
                 sqlException2.printStackTrace();
                 ButtonType ok = new ButtonType("Okay", ButtonBar.ButtonData.OK_DONE);
-                Alert invalid = new Alert(Alert.AlertType.WARNING, "Database connection failed, please restart the application", ok);
+                Alert invalid = new Alert(Alert.AlertType.WARNING, "Database connection failed, please restart the application.", ok);
                 invalid.showAndWait();
                 return;
             }
@@ -158,9 +161,9 @@ public class AppointmentsController implements Initializable {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         ObservableList<Appointment> filterGoForward;
 
-        if(setToggle.getSelectedToggle() == filterMonthButton) {
-            ZonedDateTime s = start.plusMonths(1);
-            ZonedDateTime e = end.plusMonths(1);
+        if(setToggle.getSelectedToggle() == filterWeekButton) {
+            ZonedDateTime s = start.plusWeeks(1);
+            ZonedDateTime e = end.plusWeeks(1);
 
             start = s;
             end = e;
@@ -173,9 +176,9 @@ public class AppointmentsController implements Initializable {
             addDataToTable(filterGoForward);
             showSelectedTimeLabel.setText(start.format(dateTimeFormatter) +" - " + end.format(dateTimeFormatter) + " " + AccessUser.getUsersTimeZone());
         }
-        if (setToggle.getSelectedToggle() == filterWeekButton) {
-            ZonedDateTime s = start.plusWeeks(1);
-            ZonedDateTime e = end.plusWeeks(1);
+        if (setToggle.getSelectedToggle() == filterMonthButton) {
+            ZonedDateTime s = start.plusMonths(1);
+            ZonedDateTime e = end.plusMonths(1);
 
             start = s;
             end = e;
@@ -194,9 +197,9 @@ public class AppointmentsController implements Initializable {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         ObservableList<Appointment> filterGoback;
 
-        if(setToggle.getSelectedToggle() == filterMonthButton) {
-            ZonedDateTime s = start.minusMonths(1);
-            ZonedDateTime e = end.minusMonths(1);
+        if(setToggle.getSelectedToggle() == filterWeekButton) {
+            ZonedDateTime s = start.minusWeeks(1);
+            ZonedDateTime e = end.minusWeeks(1);
 
             start = s;
             end = e;
@@ -209,9 +212,9 @@ public class AppointmentsController implements Initializable {
             addDataToTable(filterGoback);
             showSelectedTimeLabel.setText(start.format(dateTimeFormatter) +" - " + end.format(dateTimeFormatter) + " " + AccessUser.getUsersTimeZone());
         }
-        if (setToggle.getSelectedToggle() == filterWeekButton) {
-            ZonedDateTime s = start.minusWeeks(1);
-            ZonedDateTime e = end.minusWeeks(1);
+        if (setToggle.getSelectedToggle() == filterMonthButton) {
+            ZonedDateTime s = start.minusMonths(1);
+            ZonedDateTime e = end.minusMonths(1);
 
             start = s;
             end = e;
@@ -268,9 +271,9 @@ public class AppointmentsController implements Initializable {
             ButtonType no = ButtonType.NO;
             Alert confirmDelete = new Alert(Alert.AlertType.WARNING, "Are you certain you want to delete Appointment: " +
                      appointment.getApptID() + "?", yes, no);
-            Optional<ButtonType> selection = confirmDelete.showAndWait();
+            Optional<ButtonType> choice = confirmDelete.showAndWait();
 
-            if (selection.get() == ButtonType.YES) {
+            if (choice.get() == ButtonType.YES) {
                 Boolean b = AccessAppointment.deleteAppointment(appointment.getApptID());
                 if(b) {
                     ButtonType ok = new ButtonType("Okay", ButtonBar.ButtonData.OK_DONE);
@@ -299,7 +302,6 @@ public class AppointmentsController implements Initializable {
             ButtonType ok = new ButtonType("Okay", ButtonBar.ButtonData.OK_DONE);
             Alert invalid = new Alert(Alert.AlertType.WARNING, "Select an appointment to edit.", ok);
             invalid.showAndWait();
-            return;
         }
 
         FXMLLoader loader = new FXMLLoader();
@@ -337,7 +339,6 @@ public class AppointmentsController implements Initializable {
                 ButtonType ok = new ButtonType("Okay", ButtonBar.ButtonData.OK_DONE);
                 Alert invalid = new Alert(Alert.AlertType.WARNING, "Unable to connect to database. Please restart.", ok);
                 invalid.showAndWait();
-                return;
             }
         }
         addDataToTable(allAppointments);
