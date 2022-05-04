@@ -42,7 +42,7 @@ public class CustomerController implements Initializable {
      * Gets called by other methods to switch screens in the application.
      * @param actionEvent Button is clicked.
      * @param path Path the switch takes.
-     * @throws IOException
+     * @throws IOException IOException.
      */
     public void screenChange(ActionEvent actionEvent, String path) throws IOException {
         Parent p = FXMLLoader.load(getClass().getResource(path));
@@ -70,7 +70,7 @@ public class CustomerController implements Initializable {
     /**
      * Changes the screen when the user clicks the add customer button.
      * @param actionEvent Add button is clicked.
-     * @throws IOException
+     * @throws IOException IOException.
      */
     public void clickAddButton(ActionEvent actionEvent) throws IOException {
         screenChange(actionEvent, "/view/AddCustomerPage.fxml");
@@ -105,7 +105,7 @@ public class CustomerController implements Initializable {
 
     /**
      * Deletes a selected customer when the user clicks the delete button.
-     * @throws SQLException
+     * @throws SQLException SQLException.
      */
     public void clickDeleteButton() throws SQLException {
         Customer customer = customerTableView.getSelectionModel().getSelectedItem();
@@ -149,7 +149,7 @@ public class CustomerController implements Initializable {
     /**
      * Switches the screen to AppointmentsPage.fxml when the user clicks the back button.
      * @param actionEvent Back button is pressed.
-     * @throws IOException
+     * @throws IOException IOException.
      */
     public void clickBackButton(ActionEvent actionEvent) throws IOException {
         screenChange(actionEvent, "/view/AppointmentsPage.fxml");
@@ -157,8 +157,8 @@ public class CustomerController implements Initializable {
 
     /**
      * Initialized the  Customer table view with all customer from the MySQL Database.
-     * @param url
-     * @param resourceBundle
+     * @param url url.
+     * @param resourceBundle resourceBundle.
      */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {

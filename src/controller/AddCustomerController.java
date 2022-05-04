@@ -42,7 +42,7 @@ public class AddCustomerController implements Initializable {
      * Used to show a new screen when an action event is executed by the user.
      * @param actionEvent Button click.
      * @param path Path taken by the screen change.
-     * @throws IOException
+     * @throws IOException IOException.
      */
     public void screenChange(ActionEvent actionEvent, String path) throws IOException {
         Parent p = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(path)));
@@ -55,8 +55,8 @@ public class AddCustomerController implements Initializable {
     /**
      * Saves the new customer to the MySQL Database when the save button is pressed.
      * @param actionEvent Save button is clicked.
-     * @throws SQLException
-     * @throws IOException
+     * @throws SQLException SQLException.
+     * @throws IOException IOException.
      */
     public void clickSaveButton(ActionEvent actionEvent) throws SQLException, IOException {
         String customerCountry = countryComboBox.getValue();
@@ -105,7 +105,7 @@ public class AddCustomerController implements Initializable {
     /**
      * Changes the screen back to the CustomerPage.fxml when the user clicks the back button.
      * @param actionEvent Back button is clicked.
-     * @throws IOException
+     * @throws IOException IOException.
      */
     public void clickBackButton(ActionEvent actionEvent) throws IOException {
         screenChange(actionEvent, "/view/CustomerPage.fxml");

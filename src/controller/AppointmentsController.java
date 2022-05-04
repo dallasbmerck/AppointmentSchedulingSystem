@@ -82,7 +82,7 @@ public class AppointmentsController implements Initializable {
      * Changes the screen to another when it is called.
      * @param actionEvent Button is clicked.
      * @param path Path of screen change.
-     * @throws IOException
+     * @throws IOException IOException.
      */
     public void screenChange(ActionEvent actionEvent, String path) throws IOException {
         Parent p = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(path)));
@@ -104,7 +104,7 @@ public class AppointmentsController implements Initializable {
 
     /**
      * Shows the appointments in a selected time frame by month and displays that time frame in the time label.
-     * @throws SQLException
+     * @throws SQLException SQLException.
      */
     public void clickFilterMonth() throws SQLException {
         filterWeekButton.setSelected(false);
@@ -128,7 +128,7 @@ public class AppointmentsController implements Initializable {
 
     /**
      * Shows the appointments in a selected time frame by week and displays time frame in the time label.
-     * @throws SQLException
+     * @throws SQLException SQLException.
      */
     public void clickFilterWeek() throws SQLException {
         showAllButton.setSelected(false);
@@ -185,7 +185,7 @@ public class AppointmentsController implements Initializable {
 
     /**
      * When the next button is clicked it will move forward in time to the next week or month depending on the radio button selection.
-     * @throws SQLException
+     * @throws SQLException SQLException.
      */
     public void clickNextButton() throws SQLException {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
@@ -225,7 +225,7 @@ public class AppointmentsController implements Initializable {
 
     /**
      * When the previous button is clicked it will move backward in time to the next week or month depending on the radio button selection.
-     * @throws SQLException
+     * @throws SQLException SQLException.
      */
     public void clickPreviousButton() throws SQLException {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
@@ -266,7 +266,7 @@ public class AppointmentsController implements Initializable {
     /**
      * Used to log out of the database when a user presses the logout button.
      * @param actionEvent Logout button is pressed.
-     * @throws IOException
+     * @throws IOException IOException.
      */
     public void clickLogoutButton(ActionEvent actionEvent) throws IOException {
         ButtonType yes = ButtonType.YES;
@@ -297,7 +297,7 @@ public class AppointmentsController implements Initializable {
     /**
      * Switches the screen to CustomerPage.fxml when the Customers button is clicked.
      * @param actionEvent Customer button clicked.
-     * @throws IOException
+     * @throws IOException IOException.
      */
     public void clickCustomersButton(ActionEvent actionEvent) throws IOException {
         screenChange(actionEvent, "/view/CustomerPage.fxml");
@@ -306,7 +306,7 @@ public class AppointmentsController implements Initializable {
     /**
      * Switches the screen to ReportingPage.fxml when the Reports button is clicked.
      * @param actionEvent Reports button clicked.
-     * @throws IOException
+     * @throws IOException IOException.
      */
     public void clickReportsButton(ActionEvent actionEvent) throws IOException {
         screenChange(actionEvent, "/view/ReportingPage.fxml");
@@ -314,7 +314,7 @@ public class AppointmentsController implements Initializable {
 
     /**
      * Deletes a selected appointment from the database when the user clicks the Delete button.
-     * @throws SQLException
+     * @throws SQLException SQLException.
      */
     public void clickDeleteApptButton() throws SQLException {
         Appointment appointment = appointmentsTableView.getSelectionModel().getSelectedItem();
@@ -356,8 +356,8 @@ public class AppointmentsController implements Initializable {
     /**
      * Checks to make sure an appointment has been selected to edit and then populates its data into the new screen, UpdateAppointmentPage.fxml.
      * @param actionEvent Edit button is clicked.
-     * @throws IOException
-     * @throws SQLException
+     * @throws IOException IOException.
+     * @throws SQLException SQLException.
      */
     public void clickEditApptButton(ActionEvent actionEvent) throws IOException, SQLException {
         Appointment selectedAppointment = appointmentsTableView.getSelectionModel().getSelectedItem();
@@ -382,7 +382,7 @@ public class AppointmentsController implements Initializable {
     /**
      * Switches the screen to AddAppointmentsPage.fxml when the New button is pressed.
      * @param actionEvent New button clicked.
-     * @throws IOException
+     * @throws IOException IOException.
      */
     public void clickNewApptButton(ActionEvent actionEvent) throws IOException {
         screenChange(actionEvent, "/view/AddAppointmentsPage.fxml");
@@ -390,8 +390,8 @@ public class AppointmentsController implements Initializable {
 
     /**
      * Initializes AppointmentsPage.fxml when it is opened and sets the radio buttons to show all. Includes error messages.
-     * @param url
-     * @param resourceBundle
+     * @param url url.
+     * @param resourceBundle resourceBundle
      */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {

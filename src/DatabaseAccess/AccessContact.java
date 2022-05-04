@@ -22,7 +22,7 @@ public class AccessContact {
      * Used to collect the Contact_ID from the contacts table using the Contact_Name.
      * @param contactName Contact_Name of the contact.
      * @return id for the contact.
-     * @throws SQLException
+     * @throws SQLException SQLException.
      */
     public static Integer getContactID(String contactName) throws SQLException {
         Integer id = -1;
@@ -41,7 +41,7 @@ public class AccessContact {
     /**
      * Used to get all Contact_Name from contacts.
      * @return contactName
-     * @throws SQLException
+     * @throws SQLException SQLException.
      */
     public static ObservableList<String> getContactName() throws SQLException {
         ObservableList<String> contactName = FXCollections.observableArrayList();
@@ -60,7 +60,7 @@ public class AccessContact {
      * Used to get all appointments for a specific Contact_ID.
      * @param contactID Contact_ID.
      * @return appointments.
-     * @throws SQLException
+     * @throws SQLException SQLException.
      */
     public static ObservableList<String> getContactAppointments(String contactID) throws SQLException {
         ObservableList<String> appointments = FXCollections.observableArrayList();
@@ -93,7 +93,7 @@ public class AccessContact {
      * Converts the string for the start and end times into minutes and calculates the duration.
      * @param id Contact_ID.
      * @return timeSum.
-     * @throws SQLException
+     * @throws SQLException SQLException.
      */
     public static Integer calculateAppointmentTime(String id) throws SQLException {
         Integer timeSum = 0;
@@ -114,7 +114,7 @@ public class AccessContact {
     /**
      * Observable list used to retrieve all contact data from the database.
      * @return cList.
-     * @throws SQLException
+     * @throws SQLException SQLException.
      */
     public static ObservableList<Contact> allContacts() throws SQLException {
         ObservableList<Contact> cList = FXCollections.observableArrayList();

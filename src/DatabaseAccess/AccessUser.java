@@ -16,14 +16,24 @@ import java.util.Locale;
  * @author Dallas Merck
  */
 public class AccessUser {
+    //Used for methods below.
     private static User userLoggedOn;
     private static Locale usersLocale;
     private static ZoneId usersTimeZone;
 
+    /**
+     * Getter for the logged on user.
+     * @return userLoggedOn.
+     */
     public static User getUserLoggedOn() {
         return userLoggedOn;
     }
 
+    /**
+     * Observable list that gets all User_ID.
+     * @return userID.
+     * @throws SQLException SQLException.
+     */
     public static ObservableList<Integer> getAllUserIDs() throws SQLException {
         ObservableList<Integer> userID = FXCollections.observableArrayList();
         PreparedStatement SQLCommand = DatabaseConnection.getConnection().prepareStatement("SELECT DISTINCT " +
@@ -37,6 +47,13 @@ public class AccessUser {
         return userID;
     }
 
+    /**
+     * Gets the username and password information to compare to the users input during a login attempt.
+     * @param username Username of the user.
+     * @param password Password of the user.
+     * @return Boolean true or false.
+     * @throws SQLException SQLException.
+     */
     public static Boolean attemptLogin(String username, String password) throws SQLException {
         Connection connection = DatabaseConnection.getConnection();
         PreparedStatement ps = connection.prepareStatement("SELECT * FROM users WHERE " +
@@ -58,40 +75,36 @@ public class AccessUser {
         }
     }
 
+    /**
+     * Getter for the users Locale.
+     * @return usersLocale.
+     */
     public static Locale getUsersLocale() {
         return usersLocale;
     }
 
+    /**
+     * Getter for the users time zone on their machine accessing the program.
+     * @return usersTimeZone.
+     */
     public static ZoneId getUsersTimeZone() {
         return usersTimeZone;
     }
-/*
-    public static boolean logOnAttempt(String usernameInput, String userPasswordInput) throws SQLException {
-        Connection connection = DatabaseConnection.initiateConnection();
-        PreparedStatement SQLCommand = connection.prepareStatement("SELECT * FROM users WHERE User_Name = ? AND Password = ?");
-        SQLCommand.setString(1, usernameInput);
-        SQLCommand.setString(2, userPasswordInput);
-        System.out.println("Executing SQL Query...");
-        ResultSet resultSet = SQLCommand.executeQuery();
-        if(!resultSet.next()) {
-            SQLCommand.close();
-            return false;
-        }
-        else {
-            userLoggedOn = new User(resultSet.getString("User_Name"), resultSet.getInt("User_ID"));
-            usersLocale = Locale.getDefault();
-            usersTimeZone = ZoneId.systemDefault();
-            SQLCommand.close();
-            return true;
-        }
-    } */
 
+    /**
+     * Log out the user.
+     */
     public static void userLogOff() {
         userLoggedOn = null;
         usersLocale = null;
         usersTimeZone= null;
     }
 
+    /**
+     * Observable list that gets all User_ID from the MySQL Database.
+     * @return userID.
+     * @throws SQLException SQLException.
+     */
     public static ObservableList<Integer> getAllUsersID() throws SQLException {
         ObservableList<Integer> userID = FXCollections.observableArrayList();
         PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement("SELECT DISTINCT User_ID FROM users;");

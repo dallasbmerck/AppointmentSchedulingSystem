@@ -63,7 +63,7 @@ public class AddAppointmentsController implements Initializable {
      * Used to change to a new fxml screen.
      * @param actionEvent Action event that a user executes.
      * @param path The path that the FXMLLoader takes.
-     * @throws IOException
+     * @throws IOException IOException.
      */
     public void screenChange(ActionEvent actionEvent, String path) throws IOException {
         Parent p = FXMLLoader.load(getClass().getResource(path));
@@ -76,8 +76,8 @@ public class AddAppointmentsController implements Initializable {
     /**
      * Used to save a new appointment when the user clicks the save button.
      * @param actionEvent Save button click.
-     * @throws SQLException
-     * @throws IOException
+     * @throws SQLException SQLException.
+     * @throws IOException IOException.
      */
     public void clickSaveButton(ActionEvent actionEvent) throws SQLException, IOException {
         Boolean validStart = true;
@@ -173,7 +173,7 @@ public class AddAppointmentsController implements Initializable {
      * @param end End time.
      * @param date Date of the appointment.
      * @return overlap.
-     * @throws SQLException
+     * @throws SQLException SQLException.
      */
     public Boolean overlappingCustomerAppointments(Integer customerID, LocalDateTime start, LocalDateTime end, LocalDate date) throws SQLException {
         ObservableList<Appointment> overlap = AccessAppointment.filterAppointmentsByCustomerID(date, customerID);
@@ -206,7 +206,7 @@ public class AddAppointmentsController implements Initializable {
     /**
      * Changes the screen back to the AppointmentsPage.fxml when the use clicks the back button.
      * @param actionEvent Back button clicked.
-     * @throws IOException
+     * @throws IOException IOException.
      */
     public void clickBackButton(ActionEvent actionEvent) throws IOException {
         screenChange(actionEvent, "/view/AppointmentsPage.fxml");

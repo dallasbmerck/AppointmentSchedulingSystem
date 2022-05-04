@@ -25,7 +25,7 @@ public class AccessAppointment {
     /**
      * Observable list to gather all appointment data and add it to the appointment table view.
      * @return appointments list.
-     * @throws SQLException
+     * @throws SQLException SQLException.
      */
     public static ObservableList<Appointment> showAllAppointments() throws SQLException {
         ObservableList<Appointment> appointments = FXCollections.observableArrayList();
@@ -65,7 +65,7 @@ public class AccessAppointment {
      * @param start Start range for the appointments.
      * @param end End range for the appointments.
      * @return filterAppointments list.
-     * @throws SQLException
+     * @throws SQLException SQLException.
      */
     public static ObservableList<Appointment> filterAppointmentsByDate(ZonedDateTime start, ZonedDateTime end) throws SQLException {
 
@@ -114,7 +114,7 @@ public class AccessAppointment {
      * @param customerIDInput Customer_ID related to an appointment.
      * @param appointmentDate The date of the appointment.
      * @return filterCustomerAppointment list.
-     * @throws SQLException
+     * @throws SQLException SQLException.
      */
     public static ObservableList<Appointment> filterAppointmentsByCustomerID(LocalDate appointmentDate, Integer customerIDInput) throws SQLException {
         ObservableList<Appointment> filterCustomerAppointment = FXCollections.observableArrayList();
@@ -167,7 +167,7 @@ public class AccessAppointment {
      * @param userIDInput User_ID of user who the appointment is assigned to.
      * @param contactIDInput Contact_ID for the appointment.
      * @return Boolean true or false.
-     * @throws SQLException
+     * @throws SQLException SQLException.
      */
     public static Boolean addAppointment(String titleInput, String descriptionInput, String locationInput, String typeInput,
                                          ZonedDateTime startInput, ZonedDateTime endInput, String createdByInput, String lastUpdatedByInput,
@@ -219,7 +219,7 @@ public class AccessAppointment {
      * @param userIDInput Appointment User_ID.
      * @param contactIDInput Appointment Contact_ID.
      * @return Boolean true or false.
-     * @throws SQLException
+     * @throws SQLException SQLException.
      */
     public static Boolean updateAppointment(Integer apptIDInput, String titleInput, String descriptionInput, String locationInput,
                                             String typeInput, ZonedDateTime startInput, ZonedDateTime endInput, String
@@ -260,7 +260,7 @@ public class AccessAppointment {
      * Deletes a selected appointment from the database.
      * @param appointmentID Appointment_ID of the selected appointment.
      * @return Boolean true or false.
-     * @throws SQLException
+     * @throws SQLException SQLException.
      */
     public static Boolean deleteAppointment(Integer appointmentID) throws SQLException {
         PreparedStatement SQLCommand = DatabaseConnection.getConnection().prepareStatement("DELETE FROM appointments " +
@@ -282,7 +282,7 @@ public class AccessAppointment {
      * Deletes an appointment by reference of a Customer_ID.
      * @param customerID Customer_ID for the appointment.
      * @return Boolean true of false.
-     * @throws SQLException
+     * @throws SQLException SQLException.
      */
     public static Boolean deleteAllAppointmentsByCustomerID(Integer customerID) throws SQLException {
         PreparedStatement SQLCommand = DatabaseConnection.getConnection().prepareStatement("DELETE FROM appointments " +
@@ -302,7 +302,7 @@ public class AccessAppointment {
     /**
      * Observable list to store appointments that are to be attended within 15 minutes of a user logging on.
      * @return Observable list apptsIn15.
-     * @throws SQLException
+     * @throws SQLException SQLException.
      */
     public static ObservableList<Appointment> appointmentWithin15MinOfLogOn() throws SQLException {
         ObservableList<Appointment> apptsIn15 = FXCollections.observableArrayList();
@@ -356,7 +356,7 @@ public class AccessAppointment {
     /**
      * Observable list that is user to create reports from the appointment's type or date.
      * @return report observable list.
-     * @throws SQLException
+     * @throws SQLException SQLException.
      */
     public static ObservableList<String> createReportTypeAndDate() throws SQLException {
         ObservableList<String> report = FXCollections.observableArrayList();

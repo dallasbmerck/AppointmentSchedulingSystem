@@ -21,7 +21,7 @@ public abstract class DatabaseConnection {
 
     /**
      * Connects to the SQL Database.
-     * @return the connection
+     * @return connection.
      */
     public static void openConnection() {
         try {

@@ -20,7 +20,7 @@ public class AccessCustomer {
     /**
      * Observable list user to return all Customer_ID from database.
      * @return customerID.
-     * @throws SQLException
+     * @throws SQLException SQLException.
      */
     public static ObservableList<Integer> getAllCustomersID() throws SQLException {
         ObservableList<Integer> customerID = FXCollections.observableArrayList();
@@ -37,7 +37,7 @@ public class AccessCustomer {
     /**
      * Observable list user to return all customer data from the database.
      * @return allCustomers.
-     * @throws SQLException
+     * @throws SQLException SQLException.
      */
     public static ObservableList<Customer> getAllCustomers() throws SQLException {
         ObservableList<Customer> allCustomers = FXCollections.observableArrayList();
@@ -76,7 +76,7 @@ public class AccessCustomer {
      * @param phoneNumber Customer Phone.
      * @param divisionID Customer Division_ID.
      * @return Boolean true of false.
-     * @throws SQLException
+     * @throws SQLException SQLException.
      */
     public static Boolean addCustomers(String country, String division, String name, String address, String postCode,
                                        String phoneNumber, Integer divisionID) throws SQLException {
@@ -117,7 +117,7 @@ public class AccessCustomer {
      * @param phoneNumber Phone of customer.
      * @param customerID Customer_ID.
      * @return Boolean true or false.
-     * @throws SQLException
+     * @throws SQLException SQLException.
      */
     public static Boolean updateCustomers(String division, String name, String address, String postCode,
             String phoneNumber, Integer customerID) throws SQLException {
@@ -152,7 +152,7 @@ public class AccessCustomer {
      * Used to get the Division_ID for a customer.
      * @param division Division_ID.
      * @return divisionID
-     * @throws SQLException
+     * @throws SQLException SQLException.
      */
     public static Integer getDivisionID(String division) throws SQLException {
         Integer divisionID = 0;
@@ -172,7 +172,7 @@ public class AccessCustomer {
      * Observable list used to access the First_Level_Divisions of customer.
      * @param country Country of customer.
      * @return divisions.
-     * @throws SQLException
+     * @throws SQLException SQLException.
      */
     public static ObservableList<String> getFirstLevelDivisions(String country) throws SQLException {
         ObservableList<String> divisions = FXCollections.observableArrayList();
@@ -194,7 +194,7 @@ public class AccessCustomer {
      * Deletes a selected customer from the database.
      * @param customerID Customer_ID.
      * @return Boolean true or false.
-     * @throws SQLException
+     * @throws SQLException SQLException.
      */
     public static Boolean deleteSelectedCustomer(Integer customerID) throws SQLException {
         PreparedStatement SQLCommand = DatabaseConnection.getConnection().prepareStatement("DELETE FROM customers" +
@@ -215,7 +215,7 @@ public class AccessCustomer {
     /**
      * Observable list used to get all countries from the countries table.
      * @return countries.
-     * @throws SQLException
+     * @throws SQLException SQLException.
      */
     public static ObservableList<String> getAllCountries() throws SQLException {
         ObservableList<String> countries = FXCollections.observableArrayList();
