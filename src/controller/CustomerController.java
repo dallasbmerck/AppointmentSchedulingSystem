@@ -2,6 +2,7 @@ package controller;
 
 import DatabaseAccess.AccessAppointment;
 import DatabaseAccess.AccessCustomer;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -12,6 +13,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import model.Customer;
 
 import java.io.IOException;
@@ -56,10 +58,11 @@ public class CustomerController implements Initializable {
      * Adds data to the customers table view using an observable list.
      * @param customerList Observable list of customers.
      */
-    public void addDataToCustomersTable(ObservableList<Customer> customerList) {
+    public void addDataToCustomersTable(ObservableList<Customer> customerList) throws SQLException {
+
         customerIDCol.setCellValueFactory(new PropertyValueFactory<>("customerID"));
         customerNameCol.setCellValueFactory(new PropertyValueFactory<>("customerName"));
-        countryCol.setCellValueFactory(new PropertyValueFactory<>("countryOfCustomer"));
+        countryCol.setCellValueFactory(new PropertyValueFactory<>("CustomerCountryName"));
         divisionCol.setCellValueFactory(new PropertyValueFactory<>("customerDivision"));
         addressCol.setCellValueFactory(new PropertyValueFactory<>("customerAddress"));
         postCodeCol.setCellValueFactory(new PropertyValueFactory<>("customerPostCode"));

@@ -226,7 +226,7 @@ public class AccessAppointment {
                                             lastUpdateByInput, Integer customerIDInput, Integer userIDInput, Integer contactIDInput) throws SQLException {
         PreparedStatement SQLCommand = DatabaseConnection.getConnection().prepareStatement("UPDATE appointments " +
                 "SET Title=?, Description=?, Location=?, Type=?, Start=?, End=?, Last_Update=?, Last_Update_By=?, " +
-                "Customer_ID=?, User_ID=?, Contact_ID=? WHERE Appointment_ID = ?;");
+                "Customer_ID=?, User_ID=?, Contact_ID=? WHERE Appointment_ID = ?");
 
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String startInputString = startInput.format(dateTimeFormatter).toString();

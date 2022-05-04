@@ -132,6 +132,7 @@ public class UpdateAppointmentController implements Initializable {
         Boolean validOperationHours;
         String errorMessage = "";
 
+        Integer apptID = Integer.parseInt(apptIDTextBox.getText());
         String apptTitle = titleTextBox.getText();
         String apptDescription = descriptionTextBox.getText();
         String apptLocation = locationTextBox.getText();
@@ -194,8 +195,9 @@ public class UpdateAppointmentController implements Initializable {
             zonedStart = zonedStart.withZoneSameInstant(ZoneOffset.UTC);
             zonedEnd = zonedEnd.withZoneSameInstant(ZoneOffset.UTC);
 
-            Boolean successfulAdd = AccessAppointment.addAppointment(apptTitle, apptDescription, apptLocation, apptType,
-                    zonedStart, zonedEnd, username, username, apptCustomerID, apptUserID, apptContactID);
+            Boolean successfulAdd = AccessAppointment.updateAppointment(apptID, apptTitle, apptDescription, apptLocation,
+                    apptType, zonedStart, zonedEnd, username, apptCustomerID, apptUserID,
+                    apptContactID);
 
             if (successfulAdd) {
                 ButtonType ok = new ButtonType("Okay", ButtonBar.ButtonData.OK_DONE);
