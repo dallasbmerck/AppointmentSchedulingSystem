@@ -43,8 +43,8 @@ public class LoginPageController implements Initializable {
 
     /**
      * Initializes the LoginPageController when the program is launched and gets the Locale and language information to display to the user
-     * @param url
-     * @param resourceBundle
+     * @param url url
+     * @param resourceBundle resourceBundle
      */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -72,8 +72,8 @@ public class LoginPageController implements Initializable {
      * Takes the username and password input from the user and validates it against the MySQL Database values to authorize the user login.
      * If valid, it opens the AppointmentsPage.fxml.
      * @param actionEvent Sign In button is clicked.
-     * @throws SQLException
-     * @throws IOException
+     * @throws SQLException SQLException.
+     * @throws IOException IOException.
      */
     public void PressSignInButton(ActionEvent actionEvent) throws SQLException, IOException {
         String username = UsernameText.getText();
@@ -110,7 +110,7 @@ public class LoginPageController implements Initializable {
      * Called by other methods to change the screen when a button is pressed.
      * @param actionEvent Button is clicked.
      * @param path Path the screen change takes.
-     * @throws IOException
+     * @throws IOException IOException.
      */
     public void screenChange(ActionEvent actionEvent, String path) throws IOException {
         Parent p = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(path)));

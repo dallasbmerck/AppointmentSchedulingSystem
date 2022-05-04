@@ -31,6 +31,7 @@ import java.time.LocalDate;
  * AddAppointmentController class used to control input and output to the AddAppointmentsPage.fxml
  */
 public class AddAppointmentsController implements Initializable {
+
     public DatePicker datePicker;
     public TextField startTextBox;
     public TextField endTextBox;

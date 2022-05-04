@@ -30,6 +30,9 @@ import java.util.ResourceBundle;
  * AppointmentsController class used to input and output data in the AppointmentsPage.fxml.
  */
 public class AppointmentsController implements Initializable {
+    /**
+     * Scenebuilder attributes
+     */
     public TableView<Appointment> appointmentsTableView;
     public TableColumn<Appointment, Integer> apptIDCol;
     public TableColumn<Appointment, String> titleCol;
