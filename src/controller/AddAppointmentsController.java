@@ -26,6 +26,8 @@ import java.time.format.DateTimeParseException;
 import java.util.Objects;
 import java.util.ResourceBundle;
 import java.time.LocalDate;
+import java.util.concurrent.ThreadLocalRandom;
+
 
 /**
  * AddAppointmentController class used to control input and output to the AddAppointmentsPage.fxml
@@ -60,6 +62,11 @@ public class AddAppointmentsController implements Initializable {
     public Button backButton;
     public Button clearButton;
 
+    public static String getRandomID(int min, int max) {
+        int randomNum = ThreadLocalRandom.current().nextInt(min, max + 1);
+        String randomID = String.valueOf(randomNum);
+        return randomID;
+    }
     /**
      * Used to change to a new fxml screen.
      * @param actionEvent Action event that a user executes.
@@ -227,13 +234,8 @@ public class AddAppointmentsController implements Initializable {
         ZonedDateTime operationStart = ZonedDateTime.of(appointmentDate, LocalTime.of(8, 0), ZoneId.of("America/New_York"));
         ZonedDateTime operationEnd = ZonedDateTime.of(appointmentDate, LocalTime.of(22, 0), ZoneId.of("America/New_York"));
 
-        if (zonedStart.isBefore(operationStart) || zonedStart.isAfter(operationEnd) || zonedEnd.isBefore(operationEnd) ||
-        zonedEnd.isAfter(operationEnd) || zonedStart.isAfter(zonedEnd)) {
-            return false;
-        }
-        else {
-            return true;
-        }
+        return !zonedStart.isBefore(operationStart) && !zonedStart.isAfter(operationEnd) && !zonedEnd.isBefore(operationStart) &&
+                !zonedEnd.isAfter(operationEnd) && !zonedStart.isAfter(zonedEnd);
 
     }
 
@@ -278,6 +280,7 @@ public class AddAppointmentsController implements Initializable {
         });
 
         try {
+            apptIDTextBox.setText(getRandomID(1, 999));
             customerIDTextBox.setItems(AccessCustomer.getAllCustomersID());
             userIDComboBox.setItems(AccessUser.getAllUserIDs());
             contactComboBox.setItems(AccessContact.getContactName());

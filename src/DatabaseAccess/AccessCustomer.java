@@ -90,7 +90,7 @@ public class AccessCustomer {
 
         SQLCommand.setString(1, name);
         SQLCommand.setString(2, address);
-        SQLCommand.setString(2, postCode);
+        SQLCommand.setString(3, postCode);
         SQLCommand.setString(4, phoneNumber);
         SQLCommand.setString(5, ZonedDateTime.now(ZoneOffset.UTC).format(dateTimeFormatter).toString());
         SQLCommand.setString(6, AccessUser.getUserLoggedOn().getUserName());
@@ -229,4 +229,6 @@ public class AccessCustomer {
         SQLCommand.close();
         return countries;
     }
-    }
+
+
+}

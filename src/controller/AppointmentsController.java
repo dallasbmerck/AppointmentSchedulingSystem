@@ -26,6 +26,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+
 /**
  * AppointmentsController class used to input and output data in the AppointmentsPage.fxml.
  */

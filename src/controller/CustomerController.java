@@ -59,7 +59,7 @@ public class CustomerController implements Initializable {
     public void addDataToCustomersTable(ObservableList<Customer> customerList) {
         customerIDCol.setCellValueFactory(new PropertyValueFactory<>("customerID"));
         customerNameCol.setCellValueFactory(new PropertyValueFactory<>("customerName"));
-        countryCol.setCellValueFactory(new PropertyValueFactory<>("customerCountry"));
+        countryCol.setCellValueFactory(new PropertyValueFactory<>("countryOfCustomer"));
         divisionCol.setCellValueFactory(new PropertyValueFactory<>("customerDivision"));
         addressCol.setCellValueFactory(new PropertyValueFactory<>("customerAddress"));
         postCodeCol.setCellValueFactory(new PropertyValueFactory<>("customerPostCode"));

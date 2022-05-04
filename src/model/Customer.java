@@ -13,7 +13,7 @@ public class Customer {
     private String customerPhoneNumber;
     private Integer customerDivisionID;
     private String customerDivision;
-    private String customerCountry;
+    private String countryOfCustomer;
 
     /**
      * Customer contructor that creates a new instance of customer.
@@ -35,7 +35,7 @@ public class Customer {
         customerPhoneNumber = phoneNumberInput;
         customerDivision = divisionInput;
         customerDivisionID = divisionIDInput;
-        customerCountry = countryInput;
+        countryOfCustomer = countryInput;
     }
 
     /**
@@ -99,6 +99,6 @@ public class Customer {
      * @return Country_ID.
      */
     public String getCustomerCountryName() {
-        return customerCountry;
+        return countryOfCustomer;
     }
 }
