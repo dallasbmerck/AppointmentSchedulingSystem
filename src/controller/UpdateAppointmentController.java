@@ -24,6 +24,9 @@ import java.time.format.DateTimeParseException;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
+/**
+ * UpdateAppointmentController allows for appointment data to be augmented in the UpdateAppointmentsPage.fxml.
+ */
 public class UpdateAppointmentController implements Initializable {
     public DatePicker datePicker;
     public TextField startTextBox;
@@ -53,6 +56,12 @@ public class UpdateAppointmentController implements Initializable {
     public Button backButton;
     public Button clearButton;
 
+    /**
+     * Called by other methods to change the screen when a button is pressed.
+     * @param actionEvent Button is clicked.
+     * @param path Path that the screen change takes.
+     * @throws IOException
+     */
     public void screenChange(ActionEvent actionEvent, String path) throws IOException {
         Parent p = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(path)));
         Scene scene = new Scene(p);
@@ -61,6 +70,13 @@ public class UpdateAppointmentController implements Initializable {
         newWindow.show();
     }
 
+    /**
+     * Validates the operational hours in regards to an appointment.
+     * @param start Start of the appointment.
+     * @param end End of the appointment.
+     * @param appointmentDate Date of the appointment.
+     * @return Boolean true or false.
+     */
     public Boolean validateOperationHours(LocalDateTime start, LocalDateTime end, LocalDate appointmentDate) {
         ZonedDateTime zonedStart = ZonedDateTime.of(start, AccessUser.getUsersTimeZone());
         ZonedDateTime zonedEnd = ZonedDateTime.of(end, AccessUser.getUsersTimeZone());
@@ -73,6 +89,15 @@ public class UpdateAppointmentController implements Initializable {
 
     }
 
+    /**
+     * Ensures that customer appointments do not become double booked.
+     * @param customerID Customer_ID.
+     * @param start Start.
+     * @param end End.
+     * @param date Date.
+     * @return Boolean true or false.
+     * @throws SQLException
+     */
     public Boolean overlappingCustomerAppointments(Integer customerID, LocalDateTime start, LocalDateTime end, LocalDate date) throws SQLException {
         ObservableList<Appointment> overlap = AccessAppointment.filterAppointmentsByCustomerID(date, customerID);
 
@@ -96,7 +121,12 @@ public class UpdateAppointmentController implements Initializable {
         return true;
     }
 
-
+    /**
+     * Saves the updated appointment when the user clicks the save button.
+     * @param actionEvent Save button is clicked.
+     * @throws SQLException
+     * @throws IOException
+     */
     public void clickSaveButton(ActionEvent actionEvent) throws SQLException, IOException {
         Boolean validOverlap;
         Boolean validOperationHours;
@@ -182,10 +212,18 @@ public class UpdateAppointmentController implements Initializable {
         }
     }
 
+    /**
+     * Changes the screen to AppointmentsPage.fxml when the user clicks the back button.
+     * @param actionEvent Back button is clicked.
+     * @throws IOException
+     */
     public void clickBackButton(ActionEvent actionEvent) throws IOException {
         screenChange(actionEvent, "/view/AppointmentsPage.fxml");
     }
 
+    /**
+     * Clears all text and combo boxes when the user clicks the Clear button.
+     */
     public void clickClearButton() {
         datePicker.getEditor().clear();
         startTextBox.clear();
@@ -200,6 +238,11 @@ public class UpdateAppointmentController implements Initializable {
 
     }
 
+    /**
+     * Adds the data to the text and combo boxes.
+     * @param selectedAppointment selectedAppointment.
+     * @throws SQLException
+     */
     public void addData(Appointment selectedAppointment) throws SQLException {
         try {
             LocalDate dateOfAppt = selectedAppointment.getStartDateTime().toLocalDateTime().toLocalDate();
@@ -236,6 +279,11 @@ public class UpdateAppointmentController implements Initializable {
 
     }
 
+    /**
+     * Initializes the UpdateAppointmentsPage.fxml when the page opens.
+     * @param url
+     * @param resourceBundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         timezoneLabel.setText(AccessUser.getUsersTimeZone().toString());

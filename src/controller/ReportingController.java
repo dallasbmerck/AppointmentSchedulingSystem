@@ -19,6 +19,9 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Objects;
 
+/**
+ * ReportingController allows for custom reports to be generated in the ReportingPage.fxml.
+ */
 public class ReportingController {
     public TextArea reportsTextArea;
     public RadioButton reportMandTbutton;
@@ -27,6 +30,12 @@ public class ReportingController {
     public Button backButton;
     public RadioButton timePerContactButton;
 
+    /**
+     * Called by other  methods to change the current screen.
+     * @param actionEvent Button is clicked.
+     * @param path Path that the screen change takes.
+     * @throws IOException
+     */
     public void screenChange(ActionEvent actionEvent, String path) throws IOException {
         Parent p = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(path)));
         Scene scene = new Scene(p);
@@ -35,6 +44,10 @@ public class ReportingController {
         newWindow.show();
     }
 
+    /**
+     * Shows the appointments by their type and month when the type and month button is selected.
+     * @throws SQLException
+     */
     public void clickReportMandTbutton() throws SQLException {
         reportMandTbutton.setSelected(true);
         contactScheduleButton.setSelected(false);
@@ -47,6 +60,10 @@ public class ReportingController {
         }
     }
 
+    /**
+     * Shows the appointments by their contact data.
+     * @throws SQLException
+     */
     public void clickContactScheduleButton() throws SQLException {
         contactScheduleButton.setSelected(true);
         reportMandTbutton.setSelected(false);
@@ -67,10 +84,19 @@ public class ReportingController {
         }
     }
 
+    /**
+     * Changes the screen to AppointmentsPage.fxml when the user clicks the Back button.
+     * @param actionEvent Back button is clicked.
+     * @throws IOException
+     */
     public void clickBackButton(ActionEvent actionEvent) throws IOException {
         screenChange(actionEvent, "/view/AppointmentsPage.fxml");
     }
 
+    /**
+     * Shows the appointment time associated with a contact.
+     * @throws SQLException
+     */
     public void clickTimePerContactButton() throws SQLException {
         timePerContactButton.setSelected(true);
         reportMandTbutton.setSelected(false);

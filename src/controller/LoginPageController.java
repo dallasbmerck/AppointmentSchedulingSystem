@@ -22,6 +22,10 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
+/**
+ * LoginPageController class takes input from a user and checks username and password against values in the MySQL Database.
+ * Allows for timezone and language to be auto generated given parameters by the users machine settings.
+ */
 public class LoginPageController implements Initializable {
     public Label ApplicationTitleLabel;
     public Label UserNameLabel;
@@ -37,6 +41,11 @@ public class LoginPageController implements Initializable {
     private String errorTitle;
     private String errorText;
 
+    /**
+     * Initializes the LoginPageController when the program is launched and gets the Locale and language information to display to the user
+     * @param url
+     * @param resourceBundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         Locale userLocale = Locale.getDefault();
@@ -51,11 +60,21 @@ public class LoginPageController implements Initializable {
         ExitButton.setText(resourceBundle.getString("ExitButton"));
     }
 
+    /**
+     * Clears the username and password text boxes when the user clicks the clear button.
+     */
     public void PressResetButton() {
         UsernameText.clear();
         PasswordText.clear();
     }
 
+    /**
+     * Takes the username and password input from the user and validates it against the MySQL Database values to authorize the user login.
+     * If valid, it opens the AppointmentsPage.fxml.
+     * @param actionEvent Sign In button is clicked.
+     * @throws SQLException
+     * @throws IOException
+     */
     public void PressSignInButton(ActionEvent actionEvent) throws SQLException, IOException {
         String username = UsernameText.getText();
         String password = PasswordText.getText();
@@ -87,7 +106,12 @@ public class LoginPageController implements Initializable {
         }
     }
 
-
+    /**
+     * Called by other methods to change the screen when a button is pressed.
+     * @param actionEvent Button is clicked.
+     * @param path Path the screen change takes.
+     * @throws IOException
+     */
     public void screenChange(ActionEvent actionEvent, String path) throws IOException {
         Parent p = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(path)));
         Scene scene = new Scene(p);
@@ -96,6 +120,9 @@ public class LoginPageController implements Initializable {
         newWindow.show();
     }
 
+    /**
+     * Exits the program when the Exit button is clicked by a user.
+     */
     public void PressExitButton() {
         AccessUser.userLogOff();
         System.exit(0);

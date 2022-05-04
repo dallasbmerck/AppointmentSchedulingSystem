@@ -21,6 +21,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+/**
+ * CustomerController class allows for input and output of data to the CustomerPage.fxml.
+ */
 public class CustomerController implements Initializable {
     public TableView<Customer> customerTableView;
     public TableColumn<Customer, Integer> customerIDCol;
@@ -35,6 +38,12 @@ public class CustomerController implements Initializable {
     public Button deleteButton;
     public Button backButton;
 
+    /**
+     * Gets called by other methods to switch screens in the application.
+     * @param actionEvent Button is clicked.
+     * @param path Path the switch takes.
+     * @throws IOException
+     */
     public void screenChange(ActionEvent actionEvent, String path) throws IOException {
         Parent p = FXMLLoader.load(getClass().getResource(path));
         Scene scene = new Scene(p);
@@ -43,6 +52,10 @@ public class CustomerController implements Initializable {
         newWindow.show();
     }
 
+    /**
+     * Adds data to the customers table view using an observable list.
+     * @param customerList Observable list of customers.
+     */
     public void addDataToCustomersTable(ObservableList<Customer> customerList) {
         customerIDCol.setCellValueFactory(new PropertyValueFactory<>("customerID"));
         customerNameCol.setCellValueFactory(new PropertyValueFactory<>("customerName"));
@@ -52,12 +65,23 @@ public class CustomerController implements Initializable {
         postCodeCol.setCellValueFactory(new PropertyValueFactory<>("customerPostCode"));
         phoneCol.setCellValueFactory(new PropertyValueFactory<>("customerPhoneNumber"));
         customerTableView.setItems(customerList);
-            }
+    }
 
+    /**
+     * Changes the screen when the user clicks the add customer button.
+     * @param actionEvent Add button is clicked.
+     * @throws IOException
+     */
     public void clickAddButton(ActionEvent actionEvent) throws IOException {
         screenChange(actionEvent, "/view/AddCustomerPage.fxml");
     }
 
+    /**
+     * Checks to make sure the user has selected a customer and then loads the customer data into CustomerUpdatePage.fxml when the edit button is clicked.
+     * @param actionEvent Edit button is clicked.
+     * @throws IOException
+     * @throws SQLException
+     */
     public void clickEditButton(ActionEvent actionEvent) throws IOException, SQLException {
         Customer customer = customerTableView.getSelectionModel().getSelectedItem();
 
@@ -79,6 +103,10 @@ public class CustomerController implements Initializable {
         }
     }
 
+    /**
+     * Deletes a selected customer when the user clicks the delete button.
+     * @throws SQLException
+     */
     public void clickDeleteButton() throws SQLException {
         Customer customer = customerTableView.getSelectionModel().getSelectedItem();
 
@@ -118,10 +146,20 @@ public class CustomerController implements Initializable {
         }
     }
 
+    /**
+     * Switches the screen to AppointmentsPage.fxml when the user clicks the back button.
+     * @param actionEvent Back button is pressed.
+     * @throws IOException
+     */
     public void clickBackButton(ActionEvent actionEvent) throws IOException {
         screenChange(actionEvent, "/view/AppointmentsPage.fxml");
     }
 
+    /**
+     * Initialized the  Customer table view with all customer from the MySQL Database.
+     * @param url
+     * @param resourceBundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {

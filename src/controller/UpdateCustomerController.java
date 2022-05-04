@@ -17,6 +17,9 @@ import java.sql.SQLException;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
+/**
+ * UpdateCustomerController class allows for input and output of data to UpdateCustomerPage.fxml.
+ */
 public class UpdateCustomerController implements Initializable {
     public Label customerIDLabel;
     public Label countryLabel;
@@ -36,6 +39,12 @@ public class UpdateCustomerController implements Initializable {
     public Button clearButton;
     public Button backButton;
 
+    /**
+     * Called by other methods to change screens when a button is pressed.
+     * @param actionEvent Button is clicked.
+     * @param path Path of the screen change.
+     * @throws IOException
+     */
     public void screenChange(ActionEvent actionEvent, String path) throws IOException {
         Parent p = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(path)));
         Scene scene = new Scene(p);
@@ -44,6 +53,11 @@ public class UpdateCustomerController implements Initializable {
         newWindow.show();
     }
 
+    /**
+     * Adds data to the text and combo boxes in the UpdateCustomerPage.fxml.
+     * @param customer customer.
+     * @throws SQLException
+     */
     public void addData(Customer customer) throws SQLException {
     countryComboBox.setItems(AccessCustomer.getAllCountries());
     countryComboBox.getSelectionModel().select(customer.getCustomerCountryName());
@@ -56,6 +70,10 @@ public class UpdateCustomerController implements Initializable {
     phoneTextBox.setText(customer.getCustomerPhoneNumber());
     }
 
+    /**
+     * Saves the updated customer data when the user clicks the save button.
+     * @throws SQLException
+     */
     public void clickSaveButton() throws SQLException {
         String customerCountry = countryComboBox.getValue();
         String customerDivision = divisionComboBox.getValue();
@@ -87,6 +105,9 @@ public class UpdateCustomerController implements Initializable {
         }
     }
 
+    /**
+     * Clears all text and combo boxes when the user clicks the clear button.
+     */
     public void clickClearButton() {
         countryComboBox.getSelectionModel().clearSelection();
         divisionComboBox.getSelectionModel().clearSelection();
@@ -96,10 +117,20 @@ public class UpdateCustomerController implements Initializable {
         phoneTextBox.clear();
     }
 
+    /**
+     * Changes the screen to CustomerPage.fxml when the Back button is clicked.
+     * @param actionEvent Back button is clicked.
+     * @throws IOException
+     */
     public void clickBackButton(ActionEvent actionEvent) throws IOException {
         screenChange(actionEvent, "/view/CustomerPage.fxml");
     }
 
+    /**
+     * Initializes the data in the UpdateCustomerPage.fxml when it is opened.
+     * @param url
+     * @param resourceBundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         countryComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
