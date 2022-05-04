@@ -81,7 +81,7 @@ public class LoginPageController implements Initializable {
         boolean valid = AccessUser.attemptLogin(username, password);
         LogOnRecord.generateLogOnFile(username, valid);
         if (valid) {
-            ObservableList<Appointment> upcoming = DatabaseAccess.AccessAppointment.appointmentWithin15MinOfLogOn();
+            ObservableList<Appointment> upcoming = AccessAppointment.appointmentWithin15MinOfLogOn();
             if (!upcoming.isEmpty()) {
                 for (Appointment a : upcoming) {
                     String notify = "Upcoming appointment with ID: " + a.getApptID() + " starts at " + a.getStartDateTime().toString();

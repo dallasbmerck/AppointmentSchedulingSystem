@@ -112,3 +112,11 @@
 2022-05-04T11:37:39.899514700-06:00[America/Guatemala] test Success
 2022-05-04T11:40:00.111249900-06:00[America/Guatemala] test Success
 2022-05-04T11:42:36.530364800-06:00[America/Guatemala] test Success
+2022-05-04T15:49:36.749552900-05:00[America/Winnipeg] test Success
+2022-05-04T15:50:47.405081900-05:00[America/Winnipeg] test Success
+2022-05-04T15:59:08.858191500-05:00[America/Winnipeg] test Success
+2022-05-04T16:36:48.768140900-05:00[America/Winnipeg] test Success
+2022-05-04T16:37:52.239146-05:00[America/Winnipeg] test Success
+2022-05-04T16:40:03.929836200-05:00[America/Winnipeg] test Success
+2022-05-04T16:41:50.421652600-05:00[America/Winnipeg] test Success
+2022-05-04T16:45:20.562622800-05:00[America/Winnipeg] test Success

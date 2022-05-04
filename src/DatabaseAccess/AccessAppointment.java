@@ -5,14 +5,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import model.Appointment;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
+import java.sql.*;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 
 /**
@@ -313,7 +307,7 @@ public class AccessAppointment {
         ZonedDateTime utc = timezone.withZoneSameInstant(ZoneOffset.UTC);
         ZonedDateTime timeDelta = utc.plusMinutes(15);
 
-        String start = utc.format(dateTimeFormatter).toString();
+        String start = utc.format(dateTimeFormatter);
         String end = timeDelta.format(dateTimeFormatter);
         Integer userID = AccessUser.getUserLoggedOn().getUserID();
 
@@ -352,6 +346,7 @@ public class AccessAppointment {
         return apptsIn15;
 
     }
+
 
     /**
      * Observable list that is user to create reports from the appointment's type or date.

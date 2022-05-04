@@ -198,7 +198,7 @@ public class AccessCustomer {
      */
     public static Boolean deleteSelectedCustomer(Integer customerID) throws SQLException {
         PreparedStatement SQLCommand = DatabaseConnection.getConnection().prepareStatement("DELETE FROM customers" +
-                "WHERE Customer_ID = ?");
+                " WHERE Customer_ID = ?");
 
         SQLCommand.setInt(1, customerID);
 
