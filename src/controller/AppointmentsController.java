@@ -339,7 +339,7 @@ public class AppointmentsController implements Initializable {
                 Boolean b = AccessAppointment.deleteAppointment(appointment.getApptID());
                 if(b) {
                     ButtonType ok = new ButtonType("Okay", ButtonBar.ButtonData.OK_DONE);
-                    Alert showDelete = new Alert(Alert.AlertType.CONFIRMATION, "Appointment: " + appointment.getApptID() + " has been deleted.", ok);
+                    Alert showDelete = new Alert(Alert.AlertType.CONFIRMATION, "Appointment: '" + appointment.getApptID() + "' with Type: '" + appointment.getApptType() + "' has been deleted.", ok);
                     showDelete.showAndWait();
                 }
                 else {

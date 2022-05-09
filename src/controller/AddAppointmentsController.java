@@ -141,21 +141,21 @@ public class AddAppointmentsController implements Initializable {
             return;
         }
         validOperationHours = validateOperationHours(apptStart, apptEnd, apptDate);
-        validOverlap = overlappingCustomerAppointments(apptCustomerID, apptStart, apptEnd, apptDate);
+        validOverlap = overlappingCustomerAppointments(apptStart, apptEnd, apptDate);
 
-        if (!validOperationHours) {
-            errorMessage += "Invalid hours of operation. (8:00 AM to 10:00 PM EST)\n";
-        }
-        if (!validOverlap) {
-            errorMessage += "You cannot overlap Customer Appointments.\n";
-        }
-        System.out.println(errorMessage);
-
-        if (!validOverlap || !validOperationHours || !validStart || !validEnd) {
+        //System.out.println(errorMessage);
+        if (!validStart || !validEnd ||!validOperationHours) {
             ButtonType ok = new ButtonType("Okay", ButtonBar.ButtonData.OK_DONE);
-            Alert invalid = new Alert(Alert.AlertType.WARNING, errorMessage, ok);
+            Alert invalid = new Alert(Alert.AlertType.WARNING, "Appointment must be scheduled within operation hours! " +
+                    "Please adjust your appointment time and make sure that the start time is before the end time.", ok);
             invalid.showAndWait();
-        } else {
+        }
+        else if (validOverlap) {
+            ButtonType ok = new ButtonType("Okay", ButtonBar.ButtonData.OK_DONE);
+            Alert invalid = new Alert(Alert.AlertType.WARNING, "You cannot overlap customer appointments! Please select another time to schedule the appointment.", ok);
+            invalid.showAndWait();
+        }
+        else {
             zonedStart = ZonedDateTime.of(apptStart, AccessUser.getUsersTimeZone());
             zonedEnd = ZonedDateTime.of(apptEnd, AccessUser.getUsersTimeZone());
             String username = AccessUser.getUserLoggedOn().getUserName();
@@ -189,32 +189,36 @@ public class AddAppointmentsController implements Initializable {
      * @return overlap.
      * @throws SQLException SQLException.
      */
-    public Boolean overlappingCustomerAppointments(Integer customerID, LocalDateTime start, LocalDateTime end, LocalDate date) throws SQLException {
-        ObservableList<Appointment> overlap = AccessAppointment.filterAppointmentsByCustomerID(date, customerID);
+    public Boolean overlappingCustomerAppointments(LocalDateTime start, LocalDateTime end, LocalDate date) throws SQLException {
+        ObservableList<Appointment> overlap = AccessAppointment.filterAppointmentsByCustomer(date);
 
-        if (overlap.isEmpty()) {
-            return true;
-        }
-        else {
-            for (Appointment overlappingAppt : overlap) {
-                LocalDateTime overlapStart = overlappingAppt.getStartDateTime().toLocalDateTime();
-                LocalDateTime overlapEnd = overlappingAppt.getEndDateTime().toLocalDateTime();
+        //boolean overlapTorF;
 
-                if (overlapStart.isBefore(start) && overlapEnd.isAfter(end)) {
-                    return false;
-                }
-                if (overlapStart.isBefore(end) && overlapStart.isAfter(start)) {
-                    return false;
-                }
-                if (overlapEnd.isBefore(end) && overlapEnd.isAfter(start)) {
-                    return false;
-                }
-                else {
-                    return true;
-                }
+        for (Appointment overlappingAppt : overlap) {
+            LocalDateTime overlapStart = overlappingAppt.getStartDateTime().toLocalDateTime();
+            LocalDateTime overlapEnd = overlappingAppt.getEndDateTime().toLocalDateTime();
+            //System.out.println(overlappingAppt.getStartDateTime());
+            if (overlapStart.equals(start) || overlapEnd.equals(end)) {
+                //System.out.println("overlap");
+                return true;
+            }
+            else if (overlapStart.isBefore(start) && overlapEnd.isAfter(end)){
+                return true;
+            }
+            else if (overlapStart.isAfter(start) && overlapStart.isBefore(end)) {
+                return true;
+            }
+            else if (overlapStart.isBefore(start) && overlapEnd.isAfter(start)) {
+                return true;
+            }
+            else if (overlapStart.isAfter(start) && overlapEnd.isBefore(start)) {
+                return true;
+            }
+            else {
+                return false;
             }
         }
-        return true;
+        return false;
     }
 
     /**

@@ -2,6 +2,8 @@ package model;
 
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * Appointment class used to create multiple methods to access or generate data related to any appointments in the MySQL database.
@@ -46,7 +48,7 @@ public class Appointment {
      */
     public Appointment(Integer apptIDInput, String apptTitleInput, String apptDescriptionInput, String apptLocationInput,
                        String apptTypeInput, Timestamp startDateTimeInput, Timestamp endDateTimeInput, Timestamp dateCreatedInput,
-                       String apptCreatedByInput,Timestamp lastDateTimeUpdateInput, String apptLastUpdateByInput,
+                       String apptCreatedByInput, Timestamp lastDateTimeUpdateInput, String apptLastUpdateByInput,
                        Integer customerIDInput, Integer userIDInput, Integer contactIDInput, String apptContactNameInput) {
 
         apptID = apptIDInput;

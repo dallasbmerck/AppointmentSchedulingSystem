@@ -99,7 +99,7 @@ public class UpdateAppointmentController implements Initializable {
      * @throws SQLException
      */
     public Boolean overlappingCustomerAppointments(Integer customerID, LocalDateTime start, LocalDateTime end, LocalDate date) throws SQLException {
-        ObservableList<Appointment> overlap = AccessAppointment.filterAppointmentsByCustomerID(date, customerID);
+        ObservableList<Appointment> overlap = AccessAppointment.filterAppointmentsByCustomer(date);
 
         if (overlap.isEmpty()) {
             return true;
