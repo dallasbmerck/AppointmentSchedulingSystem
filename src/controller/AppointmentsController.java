@@ -331,8 +331,8 @@ public class AppointmentsController implements Initializable {
         else {
             ButtonType yes = ButtonType.YES;
             ButtonType no = ButtonType.NO;
-            Alert confirmDelete = new Alert(Alert.AlertType.WARNING, "Are you certain you want to delete Appointment: " +
-                     appointment.getApptID() + "?", yes, no);
+            Alert confirmDelete = new Alert(Alert.AlertType.WARNING, "Are you certain you want to delete Appointment " +
+                    "with Type: '" + appointment.getApptType() + "' and Appointment_ID: '" + appointment.getApptID() + "'?", yes, no);
             Optional<ButtonType> choice = confirmDelete.showAndWait();
 
             if (choice.get() == ButtonType.YES) {

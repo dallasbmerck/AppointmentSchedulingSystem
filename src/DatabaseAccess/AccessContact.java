@@ -73,6 +73,7 @@ public class AccessContact {
             String appointmentID = resultSet.getString("Appointment_ID");
             String title = resultSet.getString("Title");
             String type = resultSet.getString("Type");
+            String description = resultSet.getString("Description");
             String startTime = resultSet.getString("Start");
             String endTime = resultSet.getString("End");
             String customerID = resultSet.getString("Customer_ID");
@@ -80,9 +81,10 @@ public class AccessContact {
             String newString = "Appointment_ID: " + appointmentID + "\n" +
                                "Title: " + title + "\n" +
                                "Appointment Type: " + type + "\n" +
+                               "Description: " + description + "\n" +
                                "Start (date/time): " + startTime + "\n" +
                                "End (date/time): " + endTime + "\n" +
-                               "Customer_ID; " + customerID + "\n";
+                               "Customer_ID; " + customerID + "\n" + "\n";
             appointments.add(newString);
         }
         SQLCommand.close();
