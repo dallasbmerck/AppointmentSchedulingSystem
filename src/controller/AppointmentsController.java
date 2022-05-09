@@ -366,21 +366,22 @@ public class AppointmentsController implements Initializable {
     public void clickEditApptButton(ActionEvent actionEvent) throws IOException, SQLException {
         Appointment selectedAppointment = appointmentsTableView.getSelectionModel().getSelectedItem();
 
-        if(selectedAppointment == null) {
+        if (selectedAppointment == null) {
             ButtonType ok = new ButtonType("Okay", ButtonBar.ButtonData.OK_DONE);
             Alert invalid = new Alert(Alert.AlertType.WARNING, "Select an appointment to edit.", ok);
             invalid.showAndWait();
+        } else {
+
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("/view/UpdateAppointmentPage.fxml"));
+            Parent p = loader.load();
+            Scene s = new Scene(p);
+
+            UpdateAppointmentController controller = loader.getController();
+            controller.addData(selectedAppointment);
+            Stage newWindow = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            newWindow.setScene(s);
         }
-
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("/view/UpdateAppointmentPage.fxml"));
-        Parent p = loader.load();
-        Scene s = new Scene(p);
-
-        UpdateAppointmentController controller = loader.getController();
-        controller.addData(selectedAppointment);
-        Stage newWindow = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-        newWindow.setScene(s);
     }
 
     /**

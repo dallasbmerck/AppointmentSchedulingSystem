@@ -22,10 +22,10 @@ public class Appointment {
     private String apptCreatedBy;
     private String apptLastUpdateBy;
     private String apptContactName;
-    private Timestamp startDateTime;
-    private Timestamp endDateTime;
-    private Timestamp dateCreated;
-    private Timestamp lastDateTimeUpdate;
+    private LocalDateTime startDateTime;
+    private LocalDateTime endDateTime;
+    private LocalDateTime dateCreated;
+    private LocalDateTime lastDateTimeUpdate;
 
     /**
      * Appointment constructor that creates a new instance of an appointment.
@@ -47,8 +47,8 @@ public class Appointment {
      * @param apptContactNameInput Contact_Name - foreign key.
      */
     public Appointment(Integer apptIDInput, String apptTitleInput, String apptDescriptionInput, String apptLocationInput,
-                       String apptTypeInput, Timestamp startDateTimeInput, Timestamp endDateTimeInput, Timestamp dateCreatedInput,
-                       String apptCreatedByInput, Timestamp lastDateTimeUpdateInput, String apptLastUpdateByInput,
+                       String apptTypeInput, LocalDateTime startDateTimeInput, LocalDateTime endDateTimeInput, LocalDateTime dateCreatedInput,
+                       String apptCreatedByInput, LocalDateTime lastDateTimeUpdateInput, String apptLastUpdateByInput,
                        Integer customerIDInput, Integer userIDInput, Integer contactIDInput, String apptContactNameInput) {
 
         apptID = apptIDInput;
@@ -112,7 +112,7 @@ public class Appointment {
      * Getter for the start of Appointment.
      * @return Start.
      */
-    public Timestamp getStartDateTime() {
+    public LocalDateTime getStartDateTime() {
         return startDateTime;
     }
 
@@ -120,7 +120,7 @@ public class Appointment {
      * Getter for the end of the Appointment.
      * @return End.
      */
-    public Timestamp getEndDateTime() {
+    public LocalDateTime getEndDateTime() {
         return endDateTime;
     }
 
@@ -128,7 +128,7 @@ public class Appointment {
      * Getter for the date an appointment was created.
      * @return Create_Date.
      */
-    public Timestamp getDateCreated() {
+    public LocalDateTime getDateCreated() {
         return dateCreated;
     }
 
@@ -144,7 +144,7 @@ public class Appointment {
      * Getter for the last time an update was made to an appointment.
      * @return Last_Update.
      */
-    public Timestamp getLastDateTimeUpdate() {
+    public LocalDateTime getLastDateTimeUpdate() {
         return lastDateTimeUpdate;
     }
 

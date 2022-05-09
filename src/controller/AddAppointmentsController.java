@@ -4,7 +4,6 @@ import DatabaseAccess.AccessAppointment;
 import DatabaseAccess.AccessContact;
 import DatabaseAccess.AccessCustomer;
 import DatabaseAccess.AccessUser;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -15,7 +14,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import model.Appointment;
-import model.Contact;
 
 import java.io.IOException;
 import java.net.URL;
@@ -70,8 +68,7 @@ public class AddAppointmentsController implements Initializable {
      */
     public static String getRandomID(int min, int max) {
         int randomNum = ThreadLocalRandom.current().nextInt(min, max + 1);
-        String randomID = String.valueOf(randomNum);
-        return randomID;
+        return String.valueOf(randomNum);
     }
     /**
      * Used to change to a new fxml screen.
@@ -80,7 +77,7 @@ public class AddAppointmentsController implements Initializable {
      * @throws IOException IOException.
      */
     public void screenChange(ActionEvent actionEvent, String path) throws IOException {
-        Parent p = FXMLLoader.load(getClass().getResource(path));
+        Parent p = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(path)));
         Scene scene = new Scene(p);
         Stage newWindow = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
         newWindow.setScene(scene);
@@ -94,10 +91,8 @@ public class AddAppointmentsController implements Initializable {
      * @throws IOException IOException.
      */
     public void clickSaveButton(ActionEvent actionEvent) throws SQLException, IOException {
-        Boolean validStart = true;
-        Boolean validEnd = true;
-        Boolean validOverlap = true;
-        Boolean validOperationHours = true;
+        Boolean validOverlap;
+        Boolean validOperationHours;
         String errorMessage = "";
 
         String apptTitle = titleTextBox.getText();
@@ -110,8 +105,8 @@ public class AddAppointmentsController implements Initializable {
         LocalDate apptDate = datePicker.getValue();
         LocalDateTime apptStart = null;
         LocalDateTime apptEnd = null;
-        ZonedDateTime zonedStart = null;
-        ZonedDateTime zonedEnd = null;
+        ZonedDateTime zonedStart;
+        ZonedDateTime zonedEnd;
 
         Integer apptContactID = AccessContact.getContactID(apptContactName);
 
@@ -119,16 +114,12 @@ public class AddAppointmentsController implements Initializable {
 
         try {
             apptStart = LocalDateTime.of(datePicker.getValue(), LocalTime.parse(startTextBox.getText(), dateTimeFormatter));
-            validStart = true;
         } catch (DateTimeParseException exception) {
-            validStart = false;
             errorMessage += "Invalid start time. Please use (HH:MM) format.\n";
         }
         try {
             apptEnd = LocalDateTime.of(datePicker.getValue(), LocalTime.parse(endTextBox.getText(), dateTimeFormatter));
-            validEnd = true;
         } catch (DateTimeParseException exception) {
-            validEnd = false;
             errorMessage += "Invalid end time. Please use (HH:MM) format.\n";
         }
         if (apptTitle.isBlank() || apptDescription.isBlank() || apptLocation.isBlank() || apptContactName == null ||
@@ -144,9 +135,9 @@ public class AddAppointmentsController implements Initializable {
         validOverlap = overlappingCustomerAppointments(apptStart, apptEnd, apptDate);
 
         //System.out.println(errorMessage);
-        if (!validStart || !validEnd ||!validOperationHours) {
+        if (!validOperationHours) {
             ButtonType ok = new ButtonType("Okay", ButtonBar.ButtonData.OK_DONE);
-            Alert invalid = new Alert(Alert.AlertType.WARNING, "Appointment must be scheduled within operation hours! " +
+            Alert invalid = new Alert(Alert.AlertType.WARNING, "Appointment must be scheduled within operation hours and start must become before end! " +
                     "Please adjust your appointment time and make sure that the start time is before the end time.", ok);
             invalid.showAndWait();
         }
@@ -192,11 +183,9 @@ public class AddAppointmentsController implements Initializable {
     public Boolean overlappingCustomerAppointments(LocalDateTime start, LocalDateTime end, LocalDate date) throws SQLException {
         ObservableList<Appointment> overlap = AccessAppointment.filterAppointmentsByCustomer(date);
 
-        //boolean overlapTorF;
-
         for (Appointment overlappingAppt : overlap) {
-            LocalDateTime overlapStart = overlappingAppt.getStartDateTime().toLocalDateTime();
-            LocalDateTime overlapEnd = overlappingAppt.getEndDateTime().toLocalDateTime();
+            LocalDateTime overlapStart = overlappingAppt.getStartDateTime();
+            LocalDateTime overlapEnd = overlappingAppt.getEndDateTime();
             //System.out.println(overlappingAppt.getStartDateTime());
             if (overlapStart.equals(start) || overlapEnd.equals(end)) {
                 //System.out.println("overlap");
@@ -211,12 +200,7 @@ public class AddAppointmentsController implements Initializable {
             else if (overlapStart.isBefore(start) && overlapEnd.isAfter(start)) {
                 return true;
             }
-            else if (overlapStart.isAfter(start) && overlapEnd.isBefore(start)) {
-                return true;
-            }
-            else {
-                return false;
-            }
+            else return overlapStart.isAfter(start) && overlapEnd.isBefore(start);
         }
         return false;
     }
