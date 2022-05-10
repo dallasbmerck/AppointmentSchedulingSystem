@@ -14,6 +14,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import model.Appointment;
+import model.Customer;
 
 import java.io.IOException;
 import java.net.URL;
@@ -181,7 +182,7 @@ public class AddAppointmentsController implements Initializable {
      * @throws SQLException SQLException.
      */
     public Boolean overlappingCustomerAppointments(LocalDateTime start, LocalDateTime end, LocalDate date) throws SQLException {
-        ObservableList<Appointment> overlap = AccessAppointment.filterAppointmentsByCustomer(date);
+        ObservableList<Appointment> overlap = AccessAppointment.filterAppointmentsByCustomerID(date);
 
         for (Appointment overlappingAppt : overlap) {
             LocalDateTime overlapStart = overlappingAppt.getStartDateTime();
@@ -200,7 +201,9 @@ public class AddAppointmentsController implements Initializable {
             else if (overlapStart.isBefore(start) && overlapEnd.isAfter(start)) {
                 return true;
             }
-            else return overlapStart.isAfter(start) && overlapEnd.isBefore(start);
+            else if (overlapStart.isAfter(start) && overlapEnd.isBefore(start)) {
+                return true;
+            }
         }
         return false;
     }
@@ -274,7 +277,6 @@ public class AddAppointmentsController implements Initializable {
         });
 
         try {
-            apptIDTextBox.setText(getRandomID(1, 999));
             customerIDTextBox.setItems(AccessCustomer.getAllCustomersID());
             userIDComboBox.setItems(AccessUser.getAllUserIDs());
             contactComboBox.setItems(AccessContact.getContactName());

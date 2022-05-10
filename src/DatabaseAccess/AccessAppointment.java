@@ -110,13 +110,12 @@ public class AccessAppointment {
      * @return filterCustomerAppointment list.
      * @throws SQLException SQLException.
      */
-    public static ObservableList<Appointment> filterAppointmentsByCustomer(LocalDate appointmentDate) throws SQLException {
+    public static ObservableList<Appointment> filterAppointmentsByCustomerID(LocalDate appointmentDate) throws SQLException {
         ObservableList<Appointment> filterCustomerAppointment = FXCollections.observableArrayList();
         PreparedStatement SQLCommand = DatabaseConnection.getConnection().prepareStatement("SELECT * FROM appointments " +
                 "as a LEFT OUTER JOIN contacts as c ON a.Contact_ID = c.Contact_ID WHERE datediff(a.Start, ?) = 0;");
 
         SQLCommand.setString(1, appointmentDate.toString());
-        //SQLCommand.setInt(2, customerIDInput);
 
         ResultSet resultSet = SQLCommand.executeQuery();
 

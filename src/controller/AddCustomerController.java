@@ -134,7 +134,7 @@ public class AddCustomerController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
-            customerIDTextBox.setText(getRandomID(1, 999));
+            //customerIDTextBox.setText(getRandomID(1, 999));
             countryComboBox.setItems(AccessCustomer.getAllCountries());
         }
         catch (SQLException sqlException) {

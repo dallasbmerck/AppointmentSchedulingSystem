@@ -98,8 +98,8 @@ public class UpdateAppointmentController implements Initializable {
      * @return Boolean true or false.
      * @throws SQLException
      */
-    public Boolean overlappingCustomerAppointmentsUpdate(LocalDateTime start, LocalDateTime end, LocalDate date) throws SQLException {
-        ObservableList<Appointment> overlap = AccessAppointment.filterAppointmentsByCustomer(date);
+    public Boolean overlappingCustomerAppointmentsUpdate(Integer customerID, LocalDateTime start, LocalDateTime end, LocalDate date) throws SQLException {
+        ObservableList<Appointment> overlap = AccessAppointment.filterAppointmentsByCustomerID(date);
 
         for (Appointment overlappingAppt : overlap) {
             LocalDateTime overlapStart = overlappingAppt.getStartDateTime();
@@ -173,7 +173,7 @@ public class UpdateAppointmentController implements Initializable {
             return;
         }
         validOperationHours = validateOperationHours(apptStart, apptEnd, apptDate);
-        validOverlap = overlappingCustomerAppointmentsUpdate(apptStart, apptEnd, apptDate);
+        validOverlap = overlappingCustomerAppointmentsUpdate(apptCustomerID, apptStart, apptEnd, apptDate);
 
         if (!validOperationHours) {
             ButtonType ok = new ButtonType("Okay", ButtonBar.ButtonData.OK_DONE);

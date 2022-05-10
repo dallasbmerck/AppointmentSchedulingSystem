@@ -122,7 +122,7 @@ public class CustomerController implements Initializable {
             ButtonType yes = ButtonType.YES;
             ButtonType no = ButtonType.NO;
             Alert deleteCustomer = new Alert(Alert.AlertType.WARNING, "Are you sure you want to delete Customer " +
-                    customer.getCustomerID() + "and all of their associated appointments?", yes, no);
+                    customer.getCustomerID() + " and all of their associated appointments?", yes, no);
             Optional<ButtonType> selected = deleteCustomer.showAndWait();
 
             if (selected.get() == ButtonType.YES) {
@@ -131,7 +131,7 @@ public class CustomerController implements Initializable {
 
                 if (customerAppointmentDelete && customerDelete) {
                     ButtonType ok = new ButtonType("Okay", ButtonBar.ButtonData.OK_DONE);
-                    Alert delete = new Alert(Alert.AlertType.CONFIRMATION, "The Customer and all of their associated appointments have been deleted.", ok);
+                    Alert delete = new Alert(Alert.AlertType.CONFIRMATION, "Customer " + customer.getCustomerID() + " and all of their associated appointments have been deleted.", ok);
                     delete.showAndWait();
                 }
                 else {
