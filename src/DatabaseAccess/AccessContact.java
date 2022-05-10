@@ -84,7 +84,7 @@ public class AccessContact {
                                "Description: " + description + "\n" +
                                "Start (date/time): " + startTime + "\n" +
                                "End (date/time): " + endTime + "\n" +
-                               "Customer_ID; " + customerID + "\n" + "\n";
+                               "Customer_ID: " + customerID + "\n" + "\n";
             appointments.add(newString);
         }
         SQLCommand.close();

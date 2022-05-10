@@ -188,11 +188,11 @@ public class UpdateAppointmentController implements Initializable {
         }
         else {
             zonedStart = ZonedDateTime.of(apptStart, AccessUser.getUsersTimeZone());
-            zonedEnd = ZonedDateTime.of(LocalDateTime.from(apptEnd), AccessUser.getUsersTimeZone());
+            zonedEnd = ZonedDateTime.of(apptEnd, AccessUser.getUsersTimeZone());
             String username = AccessUser.getUserLoggedOn().getUserName();
 
-            zonedStart = zonedStart.withZoneSameInstant(ZoneOffset.UTC);
-            zonedEnd = zonedEnd.withZoneSameInstant(ZoneOffset.UTC);
+            zonedStart = zonedStart.withZoneSameLocal(ZoneOffset.UTC);
+            zonedEnd = zonedEnd.withZoneSameLocal(ZoneOffset.UTC);
 
             Boolean successfulAdd = AccessAppointment.updateAppointment(apptID, apptTitle, apptDescription, apptLocation,
                     apptType, zonedStart, zonedEnd, username, apptCustomerID, apptUserID,
@@ -256,8 +256,8 @@ public class UpdateAppointmentController implements Initializable {
         ZonedDateTime startUTC = selectedAppointment.getStartDateTime().atZone(ZoneOffset.UTC);
         ZonedDateTime endUTC = selectedAppointment.getEndDateTime().atZone(ZoneOffset.UTC);
 
-        ZonedDateTime localStart = startUTC.withZoneSameInstant(AccessUser.getUsersTimeZone());
-        ZonedDateTime localEnd = endUTC.withZoneSameInstant(AccessUser.getUsersTimeZone());
+        ZonedDateTime localStart = startUTC.withZoneSameLocal(AccessUser.getUsersTimeZone());
+        ZonedDateTime localEnd = endUTC.withZoneSameLocal(AccessUser.getUsersTimeZone());
 
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm");
         String stringLocalStart = localStart.format(dateTimeFormatter);
@@ -273,7 +273,7 @@ public class UpdateAppointmentController implements Initializable {
         customerIDTextBox.setItems(AccessCustomer.getAllCustomersID());
         customerIDTextBox.getSelectionModel().select(selectedAppointment.getCustomerID());
         userIDComboBox.setItems(AccessUser.getAllUserIDs());
-        userIDComboBox.getSelectionModel().select(selectedAppointment.getCustomerID());
+        userIDComboBox.getSelectionModel().select(selectedAppointment.getUserID());
         datePicker.setValue(selectedAppointment.getStartDateTime().toLocalDate());
         startTextBox.setText(stringLocalStart);
         endTextBox.setText(stringLocalEnd);

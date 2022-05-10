@@ -36,7 +36,7 @@ public class AccessUser {
      */
     public static ObservableList<Integer> getAllUserIDs() throws SQLException {
         ObservableList<Integer> userID = FXCollections.observableArrayList();
-        PreparedStatement SQLCommand = DatabaseConnection.getConnection().prepareStatement("SELECT DISTINCT " +
+        PreparedStatement SQLCommand = DatabaseConnection.getConnection().prepareStatement("SELECT " +
                 "User_ID FROM users;");
         ResultSet resultSet = SQLCommand.executeQuery();
 
