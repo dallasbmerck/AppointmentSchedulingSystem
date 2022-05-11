@@ -94,7 +94,7 @@ public class UpdateAppointmentController implements Initializable {
      * @param customerID Customer_ID.
      * @param start Start.
      * @param end End.
-     * @param date Date.
+     * @param apptID Appointment_ID.
      * @return Boolean true or false.
      * @throws SQLException
      */

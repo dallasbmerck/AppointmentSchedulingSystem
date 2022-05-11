@@ -177,7 +177,6 @@ public class AddAppointmentsController implements Initializable {
      * @param customerID Customer_ID.
      * @param start Start time.
      * @param end End time.
-     * @param date Date of the appointment.
      * @return overlap.
      * @throws SQLException SQLException.
      */
