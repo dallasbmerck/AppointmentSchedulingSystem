@@ -74,8 +74,8 @@ public class AccessContact {
             String title = resultSet.getString("Title");
             String type = resultSet.getString("Type");
             String description = resultSet.getString("Description");
-            String startTime = resultSet.getString("Start");
-            String endTime = resultSet.getString("End");
+            LocalDateTime startTime = resultSet.getTimestamp("Start").toLocalDateTime();
+            LocalDateTime endTime = resultSet.getTimestamp("End").toLocalDateTime();
             String customerID = resultSet.getString("Customer_ID");
 
             String newString = "Appointment_ID: " + appointmentID + "\n" +

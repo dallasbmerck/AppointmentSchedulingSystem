@@ -353,6 +353,8 @@ public class AccessAppointment {
      * @throws SQLException SQLException.
      */
     public static ObservableList<String> createReportTypeAndDate() throws SQLException {
+
+
         ObservableList<String> report = FXCollections.observableArrayList();
 
         report.add("Total Appointments by Type and Month:\n");
