@@ -133,7 +133,7 @@ public class AddAppointmentsController implements Initializable {
             return;
         }
         validOperationHours = validateOperationHours(apptStart, apptEnd, apptDate);
-        validOverlap = overlappingCustomerAppointments(apptStart, apptEnd, apptDate);
+        validOverlap = overlappingCustomerAppointments(apptCustomerID, apptStart, apptEnd);
 
         //System.out.println(errorMessage);
         if (!validOperationHours) {
@@ -148,15 +148,15 @@ public class AddAppointmentsController implements Initializable {
             invalid.showAndWait();
         }
         else {
-            zonedStart = ZonedDateTime.of(apptStart, AccessUser.getUsersTimeZone());
-            zonedEnd = ZonedDateTime.of(apptEnd, AccessUser.getUsersTimeZone());
+           // zonedStart = ZonedDateTime.of(apptStart, AccessUser.getUsersTimeZone());
+            //zonedEnd = ZonedDateTime.of(apptEnd, AccessUser.getUsersTimeZone());
             String username = AccessUser.getUserLoggedOn().getUserName();
 
-            zonedStart = zonedStart.withZoneSameInstant(ZoneOffset.UTC);
-            zonedEnd = zonedEnd.withZoneSameInstant(ZoneOffset.UTC);
+            //zonedStart = zonedStart.withZoneSameInstant(ZoneOffset.UTC);
+            //zonedEnd = zonedEnd.withZoneSameInstant(ZoneOffset.UTC);
 
             Boolean successfulAdd = AccessAppointment.addAppointment(apptTitle, apptDescription, apptLocation, apptType,
-                    zonedStart, zonedEnd, username, username, apptCustomerID, apptUserID, apptContactID);
+                    apptStart, apptEnd, username, username, apptCustomerID, apptUserID, apptContactID);
 
             if (successfulAdd) {
                 ButtonType ok = new ButtonType("Okay", ButtonBar.ButtonData.OK_DONE);
@@ -181,8 +181,8 @@ public class AddAppointmentsController implements Initializable {
      * @return overlap.
      * @throws SQLException SQLException.
      */
-    public Boolean overlappingCustomerAppointments(LocalDateTime start, LocalDateTime end, LocalDate date) throws SQLException {
-        ObservableList<Appointment> overlap = AccessAppointment.filterAppointmentsByCustomerID(date);
+    public Boolean overlappingCustomerAppointments(int customerID, LocalDateTime start, LocalDateTime end) throws SQLException {
+        ObservableList<Appointment> overlap = AccessAppointment.filterAppointmentsByCustomerID(customerID);
 
         for (Appointment overlappingAppt : overlap) {
             LocalDateTime overlapStart = overlappingAppt.getStartDateTime();

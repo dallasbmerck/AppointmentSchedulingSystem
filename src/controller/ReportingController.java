@@ -56,7 +56,7 @@ public class ReportingController {
         ObservableList<String> report = AccessAppointment.createReportTypeAndDate();
 
         for (String r : report) {
-            reportsTextArea.appendText(r);
+            reportsTextArea.appendText(r + "\n");
         }
     }
 

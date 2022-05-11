@@ -11,10 +11,10 @@ import java.time.LocalDateTime;
  * @author Dallas Merck
  */
 public class Appointment {
-    private Integer apptID;
-    private Integer customerID;
-    private Integer userID;
-    private Integer contactID;
+    private int apptID;
+    private int customerID;
+    private int userID;
+    private int contactID;
     private String apptTitle;
     private String apptDescription;
     private String apptLocation;
@@ -72,7 +72,7 @@ public class Appointment {
      * Getter to retrieve the Appointment_ID.
      * @return Appointment_ID.
      */
-    public Integer getApptID() {
+    public int getApptID() {
         return apptID;
     }
 
@@ -160,7 +160,7 @@ public class Appointment {
      * Getter for the customers ID attached to an appointment.
      * @return Customer_ID.
      */
-    public Integer getCustomerID() {
+    public int getCustomerID() {
         return customerID;
     }
 
@@ -168,7 +168,7 @@ public class Appointment {
      * Getter for the user ID attached to an appointment.
      * @return User_ID.
      */
-    public Integer getUserID() {
+    public int getUserID() {
         return userID;
     }
 
@@ -176,7 +176,7 @@ public class Appointment {
      * Getter for the contact ID associated with an appointment.
      * @return Contact_ID.
      */
-    public Integer getContactID() {
+    public int getContactID() {
         return contactID;
     }
 

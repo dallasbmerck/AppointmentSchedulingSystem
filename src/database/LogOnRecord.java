@@ -4,6 +4,8 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
@@ -21,10 +23,12 @@ public class LogOnRecord {
      * @param successful Boolean to determine whether log on was successful.
      */
     public static void generateLogOnFile(String username, boolean successful) {
+        ZonedDateTime local = ZonedDateTime.of(LocalDateTime.now(), ZoneId.systemDefault());
+        ZonedDateTime utc = ZonedDateTime.now().withZoneSameInstant(ZoneId.of("UTC"));
         try (FileWriter fileWriter = new FileWriter(logFile, true);
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
              PrintWriter printWriter = new PrintWriter(bufferedWriter)) {
-            printWriter.println(ZonedDateTime.now() + " " + username + (successful ? " Success" : " Fail"));
+            printWriter.println(utc + " " + username + (successful ? " Success" : " Fail"));
         }
         catch (IOException ioException) {
             System.out.println("Error generating log file data. " + ioException.getMessage());

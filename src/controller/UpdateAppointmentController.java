@@ -98,10 +98,13 @@ public class UpdateAppointmentController implements Initializable {
      * @return Boolean true or false.
      * @throws SQLException
      */
-    public Boolean overlappingCustomerAppointmentsUpdate(Integer customerID, LocalDateTime start, LocalDateTime end, LocalDate date) throws SQLException {
-        ObservableList<Appointment> overlap = AccessAppointment.filterAppointmentsByCustomerID(date);
+    public Boolean overlappingCustomerAppointmentsUpdate(int customerID, LocalDateTime start, LocalDateTime end, int apptID) throws SQLException {
+        ObservableList<Appointment> overlap = AccessAppointment.filterAppointmentsByCustomerID(customerID);
 
         for (Appointment overlappingAppt : overlap) {
+            if (overlappingAppt.getApptID() == apptID) {
+                continue;
+            }
             LocalDateTime overlapStart = overlappingAppt.getStartDateTime();
             LocalDateTime overlapEnd = overlappingAppt.getEndDateTime();
             //System.out.println(overlappingAppt.getStartDateTime());
@@ -118,7 +121,9 @@ public class UpdateAppointmentController implements Initializable {
             else if (overlapStart.isBefore(start) && overlapEnd.isAfter(start)) {
                 return true;
             }
-            else return overlapStart.isAfter(start) && overlapEnd.isBefore(start);
+            else if (overlapStart.isAfter(start) && overlapEnd.isBefore(start)) {
+                return true;
+            }
         }
         return false;
     }
@@ -133,7 +138,7 @@ public class UpdateAppointmentController implements Initializable {
         Boolean validOperationHours;
         String errorMessage = "";
 
-        Integer apptID = Integer.parseInt(apptIDTextBox.getText());
+        int apptID = Integer.parseInt(apptIDTextBox.getText());
         String apptTitle = titleTextBox.getText();
         String apptDescription = descriptionTextBox.getText();
         String apptLocation = locationTextBox.getText();
@@ -173,7 +178,7 @@ public class UpdateAppointmentController implements Initializable {
             return;
         }
         validOperationHours = validateOperationHours(apptStart, apptEnd, apptDate);
-        validOverlap = overlappingCustomerAppointmentsUpdate(apptCustomerID, apptStart, apptEnd, apptDate);
+        validOverlap = overlappingCustomerAppointmentsUpdate(apptCustomerID, apptStart, apptEnd, apptID);
 
         if (!validOperationHours) {
             ButtonType ok = new ButtonType("Okay", ButtonBar.ButtonData.OK_DONE);
@@ -187,15 +192,15 @@ public class UpdateAppointmentController implements Initializable {
             invalid.showAndWait();
         }
         else {
-            zonedStart = ZonedDateTime.of(apptStart, AccessUser.getUsersTimeZone());
-            zonedEnd = ZonedDateTime.of(apptEnd, AccessUser.getUsersTimeZone());
+            //zonedStart = ZonedDateTime.of(apptStart, AccessUser.getUsersTimeZone());
+            //zonedEnd = ZonedDateTime.of(apptEnd, AccessUser.getUsersTimeZone());
             String username = AccessUser.getUserLoggedOn().getUserName();
 
-            zonedStart = zonedStart.withZoneSameLocal(ZoneOffset.UTC);
-            zonedEnd = zonedEnd.withZoneSameLocal(ZoneOffset.UTC);
+            //zonedStart = zonedStart.withZoneSameLocal(ZoneOffset.UTC);
+            //zonedEnd = zonedEnd.withZoneSameLocal(ZoneOffset.UTC);
 
             Boolean successfulAdd = AccessAppointment.updateAppointment(apptID, apptTitle, apptDescription, apptLocation,
-                    apptType, zonedStart, zonedEnd, username, apptCustomerID, apptUserID,
+                    apptType, apptStart, apptEnd, username, apptCustomerID, apptUserID,
                     apptContactID);
 
             if (successfulAdd) {
@@ -263,7 +268,7 @@ public class UpdateAppointmentController implements Initializable {
         String stringLocalStart = localStart.format(dateTimeFormatter);
         String stringLocalEnd = localEnd.format(dateTimeFormatter);
 
-        apptIDTextBox.setText(selectedAppointment.getApptID().toString());
+        apptIDTextBox.setText(String.valueOf(selectedAppointment.getApptID()));
         titleTextBox.setText(selectedAppointment.getApptTitle());
         descriptionTextBox.setText(selectedAppointment.getApptDescription());
         locationTextBox.setText(selectedAppointment.getApptLocation());
@@ -271,7 +276,7 @@ public class UpdateAppointmentController implements Initializable {
         contactComboBox.getSelectionModel().select(selectedAppointment.getApptContactName());
         typeTextBox.setText(selectedAppointment.getApptType());
         customerIDTextBox.setItems(AccessCustomer.getAllCustomersID());
-        customerIDTextBox.getSelectionModel().select(selectedAppointment.getCustomerID());
+        customerIDTextBox.setValue(selectedAppointment.getCustomerID());
         userIDComboBox.setItems(AccessUser.getAllUserIDs());
         userIDComboBox.getSelectionModel().select(selectedAppointment.getUserID());
         datePicker.setValue(selectedAppointment.getStartDateTime().toLocalDate());
