@@ -74,7 +74,7 @@ public class UpdateCustomerController implements Initializable {
      * Saves the updated customer data when the user clicks the save button.
      * @throws SQLException
      */
-    public void clickSaveButton() throws SQLException {
+    public void clickSaveButton(ActionEvent actionEvent) throws SQLException, IOException {
         String customerCountry = countryComboBox.getValue();
         String customerDivision = divisionComboBox.getValue();
         String customerName = nameTextBox.getText();
@@ -97,6 +97,7 @@ public class UpdateCustomerController implements Initializable {
             ButtonType ok = new ButtonType("Okay", ButtonBar.ButtonData.OK_DONE);
             Alert a2 = new Alert(Alert.AlertType.CONFIRMATION, "Customer values have been updated successfully.", ok);
             a2.showAndWait();
+            screenChange(actionEvent, "/view/CustomerPage.fxml");
         }
         else {
             ButtonType ok = new ButtonType("Okay", ButtonBar.ButtonData.OK_DONE);

@@ -5,14 +5,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import model.Appointment;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
+import java.sql.*;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 
 /**
@@ -40,11 +34,11 @@ public class AccessAppointment {
             String  description = resultSet.getString("Description");
             String location = resultSet.getString("Location");
             String type = resultSet.getString("Type");
-            Timestamp start = resultSet.getTimestamp("Start");
-            Timestamp end = resultSet.getTimestamp("End");
-            Timestamp dateCreated = resultSet.getTimestamp("Create_Date");
+            LocalDateTime start = resultSet.getTimestamp("Start").toLocalDateTime();
+            LocalDateTime end = resultSet.getTimestamp("End").toLocalDateTime();
+            LocalDateTime dateCreated = resultSet.getTimestamp("Create_Date").toLocalDateTime();
             String createdBy = resultSet.getString("Created_By");
-            Timestamp lastUpdate = resultSet.getTimestamp("Last_Update");
+            LocalDateTime lastUpdate = resultSet.getTimestamp("Last_Update").toLocalDateTime();
             String lastUpdateBy = resultSet.getString("Last_Updated_By");
             Integer customerID = resultSet.getInt("Customer_ID");
             Integer userID = resultSet.getInt("User_ID");
@@ -89,11 +83,11 @@ public class AccessAppointment {
             String  description = resultSet.getString("Description");
             String location = resultSet.getString("Location");
             String type = resultSet.getString("Type");
-            Timestamp startTime = resultSet.getTimestamp("Start");
-            Timestamp endTime = resultSet.getTimestamp("End");
-            Timestamp dateCreated = resultSet.getTimestamp("Create_Date");
+            LocalDateTime startTime = resultSet.getTimestamp("Start").toLocalDateTime();
+            LocalDateTime endTime = resultSet.getTimestamp("End").toLocalDateTime();
+            LocalDateTime dateCreated = resultSet.getTimestamp("Create_Date").toLocalDateTime();
             String createdBy = resultSet.getString("Created_By");
-            Timestamp lastUpdate = resultSet.getTimestamp("Last_Update");
+            LocalDateTime lastUpdate = resultSet.getTimestamp("Last_Update").toLocalDateTime();
             String lastUpdateBy = resultSet.getString("Last_Updated_By");
             Integer customerID = resultSet.getInt("Customer_ID");
             Integer userID = resultSet.getInt("User_ID");
@@ -116,31 +110,31 @@ public class AccessAppointment {
      * @return filterCustomerAppointment list.
      * @throws SQLException SQLException.
      */
-    public static ObservableList<Appointment> filterAppointmentsByCustomerID(LocalDate appointmentDate, Integer customerIDInput) throws SQLException {
+    public static ObservableList<Appointment> filterAppointmentsByCustomerID(int customerID) throws SQLException {
         ObservableList<Appointment> filterCustomerAppointment = FXCollections.observableArrayList();
         PreparedStatement SQLCommand = DatabaseConnection.getConnection().prepareStatement("SELECT * FROM appointments " +
-                "as a LEFT OUTER JOIN contacts as c ON a.Contact_ID = c.Contact_ID WHERE datediff(a.Start, ?) = 0 AND Customer_ID = ?");
+                "as a INNER JOIN contacts as c ON a.Contact_ID = c.Contact_ID " +
+                "WHERE Customer_ID = ?");
 
-        SQLCommand.setString(1, appointmentDate.toString());
-        SQLCommand.setInt(2, customerIDInput);
+        SQLCommand.setInt(1, customerID);
 
         ResultSet resultSet = SQLCommand.executeQuery();
 
         while (resultSet.next()) {
-            Integer apptID = resultSet.getInt("Appointment_ID");
+            int apptID = resultSet.getInt("Appointment_ID");
             String title =  resultSet.getString("Title");
             String  description = resultSet.getString("Description");
             String location = resultSet.getString("Location");
             String type = resultSet.getString("Type");
-            Timestamp startTime = resultSet.getTimestamp("Start");
-            Timestamp endTime = resultSet.getTimestamp("End");
-            Timestamp dateCreated = resultSet.getTimestamp("Create_Date");
+            LocalDateTime startTime = resultSet.getTimestamp("Start").toLocalDateTime();
+            LocalDateTime endTime = resultSet.getTimestamp("End").toLocalDateTime();
+            LocalDateTime dateCreated = resultSet.getTimestamp("Create_Date").toLocalDateTime();
             String createdBy = resultSet.getString("Created_By");
-            Timestamp lastUpdate = resultSet.getTimestamp("Last_Update");
+            LocalDateTime lastUpdate = resultSet.getTimestamp("Last_Update").toLocalDateTime();
             String lastUpdateBy = resultSet.getString("Last_Updated_By");
-            Integer customerID = resultSet.getInt("Customer_ID");
-            Integer userID = resultSet.getInt("User_ID");
-            Integer contactID = resultSet.getInt("Contact_ID");
+            int ID = resultSet.getInt("Customer_ID");
+            int userID = resultSet.getInt("User_ID");
+            int contactID = resultSet.getInt("Contact_ID");
             String contactName = resultSet.getString("Contact_Name");
 
             Appointment newAppointment = new Appointment(apptID, title, description, location, type, startTime, endTime, dateCreated,
@@ -170,11 +164,11 @@ public class AccessAppointment {
      * @throws SQLException SQLException.
      */
     public static Boolean addAppointment(String titleInput, String descriptionInput, String locationInput, String typeInput,
-                                         ZonedDateTime startInput, ZonedDateTime endInput, String createdByInput, String lastUpdatedByInput,
+                                         LocalDateTime startInput, LocalDateTime endInput, String createdByInput, String lastUpdatedByInput,
                                          Integer customerIDInput, Integer userIDInput, Integer contactIDInput) throws SQLException {
         PreparedStatement SQLCommand = DatabaseConnection.getConnection().prepareStatement("INSERT INTO appointments " +
                 "(Title, Description, Location, Type, Start, End, Create_Date, Created_By, Last_Update, Last_Updated_By, " +
-                "Customer_ID, User_ID, Contact_ID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
+                "Customer_ID, User_ID, Contact_ID) VALUES (?, ?, ?, ?, ?, ?, now(), ?, now(), ?, ?, ?, ?);");
 
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String startInputString = startInput.format(dateTimeFormatter).toString();
@@ -184,15 +178,15 @@ public class AccessAppointment {
         SQLCommand.setString(2, descriptionInput);
         SQLCommand.setString(3, locationInput);
         SQLCommand.setString(4, typeInput);
-        SQLCommand.setString(5, startInputString);
-        SQLCommand.setString(6, endInputString);
-        SQLCommand.setString(7, ZonedDateTime.now(ZoneOffset.UTC).format(dateTimeFormatter).toString());
-        SQLCommand.setString(8, createdByInput);
-        SQLCommand.setString(9, ZonedDateTime.now(ZoneOffset.UTC).format(dateTimeFormatter).toString());
-        SQLCommand.setString(10, lastUpdatedByInput);
-        SQLCommand.setInt(11, customerIDInput);
-        SQLCommand.setInt(12, userIDInput);
-        SQLCommand.setInt(13, contactIDInput);
+        SQLCommand.setTimestamp(5, Timestamp.valueOf(startInput));
+        SQLCommand.setTimestamp(6, Timestamp.valueOf(endInput));
+        //SQLCommand.setString(7, ZonedDateTime.now(ZoneOffset.UTC).format(dateTimeFormatter).toString());
+        SQLCommand.setString(7, createdByInput);
+        //SQLCommand.setString(9, ZonedDateTime.now(ZoneOffset.UTC).format(dateTimeFormatter).toString());
+        SQLCommand.setString(8, lastUpdatedByInput);
+        SQLCommand.setInt(9, customerIDInput);
+        SQLCommand.setInt(10, userIDInput);
+        SQLCommand.setInt(11, contactIDInput);
 
         try {
             SQLCommand.executeUpdate();
@@ -222,11 +216,11 @@ public class AccessAppointment {
      * @throws SQLException SQLException.
      */
     public static Boolean updateAppointment(Integer apptIDInput, String titleInput, String descriptionInput, String locationInput,
-                                            String typeInput, ZonedDateTime startInput, ZonedDateTime endInput, String
+                                            String typeInput, LocalDateTime startInput, LocalDateTime endInput, String
                                             lastUpdateByInput, Integer customerIDInput, Integer userIDInput, Integer contactIDInput) throws SQLException {
         PreparedStatement SQLCommand = DatabaseConnection.getConnection().prepareStatement("UPDATE appointments " +
-                "SET Title=?, Description=?, Location=?, Type=?, Start=?, End=?, Last_Update=?, Last_Update_By=?, " +
-                "Customer_ID=?, User_ID=?, Contact_ID=? WHERE Appointment_ID = ?;");
+                "SET Title=?, Description=?, Location=?, Type=?, Start=?, End=?, Last_Update=now(), Last_Updated_By=?, " +
+                "Customer_ID=?, User_ID=?, Contact_ID=? WHERE Appointment_ID = ?");
 
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String startInputString = startInput.format(dateTimeFormatter).toString();
@@ -236,14 +230,18 @@ public class AccessAppointment {
         SQLCommand.setString(2, descriptionInput);
         SQLCommand.setString(3, locationInput);
         SQLCommand.setString(4, typeInput);
-        SQLCommand.setString(5, startInputString);
-        SQLCommand.setString(6, endInputString);
-        SQLCommand.setString(7, ZonedDateTime.now(ZoneOffset.UTC).format(dateTimeFormatter).toString());
-        SQLCommand.setString(8, lastUpdateByInput);
-        SQLCommand.setInt(9, customerIDInput);
-        SQLCommand.setInt(10, userIDInput);
-        SQLCommand.setInt(11, contactIDInput);
-        SQLCommand.setInt(12, apptIDInput);
+
+        SQLCommand.setTimestamp(5, Timestamp.valueOf(startInput));
+        SQLCommand.setTimestamp(6, Timestamp.valueOf(endInput));
+        //SQLCommand.setString(7, ZonedDateTime.now(ZoneOffset.UTC).format(dateTimeFormatter).toString());
+        //SQLCommand.setString(7, createdByInput);
+        //SQLCommand.setString(9, ZonedDateTime.now(ZoneOffset.UTC).format(dateTimeFormatter).toString());
+        SQLCommand.setString(7, lastUpdateByInput);
+        SQLCommand.setInt(8, customerIDInput);
+        SQLCommand.setInt(9, userIDInput);
+        SQLCommand.setInt(10, contactIDInput);
+        SQLCommand.setInt(11, apptIDInput);
+
 
         try {
             SQLCommand.executeUpdate();
@@ -313,7 +311,7 @@ public class AccessAppointment {
         ZonedDateTime utc = timezone.withZoneSameInstant(ZoneOffset.UTC);
         ZonedDateTime timeDelta = utc.plusMinutes(15);
 
-        String start = utc.format(dateTimeFormatter).toString();
+        String start = utc.format(dateTimeFormatter);
         String end = timeDelta.format(dateTimeFormatter);
         Integer userID = AccessUser.getUserLoggedOn().getUserID();
 
@@ -333,11 +331,11 @@ public class AccessAppointment {
             String  description = resultSet.getString("Description");
             String location = resultSet.getString("Location");
             String type = resultSet.getString("Type");
-            Timestamp startTime = resultSet.getTimestamp("Start");
-            Timestamp endTime = resultSet.getTimestamp("End");
-            Timestamp dateCreated = resultSet.getTimestamp("Create_Date");
+            LocalDateTime startTime = resultSet.getTimestamp("Start").toLocalDateTime();
+            LocalDateTime endTime = resultSet.getTimestamp("End").toLocalDateTime();
+            LocalDateTime dateCreated = resultSet.getTimestamp("Create_Date").toLocalDateTime();
             String createdBy = resultSet.getString("Created_By");
-            Timestamp lastUpdate = resultSet.getTimestamp("Last_Update");
+            LocalDateTime lastUpdate = resultSet.getTimestamp("Last_Update").toLocalDateTime();
             String lastUpdateBy = resultSet.getString("Last_Updated_By");
             Integer customerID = resultSet.getInt("Customer_ID");
             Integer currentUserID = resultSet.getInt("User_ID");
@@ -353,34 +351,42 @@ public class AccessAppointment {
 
     }
 
+
     /**
      * Observable list that is user to create reports from the appointment's type or date.
      * @return report observable list.
      * @throws SQLException SQLException.
      */
     public static ObservableList<String> createReportTypeAndDate() throws SQLException {
+
         ObservableList<String> report = FXCollections.observableArrayList();
 
         report.add("Total Appointments by Type and Month:\n");
 
-        PreparedStatement SQLCommandType = DatabaseConnection.getConnection().prepareStatement(" SELECT Type, " +
-                "COUNT(Type) as \"Total\" FROM appointments GROUP BY Type;");
+        //PreparedStatement SQLCommandType = DatabaseConnection.getConnection().prepareStatement(" SELECT Type, " +
+        //  "COUNT(Type) as \"Total\" FROM appointments GROUP BY Type;");
         PreparedStatement SQLCommandMonth = DatabaseConnection.getConnection().prepareStatement("SELECT " +
-                "MONTHNAME(Start) as \"Month\", COUNT(MONTH(Start)) as \"Total\" from appointments GROUP BY Month;");
+                "MONTHNAME(Start) as Month, Type, COUNT(Type) as Total from appointments GROUP BY Month, Type ORDER BY " +
+                "Month, Type");
 
-        ResultSet resultSetType = SQLCommandType.executeQuery();
+        //ResultSet resultSetType = SQLCommandType.executeQuery();
         ResultSet resultSetMonth = SQLCommandMonth.executeQuery();
-
+        /*
         while (resultSetType.next()) {
             String type = "Type: " + resultSetType.getString("Type") + " Count: " + resultSetType.getString("Total") + "\n";
             report.add(type);
-        }
+        }*/
+        String header = String.format("%-25s %-25s %s", "Month", "Type", "Count");
+        report.add(header);
         while (resultSetMonth.next()) {
-            String month = "Month: " + resultSetMonth.getString("Month") + " Count: " + resultSetMonth.getString("Total") + "\n";
+            String month = String.format("%-25s %-25s %4d", resultSetMonth.getString("Month"), resultSetMonth.getString("Type"),
+                    resultSetMonth.getInt("Total"));
+            //String month = resultSetMonth.getString("Month") + "           " + resultSetMonth.getString("Type") +
+            //  "           " + resultSetMonth.getInt("Total");
             report.add(month);
         }
 
-        SQLCommandType.close();
+        //SQLCommandType.close();
         SQLCommandMonth.close();
         return report;
     }

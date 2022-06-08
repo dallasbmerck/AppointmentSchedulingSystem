@@ -56,7 +56,7 @@ public class ReportingController {
         ObservableList<String> report = AccessAppointment.createReportTypeAndDate();
 
         for (String r : report) {
-            reportsTextArea.appendText(r);
+            reportsTextArea.appendText(r + "\n");
         }
     }
 
@@ -76,7 +76,7 @@ public class ReportingController {
             reportsTextArea.appendText("Contact Name: " + c + " Contact ID: " + id + "\n");
             ObservableList<String> appointments = AccessContact.getContactAppointments(id);
             if (appointments.isEmpty()) {
-                reportsTextArea.appendText("No appointments scheduled for Contact ID: " + id + "\n");
+                reportsTextArea.appendText("No appointments scheduled for Contact ID: " + id + "\n" + "\n");
             }
             for (String a : appointments) {
                 reportsTextArea.appendText(a);
@@ -106,8 +106,8 @@ public class ReportingController {
 
         for (String t : timePerContact) {
             String id = AccessContact.getContactID(t).toString();
-            reportsTextArea.appendText("Contact Name: " + t + "Contact ID: " + id + "\n");
-            reportsTextArea.appendText("Total time scheduled for Contact: " + AccessContact.calculateAppointmentTime(id) + "\n");
+            reportsTextArea.appendText("Contact Name: " + t + " Contact ID: " + id + "\n");
+            reportsTextArea.appendText("Total time scheduled for Contact: " + AccessContact.calculateAppointmentTime(id) + "\n" + "\n");
         }
     }
 }

@@ -26,10 +26,14 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+
 /**
  * AppointmentsController class used to input and output data in the AppointmentsPage.fxml.
  */
 public class AppointmentsController implements Initializable {
+    /**
+     * Scenebuilder attributes
+     */
     public TableView<Appointment> appointmentsTableView;
     public TableColumn<Appointment, Integer> apptIDCol;
     public TableColumn<Appointment, String> titleCol;
@@ -327,15 +331,15 @@ public class AppointmentsController implements Initializable {
         else {
             ButtonType yes = ButtonType.YES;
             ButtonType no = ButtonType.NO;
-            Alert confirmDelete = new Alert(Alert.AlertType.WARNING, "Are you certain you want to delete Appointment: " +
-                     appointment.getApptID() + "?", yes, no);
+            Alert confirmDelete = new Alert(Alert.AlertType.WARNING, "Are you certain you want to delete Appointment " +
+                    "with Type: '" + appointment.getApptType() + "' and Appointment_ID: '" + appointment.getApptID() + "'?", yes, no);
             Optional<ButtonType> choice = confirmDelete.showAndWait();
 
             if (choice.get() == ButtonType.YES) {
                 Boolean b = AccessAppointment.deleteAppointment(appointment.getApptID());
                 if(b) {
                     ButtonType ok = new ButtonType("Okay", ButtonBar.ButtonData.OK_DONE);
-                    Alert showDelete = new Alert(Alert.AlertType.CONFIRMATION, "Appointment: " + appointment.getApptID() + " has been deleted.", ok);
+                    Alert showDelete = new Alert(Alert.AlertType.CONFIRMATION, "Appointment: '" + appointment.getApptID() + "' with Type: '" + appointment.getApptType() + "' has been deleted.", ok);
                     showDelete.showAndWait();
                 }
                 else {
@@ -362,21 +366,22 @@ public class AppointmentsController implements Initializable {
     public void clickEditApptButton(ActionEvent actionEvent) throws IOException, SQLException {
         Appointment selectedAppointment = appointmentsTableView.getSelectionModel().getSelectedItem();
 
-        if(selectedAppointment == null) {
+        if (selectedAppointment == null) {
             ButtonType ok = new ButtonType("Okay", ButtonBar.ButtonData.OK_DONE);
             Alert invalid = new Alert(Alert.AlertType.WARNING, "Select an appointment to edit.", ok);
             invalid.showAndWait();
+        } else {
+
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("/view/UpdateAppointmentPage.fxml"));
+            Parent p = loader.load();
+            Scene s = new Scene(p);
+
+            UpdateAppointmentController controller = loader.getController();
+            controller.addData(selectedAppointment);
+            Stage newWindow = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            newWindow.setScene(s);
         }
-
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("/view/UpdateAppointmentPage.fxml"));
-        Parent p = loader.load();
-        Scene s = new Scene(p);
-
-        UpdateAppointmentController controller = loader.getController();
-        controller.addData(selectedAppointment);
-        Stage newWindow = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-        newWindow.setScene(s);
     }
 
     /**

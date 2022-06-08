@@ -90,7 +90,7 @@ public class AccessCustomer {
 
         SQLCommand.setString(1, name);
         SQLCommand.setString(2, address);
-        SQLCommand.setString(2, postCode);
+        SQLCommand.setString(3, postCode);
         SQLCommand.setString(4, phoneNumber);
         SQLCommand.setString(5, ZonedDateTime.now(ZoneOffset.UTC).format(dateTimeFormatter).toString());
         SQLCommand.setString(6, AccessUser.getUserLoggedOn().getUserName());
@@ -124,8 +124,8 @@ public class AccessCustomer {
 
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-        PreparedStatement SQLCommand = DatabaseConnection.getConnection().prepareStatement("UPDATE customers" +
-                "SET Customer_Name=?, Address=?, Postal_Code=?, Phone=? Last_Update=?, Last_Updated_By=?, Division_ID=?" +
+        PreparedStatement SQLCommand = DatabaseConnection.getConnection().prepareStatement("UPDATE customers " +
+                "SET Customer_Name=?, Address=?, Postal_Code=?, Phone=?, Last_Update=?, Last_Updated_By=?, Division_ID=? " +
                 "WHERE Customer_ID = ?");
 
         SQLCommand.setString(1, name);
@@ -198,7 +198,7 @@ public class AccessCustomer {
      */
     public static Boolean deleteSelectedCustomer(Integer customerID) throws SQLException {
         PreparedStatement SQLCommand = DatabaseConnection.getConnection().prepareStatement("DELETE FROM customers" +
-                "WHERE Customer_ID = ?");
+                " WHERE Customer_ID = ?");
 
         SQLCommand.setInt(1, customerID);
 
@@ -229,4 +229,6 @@ public class AccessCustomer {
         SQLCommand.close();
         return countries;
     }
-    }
+
+
+}

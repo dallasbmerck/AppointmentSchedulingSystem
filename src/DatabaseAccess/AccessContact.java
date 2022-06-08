@@ -73,16 +73,18 @@ public class AccessContact {
             String appointmentID = resultSet.getString("Appointment_ID");
             String title = resultSet.getString("Title");
             String type = resultSet.getString("Type");
-            String startTime = resultSet.getString("Start");
-            String endTime = resultSet.getString("End");
+            String description = resultSet.getString("Description");
+            LocalDateTime startTime = resultSet.getTimestamp("Start").toLocalDateTime();
+            LocalDateTime endTime = resultSet.getTimestamp("End").toLocalDateTime();
             String customerID = resultSet.getString("Customer_ID");
 
             String newString = "Appointment_ID: " + appointmentID + "\n" +
                                "Title: " + title + "\n" +
                                "Appointment Type: " + type + "\n" +
+                               "Description: " + description + "\n" +
                                "Start (date/time): " + startTime + "\n" +
                                "End (date/time): " + endTime + "\n" +
-                               "Customer_ID; " + customerID + "\n";
+                               "Customer_ID: " + customerID + "\n" + "\n";
             appointments.add(newString);
         }
         SQLCommand.close();

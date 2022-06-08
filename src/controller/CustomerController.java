@@ -2,6 +2,7 @@ package controller;
 
 import DatabaseAccess.AccessAppointment;
 import DatabaseAccess.AccessCustomer;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -12,6 +13,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import model.Customer;
 
 import java.io.IOException;
@@ -56,10 +58,11 @@ public class CustomerController implements Initializable {
      * Adds data to the customers table view using an observable list.
      * @param customerList Observable list of customers.
      */
-    public void addDataToCustomersTable(ObservableList<Customer> customerList) {
+    public void addDataToCustomersTable(ObservableList<Customer> customerList) throws SQLException {
+
         customerIDCol.setCellValueFactory(new PropertyValueFactory<>("customerID"));
         customerNameCol.setCellValueFactory(new PropertyValueFactory<>("customerName"));
-        countryCol.setCellValueFactory(new PropertyValueFactory<>("customerCountry"));
+        countryCol.setCellValueFactory(new PropertyValueFactory<>("CustomerCountryName"));
         divisionCol.setCellValueFactory(new PropertyValueFactory<>("customerDivision"));
         addressCol.setCellValueFactory(new PropertyValueFactory<>("customerAddress"));
         postCodeCol.setCellValueFactory(new PropertyValueFactory<>("customerPostCode"));
@@ -119,7 +122,7 @@ public class CustomerController implements Initializable {
             ButtonType yes = ButtonType.YES;
             ButtonType no = ButtonType.NO;
             Alert deleteCustomer = new Alert(Alert.AlertType.WARNING, "Are you sure you want to delete Customer " +
-                    customer.getCustomerID() + "and all of their associated appointments?", yes, no);
+                    customer.getCustomerID() + " and all of their associated appointments?", yes, no);
             Optional<ButtonType> selected = deleteCustomer.showAndWait();
 
             if (selected.get() == ButtonType.YES) {
@@ -128,7 +131,7 @@ public class CustomerController implements Initializable {
 
                 if (customerAppointmentDelete && customerDelete) {
                     ButtonType ok = new ButtonType("Okay", ButtonBar.ButtonData.OK_DONE);
-                    Alert delete = new Alert(Alert.AlertType.CONFIRMATION, "The Customer and all of their associated appointments have been deleted.", ok);
+                    Alert delete = new Alert(Alert.AlertType.CONFIRMATION, "Customer " + customer.getCustomerID() + " and all of their associated appointments have been deleted.", ok);
                     delete.showAndWait();
                 }
                 else {
