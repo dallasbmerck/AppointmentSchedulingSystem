@@ -4,7 +4,7 @@
 - Date of submission: 5/4/2022
 
 ## Purpose:
-C195 Software II Performance Assessment for Western Governors University with functionalities below:
+Performance Assessment for University project with functionalities below:
 - Uses JDBC to connect to an external MySQL database.
 - Allows user to add, edit, and delete data from the database with respect to foreign key contraints.
 - Supports Enlish and French in the log in page.
