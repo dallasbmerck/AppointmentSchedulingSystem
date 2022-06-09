@@ -1,6 +1,5 @@
-# C195Task1 Client Scheduling Application
+# Client Scheduling Application
 - Author: Dallas Merck
-- Email: dmerck@wgu.edu
 - Date of submission: 5/4/2022
 
 ## Purpose:
